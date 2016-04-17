@@ -4,7 +4,8 @@
 \alias{name.balance}
 \title{Name a balance (coordinate) based on taxonomy}
 \usage{
-name.balance(tr, tax, coord, method = c("voting"), thresh = 0.95)
+name.balance(tr, tax, coord, method = "voting", thresh = 0.95,
+  return.votes = NULL)
 }
 \arguments{
 \item{tr}{an object of class \code{'phylo'}}
@@ -17,13 +18,34 @@ columns should be taxonomic levels (named) with increasing taxonomic resolution 
 
 \item{method}{currently only \code{'voting'} implemented. See Details.}
 
-\item{thresh}{threshold for assignment of taxonomy to a given part of a balance (see details).}
+\item{thresh}{threshold for assignment of taxonomy to a given part of a balance
+(must be greater than 0.5 if \code{method='voting'}; see details).}
+
+\item{show.votes}{whether voting results by taxonomic level should be shown for \code{coord}. Note: this is helpful when
+\code{name.balance} does not return a clear winner, as may be the case when a given \code{coord} represents more than one
+taxonomic lineage. votes are returned as a list indexed by \code{colnames(tax)} Options include:
+\describe{
+\item{\code{NULL}}{(default) only returns the combined consensus name of the balance}
+\item{\code{'up'}}{adds tallied votes for the 'up' node to the output list}
+\item{\code{'down'}}{adds tallied votes for the 'down'node to the output list}
+\item{\code{'self'}}{adds tallied votes for \code{coord} to the output list}
+}}
+}
+\value{
+If \code{return.votes=NULL} returns a string of the form (ex. 'Genus_Bacteroides/Phylum_Firmicutes'). Otherwise returns
+a list with the above string as 'name', see Arguments for \code{show.votes} for other optional returned items.
 }
 \description{
 For a given ILR balance (coordinate) assigns a name to the balance based on a
 provided taxonomy table. This is useful for interpretation of the balances.
 }
 \details{
+A bit of terminology:
+\describe{
+\item{coord}{this is the same as the names of the balances which should be the same as the names of the internal nodes of \code{tr}}
+\item{'up'}{this is the child node of \code{coord} that is represented in the numerator of the \code{coord} balance.}
+\item{'down'}{this is the child node of \code{coord} that is represented in the denominator of the \code{coord} balance}
+}
 The method \code{'voting'} assigns the name of the each part of a balance (e.g., numerator and denominator / each
 child of \code{coord}) as follows:
 \enumerate{
@@ -32,6 +54,17 @@ child of \code{coord}) as follows:
 is present at or above \code{thresh}. If yes output that taxonomic label (at that taxonomic level) as the label
 for that child of \code{coord}. If no then move to coarser taxonomic level (leftward) and repeat.
 }
+}
+\examples{
+library(phyloseq)
+data(CSS)
+tr <- phy_tree(CSS)
+tax  <- tax_table(CSS)
+name.balance(tr, tax, 'n1')
+name.balance(tr, tax, 'n34', return.votes=c('up','down'))
+}
+\author{
+Justin Silverman
 }
 \seealso{
 \code{\link{philr}}

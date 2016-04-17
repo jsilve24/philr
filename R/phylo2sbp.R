@@ -26,6 +26,7 @@
 #' @importFrom parallel makeCluster parSapply stopCluster
 #' @importFrom phangorn Children Descendants
 #' @importFrom ape Ntip
+#' @seealso \code{\link{philr}}
 phylo2sbp <- function (tr, n_cores=1){
     nTips <- Ntip(tr)
     ch <- Children(tr, (nTips+1):(nTips+tr$Nnode))

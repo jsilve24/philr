@@ -13,7 +13,8 @@ require(compositions)
 #' weightings (of the parts and the ILR coordinates) and then transforming the data.
 #' @aliases  build.phylo.ilr
 #' @param df matrix of data to be transformed (samples are rows,
-#' compositional parts are columns)
+#' compositional parts are columns) - zero must be dealt with either with pseudocount,
+#' multiplicative replacement, or another method.
 #' @param sbp (Optional) give a precomputed sbp matrix \code{link{phylo2sbp}}
 #' if you are going to build multiple ILR bases (e.g., with different weightings).
 #' @param part.weights weightings for parts, can be a named vector with names
@@ -36,7 +37,8 @@ require(compositions)
 #' }
 #' @param return.all return all computed parts (e.g., computed sign matrix(\code{sbp} ),
 #' part weightings (code{p}), ilr weightings (code{ilr.weights}), contrast matrix (\code{V}))
-#' as a list (default=\code{TRUE}) in addition to in addition to returning the transformed data (\code{df.ilrp}).
+#' as a list (default=\code{FALSE}) in addition to in addition to returning the transformed data (\code{df.ilrp}).
+#' If \code{return.all==FALSE} then only returns the transformed data (not in list format)
 #' If \code{FALSE} then just returns list containing \code{df.ilrp}.
 #' @param n_cores (Optional) integer specifying the number of cores to use. See Details.
 #' @inheritParams calculate.blw
@@ -57,13 +59,27 @@ require(compositions)
 #' Note parallelization is rarely needed, even for trees of upwards of 40,000 leaves.
 #' @author Justin Silverman
 #' @export
-#' @importFrom compositions acomp
+#' @import compositions
 #' @seealso \code{\link{phylo2sbp}} \code{\link{calculate.blw}}
+#' @examples
+#' library(phyloseq)
+#' data(CSS)
+#' df <- t(otu_table(CSS))
+#' df <- df + 0.65   # add a small pseudocount
+#' tree <- phy_tree(CSS)
+#' df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts', ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
+#' df.philr[1:5,1:5]
 philr <- function(df, tree, sbp=NULL,
                             part.weights='uniform', ilr.weights='uniform',
-                            return.all=TRUE, n_cores=1, tip.boosted=NULL){
+                            return.all=FALSE, n_cores=1, tip.boosted=NULL){
+  # Check for Zero values in df
+  if (any(df == 0)){
+    stop('Zero values must be removed either through use of pseudocount, multiplicative replacement or other method.')
+  }
+
   # Create the sequential binary partition sign matrix
   if (is.null(sbp)){
+    print('Building Sequential Binary Partition from Tree...')
     sbp <-  phylo2sbp(tree, n_cores)
   } else {
     if ( (nrow(sbp)!=ncol(df)) | (ncol(sbp)!=ncol(df)-1) ){
@@ -96,25 +112,28 @@ philr <- function(df, tree, sbp=NULL,
   }
 
   # shift the dataset with respect to the new reference measure
-  df <- as.matrix(acomp(df) - acomp(p))
+  df <- as(acomp(df) - acomp(p), 'matrix')
 
   # Now create basis contrast matrix
+  print('Building Contrast Matrix...')
   V <- buildilrBasep(sbp, p)
 
   # Finally transform the df
+  print('Transforming the Data...')
   df.ilrp <- ilrp(df, p, V)
 
   # Now calculate ILR Weightings
   if (is.character(ilr.weights)){
+    print('Calculating ILR Weights...')
     if (ilr.weights=='blw'){
-      ilr.weights <- calculate.blw(tree, tip.boosted)
+      ilr.weights <- calculate.blw(tree, method='sum.children', tip.boosted)
     } else if (ilr.weights=='blw.sqrt'){
-      ilr.weights <- sqrt(calculate.blw(tree, tip.boosted))
+      ilr.weights <- sqrt(calculate.blw(tree, method='sum.children', tip.boosted))
     } else if (ilr.weights=='uniform'){
       ilr.weights <- rep(1, ncol(df.ilrp))
       names(ilr.weights) <- colnames(df.ilrp)
     } else if (ilr.weights=='mean.descendants'){
-        ilr.weights <- calculate.blw(tree, tip.boosted, method='mean.descendants')
+        ilr.weights <- calculate.blw(tree, method='mean.descendants', tip.boosted)
     }
   } else { # Validate input of ilr.weights
     if (!is.numeric(ilr.weights) | length(ilr.weights) != ncol(df.ilrp)){
@@ -129,9 +148,10 @@ philr <- function(df, tree, sbp=NULL,
   colnames(df.ilrp) <- tmp.names
 
   # Build return list
-  l.return = list()
-  l.return[['df.ilrp']] <- df.ilrp
+  if (return.all==FALSE)return(df.ilrp)
   if (return.all==TRUE){
+    l.return = list()
+    l.return[['df.ilrp']] <- df.ilrp
     l.return[['sbp']] <- sbp
     l.return[['p']] <- p      # the part weights
     l.return[['V']] <- V      # the contrast matrix

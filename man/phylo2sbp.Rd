@@ -26,4 +26,7 @@ Note parallelization is rarely needed, even for trees of upwards of 40,000 leave
 \author{
 Justin Silverman
 }
+\seealso{
+\code{\link{philr}}
+}
 

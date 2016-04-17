@@ -1,5 +1,3 @@
-require(compositions)
-
 # as given in equation 2
 gp.mean <- function(y,p){
   sp <- sum(p) # as given in text on page 4
@@ -7,6 +5,8 @@ gp.mean <- function(y,p){
 }
 
 # as given in equation 2
+
+# requires compositions clo
 clrp <- function(y,p){
   y <- clo(y)
   log(y/gp.mean(y,p))
@@ -34,7 +34,7 @@ distp <- function(y,p){
   tmp <- matrix(rep(NA,n),ncol = n, nrow = n)
   for (i in 1:n){
     for (j in 1:i) {
-      if (i!=j){ 
+      if (i!=j){
         tmp[i,j] <- distp.pair(y[i,],y[j,],p)
       }
     }
@@ -52,8 +52,8 @@ ilrp <- function(x,p,V){
 }
 
 
-# eq. 7 and templated from gsi.buildilrBase from 
-# compositions package 
+# eq. 7 and templated from gsi.buildilrBase from
+# compositions package
 buildilrBasep <- function(W,p){
     W = as.matrix(W)
     nc = ncol(W)

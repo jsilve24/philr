@@ -6,12 +6,13 @@
 \title{Data transformation and driver of PhILR.}
 \usage{
 philr(df, tree, sbp = NULL, part.weights = "uniform",
-  ilr.weights = "uniform", return.all = TRUE, n_cores = 1,
+  ilr.weights = "uniform", return.all = FALSE, n_cores = 1,
   tip.boosted = NULL)
 }
 \arguments{
 \item{df}{matrix of data to be transformed (samples are rows,
-compositional parts are columns)}
+compositional parts are columns) - zero must be dealt with either with pseudocount,
+multiplicative replacement, or another method.}
 
 \item{tree}{a \code{phylo} class tree object that is binary (see \code{\link[ape]{multi2di}})}
 
@@ -40,7 +41,8 @@ each child's mean distance to its descendent tips}
 
 \item{return.all}{return all computed parts (e.g., computed sign matrix(\code{sbp} ),
 part weightings (code{p}), ilr weightings (code{ilr.weights}), contrast matrix (\code{V}))
-as a list (default=\code{TRUE}) in addition to in addition to returning the transformed data (\code{df.ilrp}).
+as a list (default=\code{FALSE}) in addition to in addition to returning the transformed data (\code{df.ilrp}).
+If \code{return.all==FALSE} then only returns the transformed data (not in list format)
 If \code{FALSE} then just returns list containing \code{df.ilrp}.}
 
 \item{n_cores}{(Optional) integer specifying the number of cores to use. See Details.}
@@ -67,6 +69,15 @@ Note for both the reference measure (part weightings) and the ILR weightings, sp
 give the same results as not weighting at all.\cr \cr
 Parallelization is done through \code{parallel} package using type "FORK".
 Note parallelization is rarely needed, even for trees of upwards of 40,000 leaves.
+}
+\examples{
+library(phyloseq)
+data(CSS)
+df <- t(otu_table(CSS))
+df <- df + 0.65   # add a small pseudocount
+tree <- phy_tree(CSS)
+df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts', ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
+df.philr[1:5,1:5]
 }
 \author{
 Justin Silverman

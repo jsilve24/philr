@@ -1,49 +1,156 @@
+require(ggtree)
+require(ggplot2)
+require(dplyr)
+
+#' Converts wide format ILR transformed data to long format
+#'
+#' Converts wide format ILR transformed data (see \code{\link{philr}}) to long format
+#' for use in various plotting functions
+#' (e.g., \code{\link{plot_density_breakdown_wtree}})
+#'
+#' @param df PhILR transformed data in wide format (samples by balances) (see \code{\link{philr}})
+#' @param labels vector (of length \code{nrow(df)}) with labels to group samples by
+#' @return \code{df} in long format with columns
+#' \itemize{
+#' \item sample
+#' \item labels
+#' \item coord
+#' \item value
+#' }
+#' @export
+#' @importFrom tidyr gather
+#' @examples
+#' library(phyloseq)
+#' data(CSS)
+#' df <- t(otu_table(CSS))
+#' df <- df + 0.65   # add a small pseudocount
+#' tree <- phy_tree(CSS)
+#' df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts',
+#'                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
+#' head(convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
+convert_to_long <- function(df, labels){
+  #TODO: expand to labels can be an entire dataframe of metadata to add on
+  coord.names <- colnames(df)
+  df.long <- as.data.frame(df)
+  df.long$sample <- rownames(df.long)
+  df.long$labels <- labels
+  df.long <- gather(df.long, coord, value, -labels, -sample)
+  return(df.long)
+}
+
+
 # df - ilr transformed data in long data.frame format
 # coord.name - string (name of coordinate to plot)
 # tax - taxonomy table
-plot.sites.density <- function(df, coord.name, tax){
-    df.filter <- filter(df, coord==coord.name)
-    
-    p <- ggplot(df.filter, aes(x=value, fill=longsite)) +
-       geom_density() +
-       facet_grid(longsite~.,scales='free_y') +
-       xlab('') + ylab('') +
-       theme(strip.text.y=element_text(angle=0), axis.text.y=element_blank(), axis.ticks.y=element_blank(),
-       panel.grid.minor=element_blank()) +
-       guides(fill=FALSE) +
-       ggtitle(paste(coord.name, name.balance(tree, tax, coord.name, method='voting'),sep=': '))
-    return(p)
+
+#' Plot function to visualize a balance conditioned on a discrete variable
+#'
+#' 'Breaksdown' the distance between groups along a given balance.
+#'
+#' @param df PhILR transformed data (see \code{\link{philr}}) in long format
+#' (see \code{\link{convert_to_long}})
+#' @param coord.name the name of a balance/internal node on the tree (given as a string)
+#' @param name.balance logical (default: \code{FALSE}) of whether title should include output from
+#' call to \code{\link{name.balance}}
+#' @inheritParams name.balance
+#' @return plot created with ggplot2
+#' @details
+#' It is helpful to convert \code{df} to long format with the \code{\link{convert_to_long}} function
+#' as this function requires a specific format for the data. Specifically it requires a data frame with four
+#' columns \code{c('sample','labels', 'coord', 'value')}, where labels is the categorical variable to
+#' group the data based on and value is the value of a given sample along \code{coord}.
+#' @export
+#' @import ggplot2
+#' @examples
+#' library(phyloseq)
+#' data(CSS)
+#' df <- t(otu_table(CSS))
+#' df <- df + 0.65   # add a small pseudocount
+#' tree <- phy_tree(CSS)
+#' df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts',
+#'                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
+#' df.philr.long <- convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
+#' plot_density_breakdown(df.philr.long, 'n3', tax_table(CSS))
+plot_density_breakdown <- function(df, coord.name, tax, name.balance=TRUE){
+  df.filter <- subset(df, coord==coord.name)
+
+  p <- ggplot(df.filter, aes(x=value, fill=labels)) +
+    geom_density() +
+    facet_grid(labels~., scales='free_y') +
+    xlab('') + ylab('') +
+    theme(strip.text.y=element_text(angle=0), axis.text.y=element_blank(), axis.ticks.y=element_blank(),
+          panel.grid.minor=element_blank()) +
+    guides(fill=FALSE)
+  if (name.balance == TRUE){
+    p <- p + ggtitle(paste(coord.name, name.balance(tree, tax, coord.name, method='voting'),sep=': '))
+  } else{
+    p <- p + ggtitle(coord.name)
+  }
+  return(p)
 }
 
-# coord.name - string (name of coordinate to plot)
-# phylo - a phylogenetic tree of type phylo4 object
-# p.ggtree - for large trees, consider precomputing the tree skeleton
-#    and passing that in to save time (especially if you will be calling this plot function
-#    a number of times
-plot.tree.balance <- function(coord.name, phylo, p.ggtree=NULL){
+#' Plot a Balance
+#'
+#' Visualize a balance in place on a phylogenetic tree (numerator of balance is in green, denominator in blue)
+#'
+#' @inheritParams plot_density_breakdown
+#' @inheritParams name.balance
+#' @param p.ggtree a \code{ggtree} object, for very large trees (>10,000) consider
+#' precomputing the basic tree as part of the plot. Usually not necessesary
+#' @param ... pass other arguments to ggtree (e.g., \code{layout='fan'})
+#' @return plot created with ggtree
+#' @export
+#' @import ggtree
+#' @examples
+#' library(phyloseq)
+#' data(CSS)
+#' df <- t(otu_table(CSS))
+#' df <- df + 0.65   # add a small pseudocount
+#' tree <- phy_tree(CSS)
+#' df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts',
+#'                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
+#' df.philr.long <- convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
+#' plot_balance('n3', tree)
+#' plot_balance('n3', tree, layout='fan')
+plot_balance <- function(coord.name, tr, p.ggtree=NULL, ...){
   if (is.null(p.ggtree)){
-    p.ggtree <- ggtree(phylo)
+    p.ggtree <- ggtree(tr, ...)
   }
-  l.children <- get.ud.nodes(phylo, coord.name)
+  l.children <- get.ud.nodes(tr, coord.name, return.nn=TRUE)
   p <- p.ggtree +
     geom_hilight(l.children[['up']], fill='darkgreen', alpha=0.6) +
-    geom_hilight(l.children[['down']], fill='steelblue', alpha=0.6) 
-  #+ geom_tippoint(aes(color=Phylum))
+    geom_hilight(l.children[['down']], fill='steelblue', alpha=0.6)
   return(p)
 }
 
 
-# df - ilr transformed data in long data.frame format
-# coord - string (names of coordinate to plot)
-# tax - taxonomy table (e.g., output of tax_table() phyloseq)
-# phylo - a phylogenetic tree of type phylo4 object
-plot.sites.density.wtree <- function(df, coord.name, tax, phylo, ...){
-    # First make the density plot
-    p.density <- plot.sites.density(df, coord.name, tax)
-    
-    # Then create the tree plot
-    p.tree <- plot.tree.balance(coord.name, phylo, ...)
-    
-    # Then combine the plots and display
-    multiplot(p.tree, p.density,ncol=2, widths = c(.3,1))
+#' Plot Balance on Tree next to Density Breakdown
+#'
+#' Visualizes Density breakdown \code{\link{plot_density_breakdown}} and balance in place on a phylogenetic tree
+#' \code{\link{plot_balance}} (numerator of balance is in green, denominator in blue) next to each other.
+#'
+#' @inheritParams plot_balance
+#' @inheritParams plot_density_breakdown
+#' @return nothing returned, plot called with \code{multiplot}
+#' @export
+#' @importFrom ggtree multiplot
+#' @examples
+#' library(phyloseq)
+#' data(CSS)
+#' df <- t(otu_table(CSS))
+#' df <- df + 0.65   # add a small pseudocount
+#' tree <- phy_tree(CSS)
+#' df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts',
+#'                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
+#' df.philr.long <- convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
+#' plot_density_breakdown_wtree(df.philr.long, 'n7', tax_table(CSS), tree)
+plot_density_breakdown_wtree <- function(df, coord.name, tax, phylo, name.balance=TRUE, p.ggtree=NULL, ...){
+  # First make the density plot
+  p.density <- plot_density_breakdown(df, coord.name, tax, name.balance)
+
+  # Then create the tree plot
+  p.tree <- plot_balance(coord.name, phylo, p.ggtree, ...)
+
+  # Then combine the plots and display
+  multiplot(p.tree, p.density, ncol=2, widths = c(.3,1))
 }

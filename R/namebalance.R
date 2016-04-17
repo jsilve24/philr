@@ -1,5 +1,3 @@
-require(phangorn)
-
 ####### ACCESSOR FUNCTIONS FROM NAMES TO NUMBERS #########
 # Main accessor of node number through coordinate name
 c.to.nn <- function(tr, c){
@@ -30,8 +28,25 @@ nn.to.name <- function(tr, nn){
 #' (e.g., Phylum to the left of Genus).
 #' @param coord the name of a balance/internal node on the tree (given as a string)
 #' @param method currently only \code{'voting'} implemented. See Details.
-#' @param thresh threshold for assignment of taxonomy to a given part of a balance (see details).
-#' @details
+#' @param thresh threshold for assignment of taxonomy to a given part of a balance
+#' (must be greater than 0.5 if \code{method='voting'}; see details).
+#' @param show.votes whether voting results by taxonomic level should be shown for \code{coord}. Note: this is helpful when
+#' \code{name.balance} does not return a clear winner, as may be the case when a given \code{coord} represents more than one
+#' taxonomic lineage. votes are returned as a list indexed by \code{colnames(tax)} Options include:
+#' \describe{
+#' \item{\code{NULL}}{(default) only returns the combined consensus name of the balance}
+#' \item{\code{'up'}}{adds tallied votes for the 'up' node to the output list}
+#' \item{\code{'down'}}{adds tallied votes for the 'down'node to the output list}
+#' \item{\code{'self'}}{adds tallied votes for \code{coord} to the output list}
+#' }
+#' @return If \code{return.votes=NULL} returns a string of the form (ex. 'Genus_Bacteroides/Phylum_Firmicutes'). Otherwise returns
+#' a list with the above string as 'name', see Arguments for \code{show.votes} for other optional returned items.
+#' @details A bit of terminology:
+#' \describe{
+#' \item{coord}{this is the same as the names of the balances which should be the same as the names of the internal nodes of \code{tr}}
+#' \item{'up'}{this is the child node of \code{coord} that is represented in the numerator of the \code{coord} balance.}
+#' \item{'down'}{this is the child node of \code{coord} that is represented in the denominator of the \code{coord} balance}
+#' }
 #' The method \code{'voting'} assigns the name of the each part of a balance (e.g., numerator and denominator / each
 #' child of \code{coord}) as follows:
 #' \enumerate{
@@ -42,13 +57,22 @@ nn.to.name <- function(tr, nn){
 #' }
 #' @author Justin Silverman
 #' @export
+#' @importFrom ape Ntip dist.nodes
+#' @importFrom phangorn Children Descendants
 #' @seealso \code{\link{philr}}
-name.balance <- function(tr, tax, coord, method=c("voting"), thresh=0.95){
-  names <- c()
-  if ("voting" %in% method){
+#' @examples
+#' library(phyloseq)
+#' data(CSS)
+#' tr <- phy_tree(CSS)
+#' tax  <- tax_table(CSS)
+#' name.balance(tr, tax, 'n1')
+#' name.balance(tr, tax, 'n34', return.votes=c('up','down'))
+name.balance <- function(tr, tax, coord, method="voting", thresh=0.95, return.votes=NULL){
+  if (method=="voting"){
     # Get tips in 'up' and 'down' subtree
     l.tips <- get.ud.tips(tr,coord)
 
+    tax <- as(tax, "matrix")
     # Subset tax table based on above
     tax.up <- tax[l.tips[['up']],]
     tax.down <- tax[l.tips[['down']],]
@@ -58,25 +82,42 @@ name.balance <- function(tr, tax, coord, method=c("voting"), thresh=0.95){
     down.voted <- vote.annotation(tax.down, voting.threshold=thresh)
 
     # Combine into a string and output
-    name.voted <- paste(up.voted,"/",down.voted,sep="")
-    names <- c(names,name.voted)
-  }
+    name <- paste(up.voted,"/",down.voted,sep="")
 
-  # Can annotate with multiple methods and it will return a vector of names for that
-  # coordinate
-  return(names)
+    if (is.null(return.votes)){
+      return(name)
+    } else {
+      res <- list('name'=name)
+    }
+    if ('up' %in% return.votes){
+      res[['up.votes']] <- tally.votes(tax, l.tips[['up']])
+    }
+    if ('down' %in% return.votes){
+      res[['down.votes']] <- tally.votes(tax, l.tips[['down']])
+    }
+    if ('self' %in% return.votes){
+      res[['self.votes']] <- tally.votes(tax, unlist(l.tips))
+    }
+    return(res)
+  }
+  # In the future can extend to other methods of annotation/naming (other than just voting)
 }
 
 
 # Returns a list of the 'up' and 'down' subtree's root nodes
 # e.g., the child node of a given coordinate
 # nn is node number
-get.ud.nodes <- function(tr,coord){
+get.ud.nodes <- function(tr,coord, return.nn=FALSE){
   nn <- c.to.nn(tr, coord) # get node number
   l.nodes <- list()
   child <- Children(tr, nn)
-  l.nodes[['up']] <- nn.to.name(tr, child[1])
-  l.nodes[['down']] <- nn.to.name(tr, child[2])
+  if (return.nn==TRUE){
+    l.nodes[['up']] <- child[1]
+    l.nodes[['down']] <- child[2]
+  } else{
+    l.nodes[['up']] <- nn.to.name(tr, child[1])
+    l.nodes[['down']] <- nn.to.name(tr, child[2])
+  }
   return(l.nodes)
 }
 
@@ -92,13 +133,12 @@ get.ud.tips <- function(tr,coord){
   return(l.tips)
 }
 
-
-
 # Find most concerved
 # returns character
 # NA are not counted but held against the winner in voting
 # Candidate must have >= voting.threshold to be considered the winner
 vote.annotation <- function(tax, voting.threshold=0.95){
+  if (voting.threshold <= 0.5)stop('voting.threshold must be > 0.5 for unique winner')
   if (is(tax, "character")){ # e.g., is there only 1 voter here
     tmp.names <- names(tax)
     tax <- matrix(tax,nrow=1)
@@ -131,25 +171,14 @@ vote.annotation <- function(tax, voting.threshold=0.95){
 # print out a easy to read list showing whats present at each taxonomic level.
 # This is really to be used when You don't get a result you like with
 # vote.annotation()
-
-# Write this function to take function(tr, tax, coord, child=c('up','down'))
-# if child=NULL then output voting for coord rather than its child
-# Do this so its more in line with the call to name.balance.
-
-#' Tally 'votes' for taxonomic label of a coordinate/internal node of tree
 tally.votes <- function(tax,ids){
-    l.votes <- list()
-    # Assume its a matrix
-    nc <- ncol(tax) # the number of taxonomic ranks in the table
-    for (i in seq(nc,1)){
-        votes <- tax[ids,i]
-        votes <- votes[!is.na(votes)]
-        rank <- ifelse(!is.null(colnames(tax)), colnames(tax)[i],i)
-        l.votes[[rank]] <- table(votes)
-    }
-    return(l.votes)
+  l.votes <- list()
+  nc <- ncol(tax) # the number of taxonomic ranks in the table
+  for (i in seq(nc,1)){
+      votes <- tax[ids,i]
+      votes <- votes[!is.na(votes)]
+      rank <- ifelse(!is.null(colnames(tax)), colnames(tax)[i],i)
+      l.votes[[rank]] <- table(votes)
+  }
+  return(l.votes)
 }
-
-# May want to pair print.votes with something like
-# Assign identity, where the user can view the votes themselves
-# and choose how they would like to call it.

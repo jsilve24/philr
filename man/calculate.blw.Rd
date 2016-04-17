@@ -38,7 +38,17 @@ in that tip being unreasonably downweighted, as such this function automatically
 adds a small pseudocount to those tips with zero length (equal to the smallest non-zero)
 branch length on the tree.
 }
+\examples{
+library(phyloseq)
+data(CSS)
+tree <- phy_tree(CSS)
+calculate.blw(tree, method='sum.children')[1:10]
+calculate.blw(tree, method='mean.descendants')[1:10]
+}
 \author{
 Justin Silverman
+}
+\seealso{
+\code{\link{philr}}
 }
 
