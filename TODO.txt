@@ -1,0 +1,18 @@
+High:
+- Comment weighted ilr functions in 1 place - https://cran.r-project.org/web/packages/roxygen2/vignettes/rd.html
+- deal with dist_comp_utils.R either remove from package or clean it up. 
+- Figure out what license to release it under
+- - Document package - see https://cran.r-project.org/web/packages/roxygen2/vignettes/rd.html - Add this as a readme file to github. 
+
+Medium:
+- Prettify output of return.votes from name.balance 
+- allow plot_balance to handle situation when up or down is a tip
+- add phylum bar to plot_balance
+- calc.blw - add option to not add pseudocount
+- Figure out where to put data - or add comments / list how it was generated/preprocessed in its documentation. 
+- Deal with namespace collisions - can I do anything about these?
+- clean up namebalance.R and plot_utils.R - separate to multiple files. 
+
+LOW:
+make name.balance example more interesting (rather than n32)
+add recommends phylofactor 
