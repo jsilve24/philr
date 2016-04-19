@@ -81,6 +81,15 @@ blw.sum.children <- function(tree){
 }
 
 # Calculates the average distance from a node to its descendant tips
+
+#' Mean distance from internal nodes to descendant tips
+#'
+#' Calculates the mean distance from each internal node to its descendant tips
+#'
+#' @inheritParams calculate.blw
+#' @details
+#' This is a function used by \code{\link{calculate.blw}} when \code{method='mean.descendants'}.
+#' @export
 blw.mean.descendants <- function(tree){
     nTips =  nTips = Ntip(tree)
 

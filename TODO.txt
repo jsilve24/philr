@@ -16,3 +16,5 @@ Medium:
 LOW:
 make name.balance example more interesting (rather than n32)
 add recommends phylofactor 
+Update name.balance to take vector of coordinates to name
+update name.balance to throw meaningful error if named balance is not in tree. 

@@ -30,7 +30,7 @@ nn.to.name <- function(tr, nn){
 #' @param method currently only \code{'voting'} implemented. See Details.
 #' @param thresh threshold for assignment of taxonomy to a given part of a balance
 #' (must be greater than 0.5 if \code{method='voting'}; see details).
-#' @param show.votes whether voting results by taxonomic level should be shown for \code{coord}. Note: this is helpful when
+#' @param return.votes whether voting results by taxonomic level should be shown for \code{coord}. Note: this is helpful when
 #' \code{name.balance} does not return a clear winner, as may be the case when a given \code{coord} represents more than one
 #' taxonomic lineage. votes are returned as a list indexed by \code{colnames(tax)} Options include:
 #' \describe{

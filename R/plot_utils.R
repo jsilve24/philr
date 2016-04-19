@@ -110,8 +110,8 @@ plot_density_breakdown <- function(df, coord.name, tax, name.balance=TRUE){
 #' df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts',
 #'                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
 #' df.philr.long <- convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
-#' plot_balance('n3', tree)
-#' plot_balance('n3', tree, layout='fan')
+#' plot_balance('n7', tree)
+#' plot_balance('n7', tree, layout='fan')
 plot_balance <- function(coord.name, tr, p.ggtree=NULL, ...){
   if (is.null(p.ggtree)){
     p.ggtree <- ggtree(tr, ...)
