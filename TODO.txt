@@ -1,4 +1,5 @@
 High:
+- Switch to using ILR list object for computations, it should store the original and transformed data (optionally), the tree, the weights, etc… This also makes it compatible with phylofactor
 - Comment weighted ilr functions in 1 place - https://cran.r-project.org/web/packages/roxygen2/vignettes/rd.html
 - deal with dist_comp_utils.R either remove from package or clean it up. 
 - Figure out what license to release it under

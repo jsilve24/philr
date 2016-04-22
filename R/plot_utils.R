@@ -52,6 +52,7 @@ convert_to_long <- function(df, labels){
 #' @param coord.name the name of a balance/internal node on the tree (given as a string)
 #' @param name.balance logical (default: \code{FALSE}) of whether title should include output from
 #' call to \code{\link{name.balance}}
+#' @param tr (Optional) though needed if \code{name.balance=TRUE}
 #' @inheritParams name.balance
 #' @return plot created with ggplot2
 #' @details
@@ -71,7 +72,7 @@ convert_to_long <- function(df, labels){
 #'                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
 #' df.philr.long <- convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
 #' plot_density_breakdown(df.philr.long, 'n3', tax_table(CSS))
-plot_density_breakdown <- function(df, coord.name, tax, name.balance=TRUE){
+plot_density_breakdown <- function(df, coord.name, tr=NULL, tax, name.balance=TRUE){
   df.filter <- subset(df, coord==coord.name)
 
   p <- ggplot(df.filter, aes(x=value, fill=labels)) +
@@ -82,7 +83,7 @@ plot_density_breakdown <- function(df, coord.name, tax, name.balance=TRUE){
           panel.grid.minor=element_blank()) +
     guides(fill=FALSE)
   if (name.balance == TRUE){
-    p <- p + ggtitle(paste(coord.name, name.balance(tree, tax, coord.name, method='voting'),sep=': '))
+    p <- p + ggtitle(paste(coord.name, name.balance(tr, tax, coord.name, method='voting'),sep=': '))
   } else{
     p <- p + ggtitle(coord.name)
   }
@@ -144,12 +145,12 @@ plot_balance <- function(coord.name, tr, p.ggtree=NULL, ...){
 #'                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
 #' df.philr.long <- convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
 #' plot_density_breakdown_wtree(df.philr.long, 'n7', tax_table(CSS), tree)
-plot_density_breakdown_wtree <- function(df, coord.name, tax, phylo, name.balance=TRUE, p.ggtree=NULL, ...){
+plot_density_breakdown_wtree <- function(df, coord.name, tax, tr, name.balance=TRUE, p.ggtree=NULL, ...){
   # First make the density plot
-  p.density <- plot_density_breakdown(df, coord.name, tax, name.balance)
+  p.density <- plot_density_breakdown(df, coord.name, tr, tax, name.balance)
 
   # Then create the tree plot
-  p.tree <- plot_balance(coord.name, phylo, p.ggtree, ...)
+  p.tree <- plot_balance(coord.name, tr, p.ggtree, ...)
 
   # Then combine the plots and display
   multiplot(p.tree, p.density, ncol=2, widths = c(.3,1))
