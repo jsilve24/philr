@@ -8,7 +8,7 @@ gp.mean <- function(y,p){
 
 # requires compositions clo
 clrp <- function(y,p){
-  y <- clo(y)
+  y <- compositions::clo(y)
   log(y/gp.mean(y,p))
 }
 

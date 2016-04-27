@@ -29,8 +29,6 @@
 #' branch length on the tree.
 #' @author Justin Silverman
 #' @export
-#' @importFrom ape Ntip dist.nodes
-#' @importFrom phangorn Children Descendants
 #' @seealso \code{\link{philr}}
 #' @examples
 #' library(phyloseq)
@@ -39,7 +37,7 @@
 #' calculate.blw(tree, method='sum.children')[1:10]
 #' calculate.blw(tree, method='mean.descendants')[1:10]
 calculate.blw <- function(tree, method='sum.children', tip.boosted=NULL){
-    nTips = Ntip(tree)
+    nTips = ape::Ntip(tree)
 
     # Note that some of the terminal branches of the tree have zero length.
     # In these cases  I will replace those zero values with
@@ -70,8 +68,8 @@ calculate.blw <- function(tree, method='sum.children', tip.boosted=NULL){
 # Now calculate Branch Length Weighting as the sum of a nodes
 # child's weights
 blw.sum.children <- function(tree){
-    nTips =  nTips = Ntip(tree)
-    X <- Children(tree, (nTips+1):(nTips+tree$Nnode))
+    nTips =  nTips = ape::Ntip(tree)
+    X <- phangorn::Children(tree, (nTips+1):(nTips+tree$Nnode))
     fun <- function(x, el)sum(el[x])
     EL <- numeric(max(tree$edge))
     EL[tree$edge[,2]] <- tree$edge.length
@@ -91,11 +89,11 @@ blw.sum.children <- function(tree){
 #' This is a function used by \code{\link{calculate.blw}} when \code{method='mean.descendants'}.
 #' @export
 blw.mean.descendants <- function(tree){
-    nTips =  nTips = Ntip(tree)
+    nTips = ape::Ntip(tree)
 
-    dist <- dist.nodes(tree)
+    dist <- ape::dist.nodes(tree)
     node.numbers <- (nTips+1):(nTips+tree$Nnode)
-    chld.tips <- Descendants(tree, (nTips+1):(nTips+tree$Nnode), "tips")
+    chld.tips <- phangorn::Descendants(tree, (nTips+1):(nTips+tree$Nnode), "tips")
 
     # Turn dist into a nodes (rows) x tips (columns) matrix
     dist <- dist[node.numbers, 1:nTips]
@@ -110,8 +108,8 @@ blw.mean.descendants <- function(tree){
 
 # Calculates the sum of the children's nodes average distance to descendant tips
 blw.mean.descendants.sum.children <- function(tree){
-  nTips = Ntip(tree)
-  X <- Children(tree, (nTips+1):(nTips+tree$Nnode))
+  nTips = ape::Ntip(tree)
+  X <- phangorn::Children(tree, (nTips+1):(nTips+tree$Nnode))
 
   # Children's average branch length to tips (zero for tips)
   BMD <- blw.mean.descendants(tree)

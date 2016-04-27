@@ -4,7 +4,7 @@
 \alias{plot_density_breakdown_wtree}
 \title{Plot Balance on Tree next to Density Breakdown}
 \usage{
-plot_density_breakdown_wtree(df, coord.name, tax, phylo, name.balance = TRUE,
+plot_density_breakdown_wtree(df, coord.name, tax, tr, name.balance = TRUE,
   p.ggtree = NULL, ...)
 }
 \arguments{
@@ -16,6 +16,8 @@ plot_density_breakdown_wtree(df, coord.name, tax, phylo, name.balance = TRUE,
 \item{tax}{a matrix/data.frame of taxonomy, rownames should correspond to \code{tr$tip.labels}
 columns should be taxonomic levels (named) with increasing taxonomic resolution from left to right
 (e.g., Phylum to the left of Genus).}
+
+\item{tr}{(Optional) though needed if \code{name.balance=TRUE}}
 
 \item{name.balance}{logical (default: \code{FALSE}) of whether title should include output from
 call to \code{\link{name.balance}}}

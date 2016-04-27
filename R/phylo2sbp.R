@@ -23,14 +23,11 @@
 #' Note parallelization is rarely needed, even for trees of upwards of 40,000 leaves.
 #' @author Justin Silverman
 #' @export
-#' @importFrom parallel makeCluster parSapply stopCluster
-#' @importFrom phangorn Children Descendants
-#' @importFrom ape Ntip
 #' @seealso \code{\link{philr}}
 phylo2sbp <- function (tr, n_cores=1){
-    nTips <- Ntip(tr)
-    ch <- Children(tr, (nTips+1):(nTips+tr$Nnode))
-    ti <- Descendants(tr,(nTips+1):(nTips+tr$Nnode), 'tips')
+    nTips <- ape::Ntip(tr)
+    ch <- phangorn::Children(tr, (nTips+1):(nTips+tr$Nnode))
+    ti <- phangorn::Descendants(tr,(nTips+1):(nTips+tr$Nnode), 'tips')
 
     # Only look for children if its an internal node
     idx <- function(x,t){
@@ -46,9 +43,9 @@ phylo2sbp <- function (tr, n_cores=1){
     }
 
     if (n_cores > 1){
-        cl <- makeCluster(n_cores, type='FORK')
-        sbp <- parSapply(cl, ch, bpVec, ti)
-        stopCluster(cl)
+        cl <- parallel::makeCluster(n_cores, type='FORK')
+        sbp <- parallel::parSapply(cl, ch, bpVec, ti)
+        parallel::stopCluster(cl)
     } else {
         sbp <- sapply(ch, bpVec, ti)
     }

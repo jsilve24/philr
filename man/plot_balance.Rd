@@ -9,7 +9,7 @@ plot_balance(coord.name, tr, p.ggtree = NULL, ...)
 \arguments{
 \item{coord.name}{the name of a balance/internal node on the tree (given as a string)}
 
-\item{tr}{an object of class \code{'phylo'}}
+\item{tr}{(Optional) though needed if \code{name.balance=TRUE}}
 
 \item{p.ggtree}{a \code{ggtree} object, for very large trees (>10,000) consider
 precomputing the basic tree as part of the plot. Usually not necessesary}

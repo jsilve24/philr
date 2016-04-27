@@ -18,7 +18,6 @@ require(dplyr)
 #' \item value
 #' }
 #' @export
-#' @importFrom tidyr gather
 #' @examples
 #' library(phyloseq)
 #' data(CSS)
@@ -34,7 +33,7 @@ convert_to_long <- function(df, labels){
   df.long <- as.data.frame(df)
   df.long$sample <- rownames(df.long)
   df.long$labels <- labels
-  df.long <- gather(df.long, coord, value, -labels, -sample)
+  df.long <- tidyr::gather(df.long, coord, value, -labels, -sample)
   return(df.long)
 }
 
@@ -101,7 +100,6 @@ plot_density_breakdown <- function(df, coord.name, tr=NULL, tax, name.balance=TR
 #' @param ... pass other arguments to ggtree (e.g., \code{layout='fan'})
 #' @return plot created with ggtree
 #' @export
-#' @import ggtree
 #' @examples
 #' library(phyloseq)
 #' data(CSS)
@@ -115,12 +113,12 @@ plot_density_breakdown <- function(df, coord.name, tr=NULL, tax, name.balance=TR
 #' plot_balance('n7', tree, layout='fan')
 plot_balance <- function(coord.name, tr, p.ggtree=NULL, ...){
   if (is.null(p.ggtree)){
-    p.ggtree <- ggtree(tr, ...)
+    p.ggtree <- ggtree::ggtree(tr, ...)
   }
   l.children <- get.ud.nodes(tr, coord.name, return.nn=TRUE)
   p <- p.ggtree +
-    geom_hilight(l.children[['up']], fill='darkgreen', alpha=0.6) +
-    geom_hilight(l.children[['down']], fill='steelblue', alpha=0.6)
+    ggtree::geom_hilight(l.children[['up']], fill='darkgreen', alpha=0.6) +
+    ggtree::geom_hilight(l.children[['down']], fill='steelblue', alpha=0.6)
   return(p)
 }
 
@@ -134,7 +132,6 @@ plot_balance <- function(coord.name, tr, p.ggtree=NULL, ...){
 #' @inheritParams plot_density_breakdown
 #' @return nothing returned, plot called with \code{multiplot}
 #' @export
-#' @importFrom ggtree multiplot
 #' @examples
 #' library(phyloseq)
 #' data(CSS)
@@ -153,5 +150,5 @@ plot_density_breakdown_wtree <- function(df, coord.name, tax, tr, name.balance=T
   p.tree <- plot_balance(coord.name, tr, p.ggtree, ...)
 
   # Then combine the plots and display
-  multiplot(p.tree, p.density, ncol=2, widths = c(.3,1))
+  ggtree::multiplot(p.tree, p.density, ncol=2, widths = c(.3,1))
 }

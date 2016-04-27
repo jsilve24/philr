@@ -1,7 +1,7 @@
 ####### ACCESSOR FUNCTIONS FROM NAMES TO NUMBERS #########
 # Main accessor of node number through coordinate name
 c.to.nn <- function(tr, c){
-    return(which(tr$node.label==c)+Ntip(tr))
+    return(which(tr$node.label==c)+ape::Ntip(tr))
 }
 
 # Main accessor of node number through tip name
@@ -11,7 +11,7 @@ t.to.nn <- function(tr, t){
 
 # Main accessor of node or tip name thorugh node number
 nn.to.name <- function(tr, nn){
-    n <- Ntip(tr)
+    n <- ape::Ntip(tr)
     if (nn <= n)return(tr$tip.label[nn])
     return(tr$node.label[nn-n])
 }
@@ -57,8 +57,6 @@ nn.to.name <- function(tr, nn){
 #' }
 #' @author Justin Silverman
 #' @export
-#' @importFrom ape Ntip dist.nodes
-#' @importFrom phangorn Children Descendants
 #' @seealso \code{\link{philr}}
 #' @examples
 #' library(phyloseq)
@@ -110,7 +108,7 @@ name.balance <- function(tr, tax, coord, method="voting", thresh=0.95, return.vo
 get.ud.nodes <- function(tr,coord, return.nn=FALSE){
   nn <- c.to.nn(tr, coord) # get node number
   l.nodes <- list()
-  child <- Children(tr, nn)
+  child <- phangorn::Children(tr, nn)
   if (return.nn==TRUE){
     l.nodes[['up']] <- child[1]
     l.nodes[['down']] <- child[2]
@@ -126,10 +124,10 @@ get.ud.nodes <- function(tr,coord, return.nn=FALSE){
 # Each value is the ID of a tip
 get.ud.tips <- function(tr,coord){
   l.tips <- list()
-  child <- Children(tr, c.to.nn(tr,coord))
+  child <- phangorn::Children(tr, c.to.nn(tr,coord))
   if (length(child) > 2) stop("Tree is not soley binary.") #TODO: Bit of validation - consider better location
-  l.tips[['up']] <- sapply(unlist(Descendants(tr,child[1],type='tips')), function(x) nn.to.name(tr, x))
-  l.tips[['down']] <- sapply(unlist(Descendants(tr,child[2],type='tips')), function(x) nn.to.name(tr, x))
+  l.tips[['up']] <- sapply(unlist(phangorn::Descendants(tr,child[1],type='tips')), function(x) nn.to.name(tr, x))
+  l.tips[['down']] <- sapply(unlist(phangorn::Descendants(tr,child[2],type='tips')), function(x) nn.to.name(tr, x))
   return(l.tips)
 }
 

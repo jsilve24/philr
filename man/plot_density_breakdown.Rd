@@ -4,13 +4,15 @@
 \alias{plot_density_breakdown}
 \title{Plot function to visualize a balance conditioned on a discrete variable}
 \usage{
-plot_density_breakdown(df, coord.name, tax, name.balance = TRUE)
+plot_density_breakdown(df, coord.name, tr = NULL, tax, name.balance = TRUE)
 }
 \arguments{
 \item{df}{PhILR transformed data (see \code{\link{philr}}) in long format
 (see \code{\link{convert_to_long}})}
 
 \item{coord.name}{the name of a balance/internal node on the tree (given as a string)}
+
+\item{tr}{(Optional) though needed if \code{name.balance=TRUE}}
 
 \item{tax}{a matrix/data.frame of taxonomy, rownames should correspond to \code{tr$tip.labels}
 columns should be taxonomic levels (named) with increasing taxonomic resolution from left to right
