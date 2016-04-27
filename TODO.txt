@@ -13,6 +13,7 @@ Medium:
 - Figure out where to put data - or add comments / list how it was generated/preprocessed in its documentation.
 - Deal with namespace collisions - can I do anything about these?
 - clean up namebalance.R and plot_utils.R - separate to multiple files.
+- Allow return.votes to be specified at a given level (e.g., phylum)
 
 LOW:
 make name.balance example more interesting (rather than n32)

@@ -4,15 +4,18 @@
 \alias{plot_balance}
 \title{Plot a Balance}
 \usage{
-plot_balance(coord.name, tr, p.ggtree = NULL, ...)
+plot_balance(coord.name, tr, tax = NULL, color.tax = NULL, ...)
 }
 \arguments{
 \item{coord.name}{the name of a balance/internal node on the tree (given as a string)}
 
 \item{tr}{(Optional) though needed if \code{name.balance=TRUE}}
 
-\item{p.ggtree}{a \code{ggtree} object, for very large trees (>10,000) consider
-precomputing the basic tree as part of the plot. Usually not necessesary}
+\item{tax}{a matrix/data.frame of taxonomy, rownames should correspond to \code{tr$tip.labels}
+columns should be taxonomic levels (named) with increasing taxonomic resolution from left to right
+(e.g., Phylum to the left of Genus).}
+
+\item{color.tax}{taxonomic level (e.g., column name in \code{tax}) to color the tree by}
 
 \item{...}{pass other arguments to ggtree (e.g., \code{layout='fan'})}
 }
@@ -21,6 +24,9 @@ plot created with ggtree
 }
 \description{
 Visualize a balance in place on a phylogenetic tree (numerator of balance is in green, denominator in blue)
+}
+\details{
+\code{tax} only needs to be specified if \code{color.tax != NULL}
 }
 \examples{
 library(phyloseq)
@@ -33,5 +39,6 @@ df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts',
 df.philr.long <- convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
 plot_balance('n7', tree)
 plot_balance('n7', tree, layout='fan')
+plot_balance('n7', tree, tax=tax_table(CSS), color.tax='Phylum')
 }
 

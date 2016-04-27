@@ -95,9 +95,10 @@ plot_density_breakdown <- function(df, coord.name, tr=NULL, tax, name.balance=TR
 #'
 #' @inheritParams plot_density_breakdown
 #' @inheritParams name.balance
-#' @param p.ggtree a \code{ggtree} object, for very large trees (>10,000) consider
-#' precomputing the basic tree as part of the plot. Usually not necessesary
+#' @param color.tax taxonomic level (e.g., column name in \code{tax}) to color the tree by
 #' @param ... pass other arguments to ggtree (e.g., \code{layout='fan'})
+#' @details
+#' \code{tax} only needs to be specified if \code{color.tax != NULL}
 #' @return plot created with ggtree
 #' @export
 #' @examples
@@ -111,8 +112,13 @@ plot_density_breakdown <- function(df, coord.name, tr=NULL, tax, name.balance=TR
 #' df.philr.long <- convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
 #' plot_balance('n7', tree)
 #' plot_balance('n7', tree, layout='fan')
-plot_balance <- function(coord.name, tr, p.ggtree=NULL, ...){
-  if (is.null(p.ggtree)){
+#' plot_balance('n7', tree, tax=tax_table(CSS), color.tax='Phylum')
+plot_balance <- function(coord.name, tr, tax=NULL, color.tax=NULL, ...){
+  if (!is.null(color.tax)){
+    tax.info <- split(rownames(tax), c(tax[,color.tax]))
+    tr.tax <- ggtree::groupOTU(tr, tax.info)
+    p.ggtree <- ggtree::ggtree(tr.tax, aes(color=group))
+  } else {
     p.ggtree <- ggtree::ggtree(tr, ...)
   }
   l.children <- get.ud.nodes(tr, coord.name, return.nn=TRUE)
@@ -142,12 +148,13 @@ plot_balance <- function(coord.name, tr, p.ggtree=NULL, ...){
 #'                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
 #' df.philr.long <- convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
 #' plot_density_breakdown_wtree(df.philr.long, 'n7', tax_table(CSS), tree)
-plot_density_breakdown_wtree <- function(df, coord.name, tax, tr, name.balance=TRUE, p.ggtree=NULL, ...){
+#' plot_density_breakdown_wtree(df.philr.long, 'n7', tax_table(CSS), tree, color_tax='Phylum')
+plot_density_breakdown_wtree <- function(df, coord.name, tax, tr, name.balance=TRUE, color_tax=NULL, ...){
   # First make the density plot
   p.density <- plot_density_breakdown(df, coord.name, tr, tax, name.balance)
 
   # Then create the tree plot
-  p.tree <- plot_balance(coord.name, tr, p.ggtree, ...)
+  p.tree <- plot_balance(coord.name, tr, tax, color_tax, ...)
 
   # Then combine the plots and display
   ggtree::multiplot(p.tree, p.density, ncol=2, widths = c(.3,1))
