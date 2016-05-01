@@ -1,12 +1,3 @@
-#source(weightedILR.R)
-#source(phylo2sbp.R)
-require(compositions)
-
-
-# return.all - return all computed parts as a list (default=TRUE)
-# n_cores - number of cores to use (phylo2sbp can be parallelized using parLapply)
-# returns a list
-
 #' Data transformation and driver of PhILR.
 #'
 #' This is the main function for building the phylogenetic ILR basis, calculating the
