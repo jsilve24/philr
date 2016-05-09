@@ -58,12 +58,12 @@ weightings (of the parts and the ILR coordinates) and then transforming the data
 This is a utility function that pulls together a number of other functions
 in \code{philr}. The steps that are executed are as follows:
 \enumerate{
-\item First Create sbp (sign matrix) if not given
-\item Second Create parts weightings if not given
-\item Third Shift the dataset with respect to the new reference measure (e.g., part weightings)
-\item Fourth Create the basis contrast matrix from the sign matrix and the reference measure
-\item Fifth Transform the data based on the contrast matrix and the reference measure
-\item Sixth Calculate the specified ILR weightings and multiply each balance by the corresponding weighting
+\item Create sbp (sign matrix) if not given
+\item Create parts weightings if not given
+\item Shift the dataset with respect to the new reference measure (e.g., part weightings)
+\item Create the basis contrast matrix from the sign matrix and the reference measure
+\item Transform the data based on the contrast matrix and the reference measure
+\item Calculate the specified ILR weightings and multiply each balance by the corresponding weighting
 }
 Note for both the reference measure (part weightings) and the ILR weightings, specifying \code{‘uniform’} will
 give the same results as not weighting at all.\cr \cr

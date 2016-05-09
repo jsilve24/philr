@@ -14,6 +14,8 @@ Medium:
 - Deal with namespace collisions - can I do anything about these?
 - clean up namebalance.R and plot_utils.R - separate to multiple files.
 - Allow return.votes to be specified at a given level (e.g., phylum)
+- ? color_tax option in plot_density_breakdown_wtree ? - I don’t even know what that is
+- Make sure ggtree adds changes to gheatmap otherwise integrate new version of gheatmap into philr
 
 LOW:
 make name.balance example more interesting (rather than n32)

@@ -42,6 +42,6 @@ tree <- phy_tree(CSS)
 df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts',
                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
 df.philr.long <- convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
-plot_density_breakdown(df.philr.long, 'n3', tax_table(CSS))
+plot_density_breakdown(df.philr.long, 'n3', tree, tax_table(CSS))
 }
 

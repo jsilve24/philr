@@ -37,11 +37,6 @@ convert_to_long <- function(df, labels){
   return(df.long)
 }
 
-
-# df - ilr transformed data in long data.frame format
-# coord.name - string (name of coordinate to plot)
-# tax - taxonomy table
-
 #' Plot function to visualize a balance conditioned on a discrete variable
 #'
 #' 'Breaksdown' the distance between groups along a given balance.
@@ -70,8 +65,9 @@ convert_to_long <- function(df, labels){
 #' df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts',
 #'                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
 #' df.philr.long <- convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
-#' plot_density_breakdown(df.philr.long, 'n3', tax_table(CSS))
-plot_density_breakdown <- function(df, coord.name, tr=NULL, tax, name.balance=TRUE){
+#' plot_density_breakdown(df.philr.long, 'n3', tree, tax_table(CSS))
+plot_density_breakdown <- function(df, coord.name, tr=NULL, tax,
+                                   name.balance=TRUE){
   df.filter <- subset(df, coord==coord.name)
 
   p <- ggplot(df.filter, aes(x=value, fill=labels)) +
@@ -81,11 +77,15 @@ plot_density_breakdown <- function(df, coord.name, tr=NULL, tax, name.balance=TR
     theme(strip.text.y=element_text(angle=0), axis.text.y=element_blank(), axis.ticks.y=element_blank(),
           panel.grid.minor=element_blank()) +
     guides(fill=FALSE)
+
+
+
   if (name.balance == TRUE){
     p <- p + ggtitle(paste(coord.name, name.balance(tr, tax, coord.name, method='voting'),sep=': '))
   } else{
     p <- p + ggtitle(coord.name)
   }
+
   return(p)
 }
 
@@ -96,6 +96,9 @@ plot_density_breakdown <- function(df, coord.name, tr=NULL, tax, name.balance=TR
 #' @inheritParams plot_density_breakdown
 #' @inheritParams name.balance
 #' @param color.tax taxonomic level (e.g., column name in \code{tax}) to color the tree by
+#' @param plot.tax (Optional) Plot bar/heatmap of taxonomy labels at specified level
+#' (e.g., column name in \code{tax})
+#' @param color.tax (Optional) passed to gheatmap \code{color}
 #' @param ... pass other arguments to ggtree (e.g., \code{layout='fan'})
 #' @details
 #' \code{tax} only needs to be specified if \code{color.tax != NULL}
@@ -113,18 +116,29 @@ plot_density_breakdown <- function(df, coord.name, tr=NULL, tax, name.balance=TR
 #' plot_balance('n7', tree)
 #' plot_balance('n7', tree, layout='fan')
 #' plot_balance('n7', tree, tax=tax_table(CSS), color.tax='Phylum')
-plot_balance <- function(coord.name, tr, tax=NULL, color.tax=NULL, ...){
-  if (!is.null(color.tax)){
-    tax.info <- split(rownames(tax), c(tax[,color.tax]))
-    tr.tax <- ggtree::groupOTU(tr, tax.info)
-    p.ggtree <- ggtree::ggtree(tr.tax, aes(color=group))
-  } else {
+#'
+#' # plot with phyla bar/strip
+#' plot_balance('n7', tree, tax_table(CSS), plot.tax=c('Phylum'))
+plot_balance <- function(coord.name, tr, tax=NULL,
+                         plot.tax=NULL, color.tax=NULL, ...){
+  # if (!is.null(color.tax)){
+  #   tax.info <- split(rownames(tax), c(tax[,color.tax]))
+  #   tr.tax <- ggtree::groupOTU(tr, tax.info)
+  #   p.ggtree <- ggtree::ggtree(tr.tax, aes(color=group))
+  # } else {
     p.ggtree <- ggtree::ggtree(tr, ...)
-  }
+  # }
   l.children <- get.ud.nodes(tr, coord.name, return.nn=TRUE)
   p <- p.ggtree +
     ggtree::geom_hilight(l.children[['up']], fill='darkgreen', alpha=0.6) +
     ggtree::geom_hilight(l.children[['down']], fill='steelblue', alpha=0.6)
+
+  if (!is.null(plot.tax)){
+    t <- as.data.frame(tax[,plot.tax], stringsAsFactors=FALSE)
+    t[is.na(t)] <- '' # reformat Missing values for gheatmap
+    p <- ggtree::gheatmap(p, t, color=color.tax, colnames=FALSE, width=0.05)
+  }
+
   return(p)
 }
 
@@ -148,13 +162,15 @@ plot_balance <- function(coord.name, tr, tax=NULL, color.tax=NULL, ...){
 #'                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
 #' df.philr.long <- convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
 #' plot_density_breakdown_wtree(df.philr.long, 'n7', tax_table(CSS), tree)
-#' plot_density_breakdown_wtree(df.philr.long, 'n7', tax_table(CSS), tree, color_tax='Phylum')
-plot_density_breakdown_wtree <- function(df, coord.name, tax, tr, name.balance=TRUE, color_tax=NULL, ...){
+#' plot_density_breakdown_wtree(df.philr.long, 'n7', tax_table(CSS), tree, plot.tax='Phylum')
+plot_density_breakdown_wtree <- function(df, coord.name, tax, tr, name.balance=TRUE,
+                                         plot.tax=NULL, color.tax=NULL, ...){
   # First make the density plot
   p.density <- plot_density_breakdown(df, coord.name, tr, tax, name.balance)
 
   # Then create the tree plot
-  p.tree <- plot_balance(coord.name, tr, tax, color_tax, ...)
+  p.tree <- plot_balance(coord.name, tr, tax,
+                         plot.tax=plot.tax, color.tax=color.tax, ...)
 
   # Then combine the plots and display
   ggtree::multiplot(p.tree, p.density, ncol=2, widths = c(.3,1))

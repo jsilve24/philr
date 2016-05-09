@@ -4,7 +4,8 @@
 \alias{plot_balance}
 \title{Plot a Balance}
 \usage{
-plot_balance(coord.name, tr, tax = NULL, color.tax = NULL, ...)
+plot_balance(coord.name, tr, tax = NULL, plot.tax = NULL,
+  color.tax = NULL, ...)
 }
 \arguments{
 \item{coord.name}{the name of a balance/internal node on the tree (given as a string)}
@@ -15,9 +16,14 @@ plot_balance(coord.name, tr, tax = NULL, color.tax = NULL, ...)
 columns should be taxonomic levels (named) with increasing taxonomic resolution from left to right
 (e.g., Phylum to the left of Genus).}
 
+\item{plot.tax}{(Optional) Plot bar/heatmap of taxonomy labels at specified level
+(e.g., column name in \code{tax})}
+
 \item{color.tax}{taxonomic level (e.g., column name in \code{tax}) to color the tree by}
 
 \item{...}{pass other arguments to ggtree (e.g., \code{layout='fan'})}
+
+\item{color.tax}{(Optional) passed to gheatmap \code{color}}
 }
 \value{
 plot created with ggtree
@@ -40,5 +46,8 @@ df.philr.long <- convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
 plot_balance('n7', tree)
 plot_balance('n7', tree, layout='fan')
 plot_balance('n7', tree, tax=tax_table(CSS), color.tax='Phylum')
+
+# plot with phyla bar/strip
+plot_balance('n7', tree, tax_table(CSS), plot.tax=c('Phylum'))
 }
 

@@ -5,7 +5,7 @@
 \title{Plot Balance on Tree next to Density Breakdown}
 \usage{
 plot_density_breakdown_wtree(df, coord.name, tax, tr, name.balance = TRUE,
-  color_tax = NULL, ...)
+  plot.tax = NULL, color.tax = NULL, ...)
 }
 \arguments{
 \item{df}{PhILR transformed data (see \code{\link{philr}}) in long format
@@ -21,6 +21,11 @@ columns should be taxonomic levels (named) with increasing taxonomic resolution 
 
 \item{name.balance}{logical (default: \code{FALSE}) of whether title should include output from
 call to \code{\link{name.balance}}}
+
+\item{plot.tax}{(Optional) Plot bar/heatmap of taxonomy labels at specified level
+(e.g., column name in \code{tax})}
+
+\item{color.tax}{taxonomic level (e.g., column name in \code{tax}) to color the tree by}
 
 \item{...}{pass other arguments to ggtree (e.g., \code{layout='fan'})}
 }
@@ -41,6 +46,6 @@ df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts',
                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
 df.philr.long <- convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
 plot_density_breakdown_wtree(df.philr.long, 'n7', tax_table(CSS), tree)
-plot_density_breakdown_wtree(df.philr.long, 'n7', tax_table(CSS), tree, color_tax='Phylum')
+plot_density_breakdown_wtree(df.philr.long, 'n7', tax_table(CSS), tree, plot.tax='Phylum')
 }
 
