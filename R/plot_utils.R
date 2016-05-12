@@ -1,7 +1,3 @@
-require(ggtree)
-require(ggplot2)
-require(dplyr)
-
 #' Converts wide format ILR transformed data to long format
 #'
 #' Converts wide format ILR transformed data (see \code{\link{philr}}) to long format
@@ -121,25 +117,28 @@ plot_density_breakdown <- function(df, coord.name, tr=NULL, tax,
 #' plot_balance('n7', tree, tax_table(CSS), plot.tax=c('Phylum'))
 plot_balance <- function(coord.name, tr, tax=NULL,
                          plot.tax=NULL, color.tax=NULL, ...){
-  # if (!is.null(color.tax)){
-  #   tax.info <- split(rownames(tax), c(tax[,color.tax]))
-  #   tr.tax <- ggtree::groupOTU(tr, tax.info)
-  #   p.ggtree <- ggtree::ggtree(tr.tax, aes(color=group))
-  # } else {
-    p.ggtree <- ggtree::ggtree(tr, ...)
-  # }
-  l.children <- get.ud.nodes(tr, coord.name, return.nn=TRUE)
-  p <- p.ggtree +
-    ggtree::geom_hilight(l.children[['up']], fill='darkgreen', alpha=0.6) +
-    ggtree::geom_hilight(l.children[['down']], fill='steelblue', alpha=0.6)
+  ggtree.installed <- require('ggtree')
+  if (ggtree.installed){
+    # if (!is.null(color.tax)){
+    #   tax.info <- split(rownames(tax), c(tax[,color.tax]))
+    #   tr.tax <- ggtree::groupOTU(tr, tax.info)
+    #   p.ggtree <- ggtree::ggtree(tr.tax, aes(color=group))
+    # } else {
+      p.ggtree <- ggtree::ggtree(tr, ...)
+    # }
+    l.children <- get.ud.nodes(tr, coord.name, return.nn=TRUE)
+    p <- p.ggtree +
+      ggtree::geom_hilight(l.children[['up']], fill='darkgreen', alpha=0.6) +
+      ggtree::geom_hilight(l.children[['down']], fill='steelblue', alpha=0.6)
 
-  if (!is.null(plot.tax)){
-    t <- as.data.frame(tax[,plot.tax], stringsAsFactors=FALSE)
-    t[is.na(t)] <- '' # reformat Missing values for gheatmap
-    p <- ggtree::gheatmap(p, t, color=color.tax, colnames=FALSE, width=0.05)
+    if (!is.null(plot.tax)){
+      t <- as.data.frame(tax[,plot.tax], stringsAsFactors=FALSE)
+      t[is.na(t)] <- '' # reformat Missing values for gheatmap
+      p <- ggtree::gheatmap(p, t, color=color.tax, colnames=FALSE, width=0.05)
+    }
+
+    return(p)
   }
-
-  return(p)
 }
 
 
@@ -165,13 +164,16 @@ plot_balance <- function(coord.name, tr, tax=NULL,
 #' plot_density_breakdown_wtree(df.philr.long, 'n7', tax_table(CSS), tree, plot.tax='Phylum')
 plot_density_breakdown_wtree <- function(df, coord.name, tax, tr, name.balance=TRUE,
                                          plot.tax=NULL, color.tax=NULL, ...){
-  # First make the density plot
-  p.density <- plot_density_breakdown(df, coord.name, tr, tax, name.balance)
+  ggtree.installed <- require('ggtree')
+  if (ggtree.installed){
+    # First make the density plot
+    p.density <- plot_density_breakdown(df, coord.name, tr, tax, name.balance)
 
-  # Then create the tree plot
-  p.tree <- plot_balance(coord.name, tr, tax,
-                         plot.tax=plot.tax, color.tax=color.tax, ...)
+    # Then create the tree plot
+    p.tree <- plot_balance(coord.name, tr, tax,
+                           plot.tax=plot.tax, color.tax=color.tax, ...)
 
-  # Then combine the plots and display
-  ggtree::multiplot(p.tree, p.density, ncol=2, widths = c(.3,1))
+    # Then combine the plots and display
+    ggtree::multiplot(p.tree, p.density, ncol=2, widths = c(.3,1))
+  }
 }
