@@ -40,7 +40,7 @@ df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts', ilr.weights='blw.s
 
 From here we can now visualize some of the balances and how different bodysites look along them. Note for these plotting functions we first want to convert the transformed data into long format. 
 ```{r}
-df.philr.long <- convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
-plot_balance('n7', tree)
-plot_density_breakdown(df.philr.long, 'n7', tax_table(CSS))
+# df.philr.long <- convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
+# plot_balance('n7', tree)
+# plot_density_breakdown(df.philr.long, 'n7', tax_table(CSS))
 ```

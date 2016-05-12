@@ -16,6 +16,7 @@ Medium:
 - Allow return.votes to be specified at a given level (e.g., phylum)
 - ? color_tax option in plot_density_breakdown_wtree ? - I don’t even know what that is
 - Make sure ggtree adds changes to gheatmap otherwise integrate new version of gheatmap into philr
+- plot.taxa has trouble with missing values 
 
 LOW:
 make name.balance example more interesting (rather than n32)
