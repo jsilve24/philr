@@ -67,11 +67,10 @@ Parallelization is done through \code{parallel} package using type "FORK".
 Note parallelization is rarely needed, even for trees of upwards of 40,000 leaves.
 }
 \examples{
-library(phyloseq)
 data(CSS)
-df <- t(otu_table(CSS))
+df <- t(phyloseq::otu_table(CSS))
 df <- df + 0.65   # add a small pseudocount
-tree <- phy_tree(CSS)
+tree <- phyloseq::phy_tree(CSS)
 df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts', ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
 df.philr[1:5,1:5]
 }

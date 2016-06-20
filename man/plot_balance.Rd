@@ -35,11 +35,10 @@ Visualize a balance in place on a phylogenetic tree (numerator of balance is in 
 \code{tax} only needs to be specified if \code{color.tax != NULL}
 }
 \examples{
-library(phyloseq)
 data(CSS)
-df <- t(otu_table(CSS))
+df <- t(phyloseq::otu_table(CSS))
 df <- df + 0.65   # add a small pseudocount
-tree <- phy_tree(CSS)
+tree <- phyloseq::phy_tree(CSS)
 df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts',
                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
 df.philr.long <- convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))

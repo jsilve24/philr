@@ -11,22 +11,47 @@ check.zeroes <- function(x, target){
 
 # ACCESSOR FUNCTIONS FROM NAMES TO NUMBERS --------------------------------
 
+#' Convert between node/tip labels and integer node numbers
+#'
+#' Useful if you want to convert between node labels (\code{c}), tip labels
+#' (\code{t}) and the internal integer number that identifies that node
+#' (\code{nn}).
+#'
+#' @param tr object of type \code{phylo}
+#' @param x vector of numerics or characters
+#' @return vector
+#' @name name_nodenumber_conversion
+NULL
+
+#' @rdname name_nodenumber_conversion
+nn.to.name <- function(tr, x){
+  if(!is.numeric(x)) stop('node numbers must be numeric')
+  labels <- c(tr$tip.label, tr$node.label)
+  labels[x]
+}
+
+#' @rdname name_nodenumber_conversion
+name.to.nn <- function(tr, x){
+  if(!is.character(x)) stop('node/tip names (x) should be a character vector')
+  labels <- c(tr$tip.label, tr$node.label)
+  match(x, labels)
+}
+
 # Main accessor of node number through coordinate name
+# depricated - use name.to.nn
 c.to.nn <- function(tr, c){
+  .Deprecated('name.to.nn')
   return(which(tr$node.label==c)+ape::Ntip(tr))
 }
 
 # Main accessor of node number through tip name
+# depricated - use name.to.nn
 t.to.nn <- function(tr, t){
+  .Deprecated('name.to.nn')
   return(which(tr$tip.label==t))
 }
 
-# Main accessor of node or tip name thorugh node number
-nn.to.name <- function(tr, nn){
-  n <- ape::Ntip(tr)
-  if (nn <= n)return(tr$tip.label[nn])
-  return(tr$node.label[nn-n])
-}
+
 
 
 # Generally Helpful for Plotting ------------------------------------------
@@ -47,6 +72,7 @@ nn.to.name <- function(tr, nn){
 #' \item value
 #' }
 #' @export
+#' @importFrom tidyr gather
 #' @examples
 #' library(phyloseq)
 #' data(CSS)
@@ -62,6 +88,6 @@ convert_to_long <- function(df, labels){
   df.long <- as.data.frame(df)
   df.long$sample <- rownames(df.long)
   df.long$labels <- labels
-  df.long <- tidyr::gather(df.long, coord, value, -labels, -sample)
+  df.long <- gather(df.long, coord, value, -labels, -sample)
   return(df.long)
 }

@@ -1,13 +1,32 @@
+checking examples ... ERROR
+Running examples in ‘philr-Ex.R’ failed
+The error most likely occurred in:
+
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: calculate.blw
+> ### Title: Calculate Branch Length Weightings for ILR Coordinates
+> ### Aliases: calc.blw calculate.blw
+> 
+> ### ** Examples
+> 
+> data(CSS)
+> tree <- phyloseq::phy_tree(CSS)
+Error in loadNamespace(j <- i[[1L]], c(lib.loc, .libPaths()), versionCheck = vI[[j]]) : 
+  there is no package called ‘survival’
+Calls: :: ... tryCatch -> tryCatchList -> tryCatchOne -> <Anonymous>
+Execution halted
+
+
+
 High:
 - Switch to using ILR list object for computations, it should store the original and transformed data (optionally), the tree, the weights, etc… This also makes it compatible with phylofactor
-- export c.to.nn and t.to.nn 
-- t.to.nn - make which== a which %in% so its vectorized
 - add README.md for github
 - change philr behavior to use shiftp rather than acomp stuff. 
 - Finish Description of Package in Description file. 
 - Document package - see https://cran.r-project.org/web/packages/roxygen2/vignettes/rd.html - Add this as a readme file to github.
 
 CLEANUP PLOTTING: 
+- Ask ggtree if it would like to include geom_balance
 - Clean up plot_utils and replace some with geom_balance
 - allow plot_balance to handle situation when up or down is a tip
 - add phylum bar to plot_balance
@@ -34,3 +53,14 @@ Update name.balance to take vector of coordinates to name
 update name.balance to throw meaningful error if named balance is not in tree.
 remove tip.boosted
 - Create Cheatsheet
+
+
+From Check: 
+'library' or 'require' call to ‘ggtree’ in package code.
+  Please use :: or requireNamespace() instead.
+  See section 'Suggested packages' in the 'Writing R Extensions' manual.
+
+* checking Rd files ... WARNING
+CSS.Rd: non-ASCII input and no declared encoding
+philr.Rd: non-ASCII input and no declared encoding
+problems found in ‘CSS.Rd’, ‘philr.Rd’

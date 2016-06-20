@@ -87,7 +87,7 @@ name.balance <- function(tr, tax, coord, method="voting", thresh=0.95, return.vo
 # e.g., the child node of a given coordinate
 # nn is node number
 get.ud.nodes <- function(tr,coord, return.nn=FALSE){
-  nn <- c.to.nn(tr, coord) # get node number
+  nn <- name.to.nn(tr, coord) # get node number
   l.nodes <- list()
   child <- phangorn::Children(tr, nn)
   if (return.nn==TRUE){
@@ -105,7 +105,7 @@ get.ud.nodes <- function(tr,coord, return.nn=FALSE){
 # Each value is the ID of a tip
 get.ud.tips <- function(tr,coord){
   l.tips <- list()
-  child <- phangorn::Children(tr, c.to.nn(tr,coord))
+  child <- phangorn::Children(tr, name.to.nn(tr,coord))
   if (length(child) > 2) stop("Tree is not soley binary.") #TODO: Bit of validation - consider better location
   l.tips[['up']] <- sapply(unlist(phangorn::Descendants(tr,child[1],type='tips')), function(x) nn.to.name(tr, x))
   l.tips[['down']] <- sapply(unlist(phangorn::Descendants(tr,child[2],type='tips')), function(x) nn.to.name(tr, x))

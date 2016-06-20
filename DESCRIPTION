@@ -9,7 +9,7 @@ Description: *** With change reference measure / weighted parts
 License: GPL-3
 LazyData: TRUE
 RoxygenNote: 5.0.1
-Imports: ape, phangorn, compositions, dplyr, ggplot2
-Suggests: ggtree,
-    testthat
+Imports: ape, phangorn, compositions, dplyr, ggplot2, tidyr
+Depends: knitr
+Suggests: ggtree, testthat
 VignetteBuilder: knitr
