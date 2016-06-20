@@ -1,22 +1,3 @@
-####### ACCESSOR FUNCTIONS FROM NAMES TO NUMBERS #########
-# Main accessor of node number through coordinate name
-c.to.nn <- function(tr, c){
-    return(which(tr$node.label==c)+ape::Ntip(tr))
-}
-
-# Main accessor of node number through tip name
-t.to.nn <- function(tr, t){
-    return(which(tr$tip.label==t))
-}
-
-# Main accessor of node or tip name thorugh node number
-nn.to.name <- function(tr, nn){
-    n <- ape::Ntip(tr)
-    if (nn <= n)return(tr$tip.label[nn])
-    return(tr$node.label[nn-n])
-}
-
-
 #' Name a balance (coordinate) based on taxonomy
 #'
 #' For a given ILR balance (coordinate) assigns a name to the balance based on a

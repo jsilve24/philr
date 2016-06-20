@@ -1,38 +1,3 @@
-#' Converts wide format ILR transformed data to long format
-#'
-#' Converts wide format ILR transformed data (see \code{\link{philr}}) to long format
-#' for use in various plotting functions
-#' (e.g., \code{\link{plot_density_breakdown_wtree}})
-#'
-#' @param df PhILR transformed data in wide format (samples by balances) (see \code{\link{philr}})
-#' @param labels vector (of length \code{nrow(df)}) with labels to group samples by
-#' @return \code{df} in long format with columns
-#' \itemize{
-#' \item sample
-#' \item labels
-#' \item coord
-#' \item value
-#' }
-#' @export
-#' @examples
-#' library(phyloseq)
-#' data(CSS)
-#' df <- t(otu_table(CSS))
-#' df <- df + 0.65   # add a small pseudocount
-#' tree <- phy_tree(CSS)
-#' df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts',
-#'                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
-#' head(convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
-convert_to_long <- function(df, labels){
-  #TODO: expand to labels can be an entire dataframe of metadata to add on
-  coord.names <- colnames(df)
-  df.long <- as.data.frame(df)
-  df.long$sample <- rownames(df.long)
-  df.long$labels <- labels
-  df.long <- tidyr::gather(df.long, coord, value, -labels, -sample)
-  return(df.long)
-}
-
 #' Plot function to visualize a balance conditioned on a discrete variable
 #'
 #' 'Breaksdown' the distance between groups along a given balance.
