@@ -4,27 +4,28 @@ High:
 - t.to.nn - make which== a which %in% so its vectorized
 - add README.md for github
 - change philr behavior to use shiftp rather than acomp stuff. 
-- Clean up plot_utils and replace some with geom_balance
 - Finish Description of Package in Description file. 
 - Document package - see https://cran.r-project.org/web/packages/roxygen2/vignettes/rd.html - Add this as a readme file to github.
-- add option to suppress warning on calculate.blw 
+
+CLEANUP PLOTTING: 
+- Clean up plot_utils and replace some with geom_balance
+- allow plot_balance to handle situation when up or down is a tip
+- add phylum bar to plot_balance
+- clean up namebalance.R and plot_utils.R - separate to multiple files.
+- plot.taxa has trouble with missing values 
+- ? color_tax option in plot_density_breakdown_wtree ? - I don’t even know what that is
+- Make sure ggtree adds changes to gheatmap otherwise integrate new version of gheatmap into philr
 
 
 Medium:
 - Prettify output of return.votes from name.balance
-- allow plot_balance to handle situation when up or down is a tip
-- add phylum bar to plot_balance
 - calc.blw - add option to not add pseudocount
+- add option to suppress warning on calculate.blw 
 - Figure out where to put data - or add comments / list how it was generated/preprocessed in its documentation.
 - Deal with namespace collisions - can I do anything about these?
-- clean up namebalance.R and plot_utils.R - separate to multiple files.
 - Allow return.votes to be specified at a given level (e.g., phylum)
-- ? color_tax option in plot_density_breakdown_wtree ? - I don’t even know what that is
-- Make sure ggtree adds changes to gheatmap otherwise integrate new version of gheatmap into philr
-- plot.taxa has trouble with missing values 
-
 - add option for philr function to be silent and not print
--add citation information to package http://r-pkgs.had.co.nz/inst.html
+- add citation information to package http://r-pkgs.had.co.nz/inst.html
 
 LOW:
 make name.balance example more interesting (rather than n32)

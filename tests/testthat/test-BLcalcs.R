@@ -26,5 +26,4 @@ test_that('calculate.blw handles tip with edge length zero and gives correct res
   expect_equal(suppressWarnings(calculate.blw(tr, method='mean.descendants')),
                c(0.5649241, 0.3617965),
                tolerance=1e-7)
-
 })

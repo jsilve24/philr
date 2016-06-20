@@ -5,16 +5,13 @@
 \alias{calculate.blw}
 \title{Calculate Branch Length Weightings for ILR Coordinates}
 \usage{
-calculate.blw(tree, method = "sum.children", tip.boosted = NULL)
+calculate.blw(tree, method = "sum.children")
 }
 \arguments{
 \item{tree}{a \code{phylo} class tree object that is binary (see \code{\link[ape]{multi2di}})}
 
 \item{method}{options include: (default) \code{'sum.children'} and \code{'mean.descendants'}
 see details for more information.}
-
-\item{tip.boosted}{(Optional) numeric factor to multiply tip lengths by to 'boost their importance
-in the weightings. \emph{Note:} this feature is largely unstudied.}
 }
 \value{
 vector of weightings for ILR coordinates produced via specified method.
