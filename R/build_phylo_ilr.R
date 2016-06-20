@@ -62,7 +62,7 @@
 #' df.philr[1:5,1:5]
 philr <- function(df, tree, sbp=NULL,
                             part.weights='uniform', ilr.weights='uniform',
-                            return.all=FALSE, n_cores=1, tip.boosted=NULL){
+                            return.all=FALSE, n_cores=1){
   # Check for Zero values in df
   if (any(df == 0)){
     stop('Zero values must be removed either through use of pseudocount, multiplicative replacement or other method.')
@@ -117,14 +117,14 @@ philr <- function(df, tree, sbp=NULL,
   if (is.character(ilr.weights)){
     print('Calculating ILR Weights...')
     if (ilr.weights=='blw'){
-      ilr.weights <- calculate.blw(tree, method='sum.children', tip.boosted)
+      ilr.weights <- calculate.blw(tree, method='sum.children')
     } else if (ilr.weights=='blw.sqrt'){
-      ilr.weights <- sqrt(calculate.blw(tree, method='sum.children', tip.boosted))
+      ilr.weights <- sqrt(calculate.blw(tree, method='sum.children'))
     } else if (ilr.weights=='uniform'){
       ilr.weights <- rep(1, ncol(df.ilrp))
       names(ilr.weights) <- colnames(df.ilrp)
     } else if (ilr.weights=='mean.descendants'){
-        ilr.weights <- calculate.blw(tree, method='mean.descendants', tip.boosted)
+        ilr.weights <- calculate.blw(tree, method='mean.descendants')
     }
   } else { # Validate input of ilr.weights
     if (!is.numeric(ilr.weights) | length(ilr.weights) != ncol(df.ilrp)){

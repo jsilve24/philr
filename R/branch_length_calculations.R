@@ -1,7 +1,3 @@
-# tip.boosted - factor (numeric) to multiply tip lengths by to 'boost'
-#    their importance in the weighting scheme.
-#
-
 #' Calculate Branch Length Weightings for ILR Coordinates
 #'
 #' Calculates the weightings for ILR coordinates based on branch lenghts of
@@ -10,8 +6,6 @@
 #' @param tree a \code{phylo} class tree object that is binary (see \code{\link[ape]{multi2di}})
 #' @param method options include: (default) \code{'sum.children'} and \code{'mean.descendants'}
 #' see details for more information.
-#' @param tip.boosted (Optional) numeric factor to multiply tip lengths by to 'boost their importance
-#' in the weightings. \emph{Note:} this feature is largely unstudied.
 #' @return vector of weightings for ILR coordinates produced via specified method.
 #' @details
 #' ILR balances built from a binary partition of a phylogenetic tree
@@ -36,7 +30,7 @@
 #' tree <- phy_tree(CSS)
 #' calculate.blw(tree, method='sum.children')[1:10]
 #' calculate.blw(tree, method='mean.descendants')[1:10]
-calculate.blw <- function(tree, method='sum.children', tip.boosted=NULL){
+calculate.blw <- function(tree, method='sum.children'){
     nTips = ape::Ntip(tree)
 
     # Note that some of the terminal branches of the tree have zero length.
@@ -53,12 +47,6 @@ calculate.blw <- function(tree, method='sum.children', tip.boosted=NULL){
         'have been replaced with a small pseudocount of the minimum',
         'non-zero edge length (',min.nonzero,').',sep=" "))
         tree$edge.length[tip.edges.zero] <- min.nonzero
-    }
-
-    # If using tip.boosting
-    if (!is.null(tip.boosted)){
-        tips <- tree$edge[,2] <= nTips
-        tree$edge.length[tips] <- tree$edge.length[tips]*tip.boosted
     }
 
     if (method=='sum.children')return(blw.sum.children(tree))
