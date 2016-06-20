@@ -18,14 +18,6 @@ shiftp <- function(x, p){
   y
 }
 
-# check for zeros and throw error if present
-# target is just a name for the warning message
-check.zeroes <- function(x, target){
-  if (any(x==0)){
-    warning(paste(target, "should not contain zeroes"))
-  }
-}
-
 # as given in equation 2
 gp.mean <- function(y,p){
   sp <- sum(p) # as given in text on page 4

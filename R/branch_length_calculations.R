@@ -40,7 +40,7 @@ calculate.blw <- function(tree, method='sum.children', tip.boosted=NULL){
     nTips = ape::Ntip(tree)
 
     # Note that some of the terminal branches of the tree have zero length.
-    # In these cases  I will replace those zero values with
+    # In these cases will replace those zero values with
     # the minimum branch length (greater than 0) found in the tree.
     # Note this is like adding a psudocount to branch lengths.
     min.nonzero <- min(tree$edge.length[tree$edge.length>0 & !is.na(tree$edge.length)])
@@ -66,7 +66,7 @@ calculate.blw <- function(tree, method='sum.children', tip.boosted=NULL){
 }
 
 # Now calculate Branch Length Weighting as the sum of a nodes
-# child's weights
+#  two (direct) child's weights
 blw.sum.children <- function(tree){
     nTips =  nTips = ape::Ntip(tree)
     X <- phangorn::Children(tree, (nTips+1):(nTips+tree$Nnode))
@@ -78,17 +78,39 @@ blw.sum.children <- function(tree){
     res
 }
 
-# Calculates the average distance from a node to its descendant tips
+# Calculates the sum of the children's nodes average distance to descendant tips
+# Which should be a slightly better calculation than MDTT when we are
+# primarily interested in weightings on ILR coordinates
+blw.mean.descendants.sum.children <- function(tree){
+  nTips = ape::Ntip(tree)
+  X <- phangorn::Children(tree, (nTips+1):(nTips+tree$Nnode))
+
+  # Children's average branch length to tips (zero for tips)
+  BMD <- mean_dist_to_tips(tree)
+  names(BMD) <- NULL
+  BMD <- c(numeric(nTips), BMD)
+
+  # Each child's edge length
+  EL <- numeric(max(tree$edge))
+  EL[tree$edge[,2]] <- tree$edge.length
+
+  fun <- function(x, el, bmd)sum(el[x] + bmd[x])
+  res <- sapply(X, fun, EL, BMD)
+  if(!is.null(tree$node.label)) names(res) <- tree$node.label
+  return(res)
+}
 
 #' Mean distance from internal nodes to descendant tips
 #'
 #' Calculates the mean distance from each internal node to its descendant tips
 #'
 #' @inheritParams calculate.blw
-#' @details
-#' This is a function used by \code{\link{calculate.blw}} when \code{method='mean.descendants'}.
+#' @details This is a function used by \code{\link{calculate.blw}} when
+#'   \code{method='mean.descendants'}, there this function is called twice, once
+#'   for each direct child of a given internal node and the results are summed
+#'   for each node.
 #' @export
-blw.mean.descendants <- function(tree){
+mean_dist_to_tips <- function(tree){
     nTips = ape::Ntip(tree)
 
     dist <- ape::dist.nodes(tree)
@@ -106,22 +128,4 @@ blw.mean.descendants <- function(tree){
     return(res)
 }
 
-# Calculates the sum of the children's nodes average distance to descendant tips
-blw.mean.descendants.sum.children <- function(tree){
-  nTips = ape::Ntip(tree)
-  X <- phangorn::Children(tree, (nTips+1):(nTips+tree$Nnode))
 
-  # Children's average branch length to tips (zero for tips)
-  BMD <- blw.mean.descendants(tree)
-  names(BMD) <- NULL
-  BMD <- c(numeric(nTips), BMD)
-
-  # Each child's edge length
-  EL <- numeric(max(tree$edge))
-  EL[tree$edge[,2]] <- tree$edge.length
-
-  fun <- function(x, el, bmd)sum(el[x] + bmd[x])
-  res <- sapply(X, fun, EL, BMD)
-  if(!is.null(tree$node.label)) names(res) <- tree$node.label
-  return(res)
-}

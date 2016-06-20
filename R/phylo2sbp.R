@@ -1,14 +1,3 @@
-
-
-
-
-# function to convert a binary phylogenetic tree to a sequential binary
-# partition to be used to build ILR basis for compositional data
-# written by Justin Silverman 2015
-#
-# Version 3: Now with Parallelization, no recursion (about 5x faster than v1)
-# Version 4: Now using phangorn rather than phylobase (about 1000x faster than v3)
-
 #' Create Sequential Binary Partition from Phylogenetic Tree
 #'
 #' This function converts a binary phylogenetic tree to sequential binary
