@@ -6,7 +6,7 @@ Author: Justin Silverman
 Date: 2016-02-28
 Maintainer: Justin Silverman <justin.silverman@duke.edu>
 Description: *** With change reference measure / weighted parts
-License: What license is it under?
+License: GPL-3
 LazyData: TRUE
 RoxygenNote: 5.0.1
 Imports: ape, phangorn, compositions, dplyr, ggplot2
