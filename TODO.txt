@@ -1,9 +1,12 @@
 High:
 - Switch to using ILR list object for computations, it should store the original and transformed data (optionally), the tree, the weights, etc… This also makes it compatible with phylofactor
-- Comment weighted ilr functions in 1 place - https://cran.r-project.org/web/packages/roxygen2/vignettes/rd.html
-- deal with dist_comp_utils.R either remove from package or clean it up.
 - Figure out what license to release it under
-- - Document package - see https://cran.r-project.org/web/packages/roxygen2/vignettes/rd.html - Add this as a readme file to github.
+- - Document package - see https://cran.r-project.org/web/packages/roxygen2/vignettes/rd.html - Add this as a readme file to github. 
+- export c.to.nn and t.to.nn 
+- t.to.nn - make which== a which %in% so its vectorized
+
+- change philr behavior to use shiftp rather than acomp stuff. 
+- Clean up plot_utils and replace some with geom_balance
 
 Medium:
 - Prettify output of return.votes from name.balance
@@ -18,9 +21,13 @@ Medium:
 - Make sure ggtree adds changes to gheatmap otherwise integrate new version of gheatmap into philr
 - plot.taxa has trouble with missing values 
 
+- add option for philr function to be silent and not print
+-add citation information to package http://r-pkgs.had.co.nz/inst.html
+
 LOW:
 make name.balance example more interesting (rather than n32)
 add recommends phylofactor
 Update name.balance to take vector of coordinates to name
 update name.balance to throw meaningful error if named balance is not in tree.
 remove tip.boosted
+- Create Cheatsheet

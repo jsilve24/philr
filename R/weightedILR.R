@@ -1,15 +1,35 @@
+#' Shift data to origin given by p
+#'
+#' Shift must be applied before transformation
+#'
+#' @param x closed compositional data matrix (or vector)
+#' @param p weights (should not be closed)
+#' @return shifted data matrix \code{y} (no closure is applied) rows are
+#'   samples, columns are parts
+#' @author Justin Silverman & J. J. Egozcue
+#' @references J. J. Egozcue, V. Pawlowsky-Glahn. \emph{Changing the Reference
+#'   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
+#'   Statistics, 2016
+#' @export
+shiftp <- function(x, p){
+  check.zeroes(p, "weights (p)")
+  if(is.vector(x)) x <- matrix(x, nrow=1)
+  y <- x / outer(rep(1,nrow(x)), p)
+  y
+}
+
+# check for zeros and throw error if present
+# target is just a name for the warning message
+check.zeroes <- function(x, target){
+  if (any(x==0)){
+    warning(paste(target, "should not contain zeroes"))
+  }
+}
+
 # as given in equation 2
 gp.mean <- function(y,p){
   sp <- sum(p) # as given in text on page 4
   exp(1/sp*rowSums(log(y)%*%diag(p)))
-}
-
-# as given in equation 2
-
-# requires compositions clo
-clrp <- function(y,p){
-  y <- compositions::clo(y)
-  log(y/gp.mean(y,p))
 }
 
 #equation 6
@@ -42,19 +62,64 @@ distp <- function(y,p){
   return(as.dist(tmp))
 }
 
-##### Weighted ILR Transform #####
-# eq. 9
-# x is the dataset
-# p is the weightings
-# V is the contrast matrix
-ilrp <- function(x,p,V){
-  clrp(x,p)%*%diag(p)%*%V
+#' Weighted CLR Transform
+#'
+#' @param y shifted data matrix (e.g., output of \link{shiftp})
+#' @param p weights (should not be closed)
+#' @return matrix
+#' @export
+#'
+#' @author Justin Silverman
+#' @references J. J. Egozcue, V. Pawlowsky-Glahn. \emph{Changing the Reference
+#'   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
+#'   Statistics, 2016
+clrp <- function(y,p){
+  check.zeroes(p, 'weights(p)')
+  check.zeroes(y, 'dataset')
+
+  if(is.vector(y)) y <- matrix(y, nrow=1)
+  # TODO: Requires compositions::clo
+  y <- compositions::clo(y)
+  log(y/gp.mean(y,p))
+}
+
+#' Weighted ILR Transform
+#'
+#' Calculated using weighted CLR transform (\link{clrp})
+#'
+#' @param y shifted data matrix (e.g., output of \link{shiftp})
+#' @param p weights (should not be closed)
+#' @param V weighted contrast matrix (e.g., output of \link{buildilrBasep})
+#'
+#' @return matrix
+#' @export
+#' @author Justin Silverman
+#' @references J. J. Egozcue, V. Pawlowsky-Glahn. \emph{Changing the Reference
+#'   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
+#'   Statistics, 2016
+ilrp <- function(y,p,V){
+  check.zeroes(p, 'weights(p)')
+  check.zeroes(y, 'dataset')
+
+  # if(is.vector(y)) y <- matrix(y, nrow=1) # run in clrp anyways
+  clrp(y,p)%*%diag(p)%*%V
 }
 
 
-# eq. 7 and templated from gsi.buildilrBase from
-# compositions package
+#' Weighted ILR Contrast Matrix
+#'
+#' @param W sequantial binary partition matrix (e.g., signary matrix; output of
+#'   \link{phylo2sbp})
+#' @param p weights (should not be closed)
+#' @return matrix
+#' @export
+#' @author Justin Silverman (adapted from \link[compositions]{gsi.buildilrBase})
+#' @references J. J. Egozcue, V. Pawlowsky-Glahn. \emph{Changing the Reference
+#'   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
+#'   Statistics, 2016
 buildilrBasep <- function(W,p){
+    check.zeroes(p, 'weights (p)')
+
     W = as.matrix(W)
     nc = ncol(W)
     D = nrow(W)

@@ -1,7 +1,7 @@
 Package: philr
 Type: Package
 Title: Phylogenetic paritioning based ILR transform for metagenomics data
-Version: 0.1.2
+Version: 0.1.3
 Author: Justin Silverman
 Date: 2016-02-28
 Maintainer: Justin Silverman <justin.silverman@duke.edu>
@@ -10,5 +10,6 @@ License: What license is it under?
 LazyData: TRUE
 RoxygenNote: 5.0.1
 Imports: ape, phangorn, compositions, dplyr, ggplot2
-Suggests: ggtree
+Suggests: ggtree,
+    testthat
 VignetteBuilder: knitr
