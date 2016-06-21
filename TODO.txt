@@ -1,29 +1,11 @@
-checking examples ... ERROR
-Running examples in ‘philr-Ex.R’ failed
-The error most likely occurred in:
-
-> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
-> ### Name: calculate.blw
-> ### Title: Calculate Branch Length Weightings for ILR Coordinates
-> ### Aliases: calc.blw calculate.blw
-> 
-> ### ** Examples
-> 
-> data(CSS)
-> tree <- phyloseq::phy_tree(CSS)
-Error in loadNamespace(j <- i[[1L]], c(lib.loc, .libPaths()), versionCheck = vI[[j]]) : 
-  there is no package called ‘survival’
-Calls: :: ... tryCatch -> tryCatchList -> tryCatchOne -> <Anonymous>
-Execution halted
-
-
-
 High:
 - Switch to using ILR list object for computations, it should store the original and transformed data (optionally), the tree, the weights, etc… This also makes it compatible with phylofactor
 - add README.md for github
 - change philr behavior to use shiftp rather than acomp stuff. 
 - Finish Description of Package in Description file. 
 - Document package - see https://cran.r-project.org/web/packages/roxygen2/vignettes/rd.html - Add this as a readme file to github.
+- Can I include CSS in my package - the filtering and stuff was done by dan knights? 
+- make sure dataset is documented in philr and not just CSS - or make sure philr imports CSS and remove dataset from philr (probably better). 
 
 CLEANUP PLOTTING: 
 - Ask ggtree if it would like to include geom_balance
@@ -38,13 +20,14 @@ CLEANUP PLOTTING:
 
 Medium:
 - Prettify output of return.votes from name.balance
-- calc.blw - add option to not add pseudocount
+- calc.blw - add option to not add pseudocount  
 - add option to suppress warning on calculate.blw 
 - Figure out where to put data - or add comments / list how it was generated/preprocessed in its documentation.
 - Deal with namespace collisions - can I do anything about these?
 - Allow return.votes to be specified at a given level (e.g., phylum)
 - add option for philr function to be silent and not print
 - add citation information to package http://r-pkgs.had.co.nz/inst.html
+- convert to long :  #TODO: expand to labels can be an entire dataframe of metadata to add on
 
 LOW:
 make name.balance example more interesting (rather than n32)

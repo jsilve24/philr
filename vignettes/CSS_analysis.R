@@ -1,11 +1,10 @@
 ## ------------------------------------------------------------------------
 library(philr)
-library(phyloseq)
 
 ## ------------------------------------------------------------------------
 data(CSS)
-df <- t(otu_table(CSS)) + 1
-tree <- phy_tree(CSS)
+df <- CSS$otu.table + 1
+tree <- CSS$phy.tree
 
 ## ------------------------------------------------------------------------
 df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts', ilr.weights='blw.sqrt')

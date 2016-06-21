@@ -37,7 +37,7 @@ branch length on the tree.
 }
 \examples{
 data(CSS)
-tree <- phyloseq::phy_tree(CSS)
+tree <- CSS$phy.tree
 calculate.blw(tree, method='sum.children')[1:10]
 calculate.blw(tree, method='mean.descendants')[1:10]
 }

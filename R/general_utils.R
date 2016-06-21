@@ -74,20 +74,33 @@ t.to.nn <- function(tr, t){
 #' @export
 #' @importFrom tidyr gather
 #' @examples
-#' library(phyloseq)
 #' data(CSS)
-#' df <- t(otu_table(CSS))
-#' df <- df + 0.65   # add a small pseudocount
-#' tree <- phy_tree(CSS)
+#' df <- CSS$otu.table + 0.65   # add a small pseudocount
+#' tree <- CSS$phy.tree
 #' df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts',
 #'                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
-#' head(convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
+#' head(convert_to_long(df.philr, CSS$sample.data$BODY_SITE))
 convert_to_long <- function(df, labels){
-  #TODO: expand to labels can be an entire dataframe of metadata to add on
   coord.names <- colnames(df)
   df.long <- as.data.frame(df)
   df.long$sample <- rownames(df.long)
   df.long$labels <- labels
   df.long <- gather(df.long, coord, value, -labels, -sample)
   return(df.long)
+}
+
+
+# Helpful for generating examples -----------------------------------------
+
+#' Generate random tree with named internal nodes
+#'
+#' Internal nodes are named by numbering and adding the prefix 'n'. This
+#' function is laregly for use in examples throughout this package.
+#'
+#' @inheritParams ape::rtree
+#'
+#' @return An object of class "phylo"
+named_rtree <- function(n){
+  tr <- rtree(n)
+  makeNodeLabel(tr, 'number', 'n')
 }

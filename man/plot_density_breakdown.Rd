@@ -35,12 +35,11 @@ group the data based on and value is the value of a given sample along \code{coo
 }
 \examples{
 data(CSS)
-df <- t(phyloseq::otu_table(CSS))
-df <- df + 0.65   # add a small pseudocount
-tree <- phyloseq::phy_tree(CSS)
+df <- CSS$otu.table + 0.65   # add a small pseudocount
+tree <- CSS$phy.tree
 df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts',
                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
-df.philr.long <- convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
-plot_density_breakdown(df.philr.long, 'n3', tree, tax_table(CSS))
+df.philr.long <- convert_to_long(df.philr, CSS$sample.data$BODY_SITE)
+plot_density_breakdown(df.philr.long, 'n3', tree, CSS$tax.table)
 }
 

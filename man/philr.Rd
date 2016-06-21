@@ -68,10 +68,10 @@ Note parallelization is rarely needed, even for trees of upwards of 40,000 leave
 }
 \examples{
 data(CSS)
-df <- t(phyloseq::otu_table(CSS))
-df <- df + 0.65   # add a small pseudocount
-tree <- phyloseq::phy_tree(CSS)
-df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts', ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
+df <- CSS$otu.table + 0.65   # add a small pseudocount
+tree <- CSS$phy.tree
+df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts',
+                  ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
 df.philr[1:5,1:5]
 }
 \author{

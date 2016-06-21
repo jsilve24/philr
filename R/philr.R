@@ -53,11 +53,9 @@
 #' @import compositions
 #' @seealso \code{\link{phylo2sbp}} \code{\link{calculate.blw}}
 #' @examples
-#' library(phyloseq)
 #' data(CSS)
-#' df <- t(otu_table(CSS))
-#' df <- df + 0.65   # add a small pseudocount
-#' tree <- phy_tree(CSS)
+#' df <- CSS$otu.table + 0.65   # add a small pseudocount
+#' tree <- CSS$phy.tree
 #' df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts',
 #'                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
 #' df.philr[1:5,1:5]

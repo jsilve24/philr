@@ -38,13 +38,12 @@ Visualizes Density breakdown \code{\link{plot_density_breakdown}} and balance in
 }
 \examples{
 data(CSS)
-df <- t(phyloseq::otu_table(CSS))
-df <- df + 0.65   # add a small pseudocount
-tree <- phyloseq::phy_tree(CSS)
+df <- CSS$otu.table + 0.65   # add a small pseudocount
+tree <- CSS$phy.tree
 df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts',
                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
-df.philr.long <- convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
-plot_density_breakdown_wtree(df.philr.long, 'n7', tax_table(CSS), tree)
-plot_density_breakdown_wtree(df.philr.long, 'n7', tax_table(CSS), tree, plot.tax='Phylum')
+df.philr.long <- convert_to_long(df.philr, CSS$sample.data$BODY_SITE)
+plot_density_breakdown_wtree(df.philr.long, 'n7', CSS$tax.table, tree)
+plot_density_breakdown_wtree(df.philr.long, 'n7', CSS$tax.table, tree, plot.tax='Phylum')
 }
 

@@ -18,15 +18,13 @@
 #' @export
 #' @import ggplot2
 #' @examples
-#' library(phyloseq)
 #' data(CSS)
-#' df <- t(otu_table(CSS))
-#' df <- df + 0.65   # add a small pseudocount
-#' tree <- phy_tree(CSS)
+#' df <- CSS$otu.table + 0.65   # add a small pseudocount
+#' tree <- CSS$phy.tree
 #' df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts',
 #'                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
-#' df.philr.long <- convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
-#' plot_density_breakdown(df.philr.long, 'n3', tree, tax_table(CSS))
+#' df.philr.long <- convert_to_long(df.philr, CSS$sample.data$BODY_SITE)
+#' plot_density_breakdown(df.philr.long, 'n3', tree, CSS$tax.table)
 plot_density_breakdown <- function(df, coord.name, tr=NULL, tax,
                                    name.balance=TRUE){
   df.filter <- subset(df, coord==coord.name)
@@ -66,20 +64,18 @@ plot_density_breakdown <- function(df, coord.name, tr=NULL, tax,
 #' @return plot created with ggtree
 #' @export
 #' @examples
-#' library(phyloseq)
 #' data(CSS)
-#' df <- t(otu_table(CSS))
-#' df <- df + 0.65   # add a small pseudocount
-#' tree <- phy_tree(CSS)
+#' df <- CSS$otu.table + 0.65   # add a small pseudocount
+#' tree <- CSS$phy.tree
 #' df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts',
 #'                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
-#' df.philr.long <- convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
+#' df.philr.long <- convert_to_long(df.philr, CSS$sample.data$BODY_SITE)
 #' plot_balance('n7', tree)
 #' plot_balance('n7', tree, layout='fan')
-#' plot_balance('n7', tree, tax=tax_table(CSS), color.tax='Phylum')
+#' plot_balance('n7', tree, tax=CSS$tax.table, color.tax='Phylum')
 #'
 #' # plot with phyla bar/strip
-#' plot_balance('n7', tree, tax_table(CSS), plot.tax=c('Phylum'))
+#' plot_balance('n7', tree, CSS$tax.table, plot.tax=c('Phylum'))
 plot_balance <- function(coord.name, tr, tax=NULL,
                          plot.tax=NULL, color.tax=NULL, ...){
   ggtree.installed <- require('ggtree')
@@ -117,16 +113,14 @@ plot_balance <- function(coord.name, tr, tax=NULL,
 #' @return nothing returned, plot called with \code{multiplot}
 #' @export
 #' @examples
-#' library(phyloseq)
 #' data(CSS)
-#' df <- t(otu_table(CSS))
-#' df <- df + 0.65   # add a small pseudocount
-#' tree <- phy_tree(CSS)
+#' df <- CSS$otu.table + 0.65   # add a small pseudocount
+#' tree <- CSS$phy.tree
 #' df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts',
 #'                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
-#' df.philr.long <- convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
-#' plot_density_breakdown_wtree(df.philr.long, 'n7', tax_table(CSS), tree)
-#' plot_density_breakdown_wtree(df.philr.long, 'n7', tax_table(CSS), tree, plot.tax='Phylum')
+#' df.philr.long <- convert_to_long(df.philr, CSS$sample.data$BODY_SITE)
+#' plot_density_breakdown_wtree(df.philr.long, 'n7', CSS$tax.table, tree)
+#' plot_density_breakdown_wtree(df.philr.long, 'n7', CSS$tax.table, tree, plot.tax='Phylum')
 plot_density_breakdown_wtree <- function(df, coord.name, tax, tr, name.balance=TRUE,
                                          plot.tax=NULL, color.tax=NULL, ...){
   ggtree.installed <- require('ggtree')

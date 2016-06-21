@@ -40,10 +40,9 @@
 #' @export
 #' @seealso \code{\link{philr}}
 #' @examples
-#' library(phyloseq)
 #' data(CSS)
-#' tr <- phy_tree(CSS)
-#' tax  <- tax_table(CSS)
+#' tr <- CSS$phy.tree
+#' tax  <- CSS$tax.table
 #' name.balance(tr, tax, 'n1')
 #' name.balance(tr, tax, 'n34', return.votes=c('up','down'))
 name.balance <- function(tr, tax, coord, method="voting", thresh=0.95, return.votes=NULL){

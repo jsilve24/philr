@@ -21,15 +21,14 @@ Specifically it has had the following preprocessing:
 
 ```{r}
 library(philr)
-library(phyloseq)
 ```
 
 
 Now we load the stored data and add a small pseudocount of 1 to deal with zero values. 
 ```{r}
 data(CSS)
-df <- t(otu_table(CSS)) + 1
-tree <- phy_tree(CSS)
+df <- CSS$otu.table + 1
+tree <- CSS$phy.tree
 ```
 
 Now we transform the data using the aitchison norm times the geometric mean of the counts as the weighting of the parts and the square root of the sum of each nodes two children's branch length as the weighting of the ILR coordinates. Note that the warning reguarding the 44 tips with zero length edges is the expected behavior of philr. 

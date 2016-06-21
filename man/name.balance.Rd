@@ -57,8 +57,8 @@ for that child of \code{coord}. If no then move to coarser taxonomic level (left
 }
 \examples{
 data(CSS)
-tr <- phyloseq::phy_tree(CSS)
-tax  <- phyloseq::tax_table(CSS)
+tr <- CSS$phy.tree
+tax  <- CSS$tax.table
 name.balance(tr, tax, 'n1')
 name.balance(tr, tax, 'n34', return.votes=c('up','down'))
 }

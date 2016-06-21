@@ -27,11 +27,10 @@ useful in various plotting functions
 }
 \examples{
 data(CSS)
-df <- t(phyloseq::otu_table(CSS))
-df <- df + 0.65   # add a small pseudocount
-tree <- phyloseq::phy_tree(CSS)
+df <- CSS$otu.table + 0.65   # add a small pseudocount
+tree <- CSS$phy.tree
 df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts',
                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
-head(convert_to_long(df.philr, get_variable(CSS, 'BODY_SITE'))
+head(convert_to_long(df.philr, CSS$sample.data$BODY_SITE))
 }
 
