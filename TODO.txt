@@ -1,11 +1,11 @@
 High:
-- Switch to using ILR list object for computations, it should store the original and transformed data (optionally), the tree, the weights, etc… This also makes it compatible with phylofactor
 - add README.md for github
 - change philr behavior to use shiftp rather than acomp stuff. 
 - Finish Description of Package in Description file. 
 - Document package - see https://cran.r-project.org/web/packages/roxygen2/vignettes/rd.html - Add this as a readme file to github.
 - Can I include CSS in my package - the filtering and stuff was done by dan knights? 
 - make sure dataset is documented in philr and not just CSS - or make sure philr imports CSS and remove dataset from philr (probably better). 
+- Switch to using ILR list object for computations, it should store the original and transformed data (optionally), the tree, the weights, etc… This also makes it compatible with phylofactor
 
 CLEANUP PLOTTING: 
 - Ask ggtree if it would like to include geom_balance
