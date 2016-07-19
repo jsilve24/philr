@@ -1,16 +1,14 @@
 High:
-- add README.md for github
 - change philr behavior to use shiftp rather than acomp stuff. 
 - Finish Description of Package in Description file. 
 - Document package - see https://cran.r-project.org/web/packages/roxygen2/vignettes/rd.html - Add this as a readme file to github.
 - Can I include CSS in my package - the filtering and stuff was done by dan knights? 
 - make sure dataset is documented in philr and not just CSS - or make sure philr imports CSS and remove dataset from philr (probably better). 
 - Switch to using ILR list object for computations, it should store the original and transformed data (optionally), the tree, the weights, etc… This also makes it compatible with phylofactor
+- Export name.to.nn and nn.to.name functions
 
 CLEANUP PLOTTING: 
-- Ask ggtree if it would like to include geom_balance
 - Clean up plot_utils and replace some with geom_balance
-- allow plot_balance to handle situation when up or down is a tip
 - add phylum bar to plot_balance
 - clean up namebalance.R and plot_utils.R - separate to multiple files.
 - plot.taxa has trouble with missing values 
@@ -36,6 +34,10 @@ Update name.balance to take vector of coordinates to name
 update name.balance to throw meaningful error if named balance is not in tree.
 remove tip.boosted
 - Create Cheatsheet
+
+
+# Waiting 
+- Finish updating README.md with more info. 
 
 
 From Check: 
