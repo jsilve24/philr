@@ -1,0 +1,210 @@
+---
+title: "Introduction to PhILR"
+author: "Justin Silverman"
+date: "`r Sys.Date()`"
+bibliography: philr.bib
+output: BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{Introduction to PhILR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, echo=FALSE, message=FALSE}
+library(philr); packageVersion("philr")
+library(phyloseq); packageVersion("phyloseq")
+library(ape); packageVersion("ape")
+library(ggplot2); packageVersion("ggplot2")
+library(ggtree); packageVersion("ggtree")
+library(glmnet); packageVersion('glmnet')
+```
+
+
+# Introduction
+asdf
+
+# Overview of PhILR Analysis
+The goal of PhILR is to transform input microbiota data into a Euclidean vector space while preserving all information contained in the original composition.  For a given set of  samples consisting of measurements of  taxa, we transform data into a new space of  samples and  orthonormal coordinates termed ‘balances’ (Fig. 1). Each balance  is associated with a single internal node  of a phylogenetic tree with the taxa as leaves. The balance represents the log-ratio of the geometric means of the two groups of taxa that descend from (TODO: Citation to Main Paper). 
+
+# Loading and Preprocessing Dataset
+Here we will demonstrate PhILR analysis using the Global Patterns dataset that
+was originally published by @caporaso2011. This dataset is provided with the 
+`phyloseq` package [@mcmurdie2013] and our analysis follows, in part, that of the authors 
+[GitHub Tutorial](http://joey711.github.io/phyloseq/preprocess.html).
+```{r}
+data(GlobalPatterns)
+```
+
+## Filter Extreemly Low Abundance OTUs
+Taxa that were not seen with more than 3 counts in at aleast 20% of samples are removed
+and taxa with a coefficient of variation ≤ 3.0 are removed. This later step is 
+intended to "protect against OTUs with small mean & trivially large C.V."
+[@mcmurdie2013]. Finally we add a pseudocount of 1 to the remaining OTUs to avoid 
+calculating log-ratios involving zeros. Note that downstream weighting procedures
+make the choice of this pseudocount relatively unimportant(TODO: Cite our paper). 
+Alternatively other replacement methods (multiplicative replacement etc...) may be 
+used instead if desired. 
+
+```{r, message=TRUE, warning=TRUE}
+GP <-  filter_taxa(GlobalPatterns, function(x) sum(x > 3) > (0.2*length(x)), TRUE)
+GP <-  filter_taxa(GP, function(x) sd(x)/mean(x) > 3.0, TRUE)
+GP <- transform_sample_counts(GP, function(x) x+1)
+```
+
+With these two commands we have removed the filtered taxa from the OTU table, 
+pruned the phylogenetic tree, and subset the taxa table. 
+Here is the result of those filtering steps
+```{r, echo=FALSE}
+GP
+```
+
+## Process Phylogenetic Tree
+Next we check that the tree is rooted and binary (all multichotomies have been resolved). 
+```{r}
+is.rooted(phy_tree(GP)) # Is the tree Rooted?
+is.binary.tree(phy_tree(GP)) # All multichotomies resolved?
+```
+
+Note that if the tree is not binary, the function `multi2di` from the `ape` package
+can be used to replace multichotomies with a series of dichotomies with one (or several)
+branch(es) of zero length . 
+
+Once this is done, we name the internal nodes of the tree so they 
+are easier to work with. We prefix the node number with `n` and thus the root 
+is named `n1`. 
+
+```{r}
+phy_tree(GP) <- makeNodeLabel(phy_tree(GP), method="number", prefix='n')
+```
+
+We note that the tree is already rooted with Archea as the outgroup and 
+no multichotomies are present. This uses the function `name.balance` from the `philr` 
+package. This function uses a simple voting scheme to find a consensus naming
+for the two clades that descend from a given balance. Specifically for a
+balance named `x/y`, `x` refers to the consensus name of the clade in the numerator
+of the log-ratio and `y` refers to the denominator. 
+```{r}
+name.balance(phy_tree(GP), tax_table(GP), 'n1')
+```
+
+## Investigate Dataset Components
+Finally we transpose the OTU table (`philr` uses the conventions of the `compositions` 
+package for compositional data analysis in R, taxa are columns, samples are rows). 
+Then we will take a look at part of the dataset in more detail
+```{r}
+otu.table <- t(otu_table(GP))
+tree <- phy_tree(GP)
+metadata <- sample_data(GP)
+tax <- tax_table(GP)
+
+otu.table[1:2,1:2] # OTU Table
+tree # Phylogenetic Tree
+head(metadata,2) # Metadata
+head(tax,2) # taxonomy table
+```
+
+
+# Transform Data using PhILR
+The function `philr::philr()` implements a user friendly wrapper for the key 
+steps in the philr transform. 
+
+1. Convert the phylogenetic tree to its sequential binary partition (SBP) representation
+using the function `philr::phylo2sbp()`
+2. Calculate the weighting of the taxa (aka parts) or use the user specified weights
+3. Built the contrast matrix from the SBP and taxa weights using the function 
+`philr::buildilrBasep()`
+4. Convert OTU table to relative abundance and 'shift' dataset using the weightings
+[@egozcue2016] using the function `philr::shiftp()`.
+5. Transform the data to PhILR space using the function `philr::ilrp()`
+6. (Optional) Weight the resulting PhILR space using phylogenetic distance. These
+weights are either provided by the user or can be calculated by the function 
+`philr::calculate.blw()`. 
+
+Note: The preprocessed OTU table should be passed
+to the function `philr::philr()` before it is closed (normalized) to relative abundances, as
+some of the preset weightings of the taxa use the original count data to down weight low 
+abundance taxa. 
+
+Here we will use the same weightings as we used in the main paper (TODO: Cite main paper).
+
+```{r}
+gp.philr <- philr(otu.table, tree, 
+                  part.weights='anorm.x.gm.counts', 
+                  ilr.weights='blw.sqrt')
+gp.philr[1:5,1:5]
+```
+
+Now the transformed data is represented in terms of balances and since 
+each balance is associated with a single internal node of the tree, we denote the balances
+using the same names we assigned to the internal nodes (e.g., `n1`). 
+
+# Ordination in PhILR Space
+Euclidean distance in PhILR space can be used for ordination analysis. We 
+do this ordination using tools from the `phyloseq` package. 
+
+```{r}
+gp.dist <- dist(gp.philr, method="euclidean")
+gp.pcoa <- ordinate(GP, 'PCoA', distance=gp.dist)
+plot_ordination(GP, gp.pcoa, color='SampleType') + geom_point(size=4)
+```
+
+# Identify Balances that Distinguish Human/Non-Human
+More than just ordination analysis, PhILR provides an entire coordinate system 
+in which standard multivariate tools can be used. Here we will make use of sparse
+logistic regression (from the `glmnet` pacakge) to identify a small number of 
+balances that best distinguish human from non-human samples. 
+
+First we will make a new variable distinguishing human/non-human
+```{r}
+sample_data(GP)$human <- factor(get_variable(GP, "SampleType") %in% c("Feces", "Mock", "Skin", "Tongue"))
+```
+
+Now we will fit a sparse logistic regression model (logistic regression with $l_1$ penalty)
+```{r}
+glmmod <- glmnet(gp.philr, sample_data(GP)$human, alpha=1, family="binomial")
+```
+
+We will use a hard-threshold for the $l_1$ penalty of $\lambda = 0.2526$ which 
+we choose so that the resulting number of non-zero coefficients is $\approx 5$ 
+(for easy of visualization in this tutorial). 
+
+```{r}
+top.coords <- as.matrix(coefficients(glmmod, s=0.2526))
+top.coords <- rownames(top.coords)[which(top.coords != 0)]
+top.coords <- top.coords[2:length(top.coords)] # remove the intercept as a coordinate
+top.coords
+```
+
+So these are the top 5 coordinates (balances) that distinguish whether a 
+sample is from a human or non-human source. Now using the `ggtree` package we 
+can visualize these balances on the tree. To use this function we need
+to know the acctual node number (not just the names we have given) of these balances
+on the tree. To convert between node number and name, we have written the functions
+`philr:` TODO: Add these in and export functions. 
+
+```{r}
+ggtree(tree) + 
+  geom_balance(aes(node=(label %in% top.coords), fill=label),
+               color='white',
+               alpha=0.6, 
+               extend=1)
+
+ggtree(tree) + 
+  geom_balance(node='n16', 
+               color='white',
+               alpha=0.6, 
+               extend=1)
+```
+
+
+
+
+
+
+# Name Balances
+
+# Visualize Results
+
+
+
+# References
