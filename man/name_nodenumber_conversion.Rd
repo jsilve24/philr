@@ -21,6 +21,6 @@ vector
 \description{
 Useful if you want to convert between node labels (\code{c}), tip labels
 (\code{t}) and the internal integer number that identifies that node
-(\code{nn}).
+(\code{nn}). Particularly for use with plotting libraries.
 }
 
