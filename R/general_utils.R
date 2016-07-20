@@ -15,7 +15,7 @@ check.zeroes <- function(x, target){
 #'
 #' Useful if you want to convert between node labels (\code{c}), tip labels
 #' (\code{t}) and the internal integer number that identifies that node
-#' (\code{nn}).
+#' (\code{nn}). Particularly for use with plotting libraries.
 #'
 #' @param tr object of type \code{phylo}
 #' @param x vector of numerics or characters
@@ -24,6 +24,7 @@ check.zeroes <- function(x, target){
 NULL
 
 #' @rdname name_nodenumber_conversion
+#' @export
 nn.to.name <- function(tr, x){
   if(!is.numeric(x)) stop('node numbers must be numeric')
   labels <- c(tr$tip.label, tr$node.label)
@@ -31,6 +32,7 @@ nn.to.name <- function(tr, x){
 }
 
 #' @rdname name_nodenumber_conversion
+#' @export
 name.to.nn <- function(tr, x){
   if(!is.character(x)) stop('node/tip names (x) should be a character vector')
   labels <- c(tr$tip.label, tr$node.label)
