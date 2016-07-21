@@ -10,6 +10,6 @@ License: GPL-3
 LazyData: TRUE
 RoxygenNote: 5.0.1
 Imports: ape, phangorn, compositions, dplyr, ggplot2, tidyr
-Depends: knitr
-Suggests: ggtree, testthat
+Depends:
+Suggests: ggtree, testthat, knitr, rmarkdown, BiocStyle, phyloseq, glmnet
 VignetteBuilder: knitr
