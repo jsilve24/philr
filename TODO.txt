@@ -39,13 +39,7 @@ remove tip.boosted
 # Waiting 
 - Finish updating README.md with more info. 
 
-
 From Check: 
 'library' or 'require' call to ‘ggtree’ in package code.
   Please use :: or requireNamespace() instead.
   See section 'Suggested packages' in the 'Writing R Extensions' manual.
-
-* checking Rd files ... WARNING
-CSS.Rd: non-ASCII input and no declared encoding
-philr.Rd: non-ASCII input and no declared encoding
-problems found in ‘CSS.Rd’, ‘philr.Rd’

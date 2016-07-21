@@ -21,6 +21,11 @@ check.zeroes <- function(x, target){
 #' @param x vector of numerics or characters
 #' @return vector
 #' @name name_nodenumber_conversion
+#' @examples
+#' tr <- named_rtree(5)
+#' name.to.nn(tr, 'n1')
+#' name.to.nn(tr,c('n1','n2','t1'))
+#' nn.to.name(tr, 1:9)
 NULL
 
 #' @rdname name_nodenumber_conversion
@@ -61,8 +66,7 @@ t.to.nn <- function(tr, t){
 #' Converts wide format ILR transformed data to long format
 #'
 #' Converts wide format ILR transformed data (see \code{\link{philr}}) to long format
-#' useful in various plotting functions
-#' (e.g., \code{\link{plot_density_breakdown_wtree}})
+#' useful in various plotting functions where long format data is required.
 #'
 #' @param df PhILR transformed data in wide format (samples by balances) (see \code{\link{philr}})
 #' @param labels vector (of length \code{nrow(df)}) with labels to group samples by
@@ -76,12 +80,12 @@ t.to.nn <- function(tr, t){
 #' @export
 #' @importFrom tidyr gather
 #' @examples
-#' data(CSS)
-#' df <- CSS$otu.table + 0.65   # add a small pseudocount
-#' tree <- CSS$phy.tree
-#' df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts',
-#'                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
-#' head(convert_to_long(df.philr, CSS$sample.data$BODY_SITE))
+#' tr <- named_rtree(5)
+#' df <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
+#' colnames(df) <- tr$tip.label
+#'
+#' philr(df, tr, part.weights='anorm.x.gm.counts',
+#'       ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
 convert_to_long <- function(df, labels){
   coord.names <- colnames(df)
   df.long <- as.data.frame(df)
@@ -100,8 +104,12 @@ convert_to_long <- function(df, labels){
 #' function is laregly for use in examples throughout this package.
 #'
 #' @inheritParams ape::rtree
+#' @importFrom ape rtree makeNodeLabel
+#' @export
 #'
 #' @return An object of class "phylo"
+#' @examples
+#' named_rtree(5)
 named_rtree <- function(n){
   tr <- rtree(n)
   makeNodeLabel(tr, 'number', 'n')

@@ -9,6 +9,9 @@ mean_dist_to_tips(tree)
 \arguments{
 \item{tree}{a \code{phylo} class tree object that is binary (see \code{\link[ape]{multi2di}})}
 }
+\value{
+vector (named if internal nodes are named)
+}
 \description{
 Calculates the mean distance from each internal node to its descendant tips
 }
@@ -17,5 +20,9 @@ This is a function used by \code{\link{calculate.blw}} when
   \code{method='mean.descendants'}, there this function is called twice, once
   for each direct child of a given internal node and the results are summed
   for each node.
+}
+\examples{
+tr <- named_rtree(5)
+mean_dist_to_tips(tr)
 }
 

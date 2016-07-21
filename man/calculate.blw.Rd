@@ -36,10 +36,9 @@ adds a small pseudocount to those tips with zero length (equal to the smallest n
 branch length on the tree.
 }
 \examples{
-data(CSS)
-tree <- CSS$phy.tree
-calculate.blw(tree, method='sum.children')[1:10]
-calculate.blw(tree, method='mean.descendants')[1:10]
+tr <- named_rtree(50)
+calculate.blw(tr, method='sum.children')[1:10]
+calculate.blw(tr, method='mean.descendants')[1:10]
 }
 \author{
 Justin Silverman

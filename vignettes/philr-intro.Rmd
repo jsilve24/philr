@@ -10,11 +10,9 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-
-
 # Introduction
+TODO
 
-asdf
 ```{r, echo=TRUE, message=FALSE}
 library(philr); packageVersion("philr")
 library(phyloseq); packageVersion("phyloseq")
@@ -213,16 +211,24 @@ can visualize these balances on the tree. To use this function we need
 to know the acctual node number (not just the names we have given) of these balances
 on the tree. To convert between node number and name, we have added the functions
 `philr::name.to.nn()` and `philr::nn.to.name()`.  
+In addition, it is important that we know which clade of the balance is in the 
+numerator (+) and which is in the denominator (-) of the log-ratio. To help us keep track
+we have created the function `philr::annotate_balance()` which allows us to easily
+label these two clades. 
 
 ```{r, message=FALSE, warning=FALSE}
 tc.nn <- name.to.nn(tree, top.coords)
 tc.colors <- c('#a6cee3', '#1f78b4', '#b2df8a', '#33a02c', '#fb9a99')
-ggtree(tree, layout='fan') + 
+p <- ggtree(tree, layout='fan') + 
   geom_balance(node=tc.nn[1], fill=tc.colors[1], alpha=0.6) +
   geom_balance(node=tc.nn[2], fill=tc.colors[2], alpha=0.6) +
   geom_balance(node=tc.nn[3], fill=tc.colors[3], alpha=0.6) +
   geom_balance(node=tc.nn[4], fill=tc.colors[4], alpha=0.6) +
   geom_balance(node=tc.nn[5], fill=tc.colors[5], alpha=0.6)
+p <- annotate_balance(tree, 'n16', p=p, labels = c('n16+', 'n16-'), 
+                 offset.text=0.15, bar=FALSE)
+annotate_balance(tree, 'n730', p=p, labels = c('n730+', 'n730-'), 
+                 offset.text=0.15, bar=FALSE)
 ```
 
 We can also view the distribution of these 5 balances for human/non-human sources.
@@ -242,8 +248,8 @@ ggplot(gp.philr.long, aes(x=labels, y=value)) +
 ```
 
 # Use Balances for Dimention Reduction
-Lets just look at balance n16 vs. balance 730
-```{r}
+Lets just look at balance n16 vs. balance n730 (the ones we annotated in the above tree). 
+```{r, message=FALSE, warning=FALSE}
 library(tidyr); packageVersion('tidyr')
 
 gp.philr.long %>% 

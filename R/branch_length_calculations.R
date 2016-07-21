@@ -25,10 +25,9 @@
 #' @export
 #' @seealso \code{\link{philr}}
 #' @examples
-#' data(CSS)
-#' tree <- CSS$phy.tree
-#' calculate.blw(tree, method='sum.children')[1:10]
-#' calculate.blw(tree, method='mean.descendants')[1:10]
+#' tr <- named_rtree(50)
+#' calculate.blw(tr, method='sum.children')[1:10]
+#' calculate.blw(tr, method='mean.descendants')[1:10]
 calculate.blw <- function(tree, method='sum.children'){
     nTips = ape::Ntip(tree)
 
@@ -97,6 +96,10 @@ blw.mean.descendants.sum.children <- function(tree){
 #'   for each direct child of a given internal node and the results are summed
 #'   for each node.
 #' @export
+#' @return vector (named if internal nodes are named)
+#' @examples
+#' tr <- named_rtree(5)
+#' mean_dist_to_tips(tr)
 mean_dist_to_tips <- function(tree){
     nTips = ape::Ntip(tree)
 

@@ -24,7 +24,7 @@ corresponding to \code{colnames(df)} otherwise can be a string, options include:
 \item{\code{'uniform'}}{(default) uses the uniform reference measure}
 \item{\code{'gm.counts'}}{geometric mean of parts of df}
 \item{\code{'anorm'}}{aitchison norm of parts of df}
-\item{\code{'anorm.x.gm.counts'}}{\code{'anorm'*'gm.counts'}, often gives good results}
+\item{\code{'anorm.x.gm.counts'}}{\code{'anorm' times 'gm.counts'}, often gives good results}
 }}
 
 \item{ilr.weights}{weightings for the ILR coordiantes can be a named vector with names
@@ -61,18 +61,18 @@ in \code{philr}. The steps that are executed are as follows:
 \item Transform the data based on the contrast matrix and the reference measure
 \item Calculate the specified ILR weightings and multiply each balance by the corresponding weighting
 }
-Note for both the reference measure (part weightings) and the ILR weightings, specifying \code{‘uniform’} will
-give the same results as not weighting at all.\cr \cr
+Note for both the reference measure (part weightings) and the ILR weightings, specifying \code{'uniform'} will
+give the same results as not weighting at all. \cr \cr
 Parallelization is done through \code{parallel} package using type "FORK".
 Note parallelization is rarely needed, even for trees of upwards of 40,000 leaves.
 }
 \examples{
-data(CSS)
-df <- CSS$otu.table + 0.65   # add a small pseudocount
-tree <- CSS$phy.tree
-df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts',
+tr <- named_rtree(5)
+df <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
+colnames(df) <- tr$tip.label
+
+philr(df, tr, part.weights='anorm.x.gm.counts',
                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
-df.philr[1:5,1:5]
 }
 \author{
 Justin Silverman

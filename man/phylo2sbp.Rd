@@ -23,6 +23,10 @@ metagenomic data.
 Parallelization is done through \code{parallel} package using type "FORK".
 Note parallelization is rarely needed, even for trees of upwards of 40,000 leaves.
 }
+\examples{
+tr <- named_rtree(5)
+phylo2sbp(tr)
+}
 \author{
 Justin Silverman
 }

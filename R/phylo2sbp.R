@@ -13,6 +13,9 @@
 #' @author Justin Silverman
 #' @export
 #' @seealso \code{\link{philr}}
+#' @examples
+#' tr <- named_rtree(5)
+#' phylo2sbp(tr)
 phylo2sbp <- function (tr, n_cores=1){
     nTips <- ape::Ntip(tr)
     ch <- phangorn::Children(tr, (nTips+1):(nTips+tr$Nnode))

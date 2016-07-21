@@ -56,11 +56,15 @@ for that child of \code{coord}. If no then move to coarser taxonomic level (left
 }
 }
 \examples{
-data(CSS)
-tr <- CSS$phy.tree
-tax  <- CSS$tax.table
+tr <- named_rtree(40)
+tax <- data.frame(Kingdom=rep('A', 40),
+                  Phylum=rep(c('B','C'), each=20),
+                  Genus=c(sample(c('D','F'),20, replace=TRUE),
+                          sample(c('G','H'), 20, replace=TRUE)))
+rownames(tax) <- tr$tip.label
 name.balance(tr, tax, 'n1')
-name.balance(tr, tax, 'n34', return.votes=c('up','down'))
+name.balance(tr, tax, 'n34')
+name.balance(tr,tax, 'n34', return.votes = c('up', 'down'))
 }
 \author{
 Justin Silverman

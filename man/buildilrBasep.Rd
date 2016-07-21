@@ -18,6 +18,12 @@ matrix
 \description{
 Weighted ILR Contrast Matrix
 }
+\examples{
+tr <- named_rtree(5)
+sbp <- phylo2sbp(tr)
+p <- seq(.1,1,by=.2)
+buildilrBasep(sbp, p)
+}
 \author{
 Justin Silverman (adapted from \link[compositions]{gsi.buildilrBase})
 }

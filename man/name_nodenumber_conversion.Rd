@@ -23,4 +23,10 @@ Useful if you want to convert between node labels (\code{c}), tip labels
 (\code{t}) and the internal integer number that identifies that node
 (\code{nn}). Particularly for use with plotting libraries.
 }
+\examples{
+tr <- named_rtree(5)
+name.to.nn(tr, 'n1')
+name.to.nn(tr,c('n1','n2','t1'))
+nn.to.name(tr, 1:9)
+}
 

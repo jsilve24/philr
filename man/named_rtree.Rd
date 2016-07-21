@@ -16,4 +16,7 @@ An object of class "phylo"
 Internal nodes are named by numbering and adding the prefix 'n'. This
 function is laregly for use in examples throughout this package.
 }
+\examples{
+named_rtree(5)
+}
 

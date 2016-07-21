@@ -22,15 +22,14 @@ convert_to_long(df, labels)
 }
 \description{
 Converts wide format ILR transformed data (see \code{\link{philr}}) to long format
-useful in various plotting functions
-(e.g., \code{\link{plot_density_breakdown_wtree}})
+useful in various plotting functions where long format data is required.
 }
 \examples{
-data(CSS)
-df <- CSS$otu.table + 0.65   # add a small pseudocount
-tree <- CSS$phy.tree
-df.philr <- philr(df, tree, part.weights='anorm.x.gm.counts',
-                  ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
-head(convert_to_long(df.philr, CSS$sample.data$BODY_SITE))
+tr <- named_rtree(5)
+df <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
+colnames(df) <- tr$tip.label
+
+philr(df, tr, part.weights='anorm.x.gm.counts',
+      ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
 }
 

@@ -40,11 +40,15 @@
 #' @export
 #' @seealso \code{\link{philr}}
 #' @examples
-#' data(CSS)
-#' tr <- CSS$phy.tree
-#' tax  <- CSS$tax.table
+#' tr <- named_rtree(40)
+#' tax <- data.frame(Kingdom=rep('A', 40),
+#'                   Phylum=rep(c('B','C'), each=20),
+#'                   Genus=c(sample(c('D','F'),20, replace=TRUE),
+#'                           sample(c('G','H'), 20, replace=TRUE)))
+#' rownames(tax) <- tr$tip.label
 #' name.balance(tr, tax, 'n1')
-#' name.balance(tr, tax, 'n34', return.votes=c('up','down'))
+#' name.balance(tr, tax, 'n34')
+#' name.balance(tr,tax, 'n34', return.votes = c('up', 'down'))
 name.balance <- function(tr, tax, coord, method="voting", thresh=0.95, return.votes=NULL){
   if (method=="voting"){
     # Get tips in 'up' and 'down' subtree
@@ -89,6 +93,7 @@ get.ud.nodes <- function(tr,coord, return.nn=FALSE){
   nn <- name.to.nn(tr, coord) # get node number
   l.nodes <- list()
   child <- phangorn::Children(tr, nn)
+  if (length(child) < 2) stop(paste0(coord,' is a tip'))
   if (return.nn==TRUE){
     l.nodes[['up']] <- child[1]
     l.nodes[['down']] <- child[2]
@@ -99,12 +104,13 @@ get.ud.nodes <- function(tr,coord, return.nn=FALSE){
   return(l.nodes)
 }
 
-# Returns a list of the 'up' and 'down' subtree's values is a vector of tip ids (corresponds
+# Returns a list of the 'up' and 'down' subtree's values as a vector of tip ids (corresponds
 # to up and down used for sbp creation)
 # Each value is the ID of a tip
 get.ud.tips <- function(tr,coord){
   l.tips <- list()
   child <- phangorn::Children(tr, name.to.nn(tr,coord))
+  if (length(child) < 2) stop(paste0(coord,' is a tip'))
   if (length(child) > 2) stop("Tree is not soley binary.") #TODO: Bit of validation - consider better location
   l.tips[['up']] <- sapply(unlist(phangorn::Descendants(tr,child[1],type='tips')), function(x) nn.to.name(tr, x))
   l.tips[['down']] <- sapply(unlist(phangorn::Descendants(tr,child[2],type='tips')), function(x) nn.to.name(tr, x))

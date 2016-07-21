@@ -109,6 +109,11 @@ ilrp <- function(y,p,V){
 #' @references J. J. Egozcue, V. Pawlowsky-Glahn. \emph{Changing the Reference
 #'   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
 #'   Statistics, 2016
+#' @examples
+#' tr <- named_rtree(5)
+#' sbp <- phylo2sbp(tr)
+#' p <- seq(.1,1,by=.2)
+#' buildilrBasep(sbp, p)
 buildilrBasep <- function(W,p){
     check.zeroes(p, 'weights (p)')
 

@@ -20,3 +20,8 @@ test_that('all functions give correst results on fixed tree', {
   expect_equal(nn.to.name(tr.fixed, c(1,2,8)), c("t1", "t4", "n3"))
   expect_equal(name.to.nn(tr.fixed, c("t1", "t4", "n3")), c(1,2,8))
 })
+
+test_that('get.ud.*** throws error if given a tip', {
+  expect_error(get.ud.tips(tr.fixed, 't1'), "t1 is a tip")
+  expect_error(get.ud.nodes(tr.fixed, 't1'), "t1 is a tip")
+})
