@@ -1,14 +1,3 @@
-
-
-
-
-# function to convert a binary phylogenetic tree to a sequential binary
-# partition to be used to build ILR basis for compositional data
-# written by Justin Silverman 2015
-#
-# Version 3: Now with Parallelization, no recursion (about 5x faster than v1)
-# Version 4: Now using phangorn rather than phylobase (about 1000x faster than v3)
-
 #' Create Sequential Binary Partition from Phylogenetic Tree
 #'
 #' This function converts a binary phylogenetic tree to sequential binary
@@ -24,6 +13,9 @@
 #' @author Justin Silverman
 #' @export
 #' @seealso \code{\link{philr}}
+#' @examples
+#' tr <- named_rtree(5)
+#' phylo2sbp(tr)
 phylo2sbp <- function (tr, n_cores=1){
     nTips <- ape::Ntip(tr)
     ch <- phangorn::Children(tr, (nTips+1):(nTips+tr$Nnode))

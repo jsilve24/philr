@@ -1,22 +1,3 @@
-####### ACCESSOR FUNCTIONS FROM NAMES TO NUMBERS #########
-# Main accessor of node number through coordinate name
-c.to.nn <- function(tr, c){
-    return(which(tr$node.label==c)+ape::Ntip(tr))
-}
-
-# Main accessor of node number through tip name
-t.to.nn <- function(tr, t){
-    return(which(tr$tip.label==t))
-}
-
-# Main accessor of node or tip name thorugh node number
-nn.to.name <- function(tr, nn){
-    n <- ape::Ntip(tr)
-    if (nn <= n)return(tr$tip.label[nn])
-    return(tr$node.label[nn-n])
-}
-
-
 #' Name a balance (coordinate) based on taxonomy
 #'
 #' For a given ILR balance (coordinate) assigns a name to the balance based on a
@@ -59,12 +40,15 @@ nn.to.name <- function(tr, nn){
 #' @export
 #' @seealso \code{\link{philr}}
 #' @examples
-#' library(phyloseq)
-#' data(CSS)
-#' tr <- phy_tree(CSS)
-#' tax  <- tax_table(CSS)
+#' tr <- named_rtree(40)
+#' tax <- data.frame(Kingdom=rep('A', 40),
+#'                   Phylum=rep(c('B','C'), each=20),
+#'                   Genus=c(sample(c('D','F'),20, replace=TRUE),
+#'                           sample(c('G','H'), 20, replace=TRUE)))
+#' rownames(tax) <- tr$tip.label
 #' name.balance(tr, tax, 'n1')
-#' name.balance(tr, tax, 'n34', return.votes=c('up','down'))
+#' name.balance(tr, tax, 'n34')
+#' name.balance(tr,tax, 'n34', return.votes = c('up', 'down'))
 name.balance <- function(tr, tax, coord, method="voting", thresh=0.95, return.votes=NULL){
   if (method=="voting"){
     # Get tips in 'up' and 'down' subtree
@@ -106,9 +90,10 @@ name.balance <- function(tr, tax, coord, method="voting", thresh=0.95, return.vo
 # e.g., the child node of a given coordinate
 # nn is node number
 get.ud.nodes <- function(tr,coord, return.nn=FALSE){
-  nn <- c.to.nn(tr, coord) # get node number
+  nn <- name.to.nn(tr, coord) # get node number
   l.nodes <- list()
   child <- phangorn::Children(tr, nn)
+  if (length(child) < 2) stop(paste0(coord,' is a tip'))
   if (return.nn==TRUE){
     l.nodes[['up']] <- child[1]
     l.nodes[['down']] <- child[2]
@@ -119,12 +104,13 @@ get.ud.nodes <- function(tr,coord, return.nn=FALSE){
   return(l.nodes)
 }
 
-# Returns a list of the 'up' and 'down' subtree's values is a vector of tip ids (corresponds
+# Returns a list of the 'up' and 'down' subtree's values as a vector of tip ids (corresponds
 # to up and down used for sbp creation)
 # Each value is the ID of a tip
 get.ud.tips <- function(tr,coord){
   l.tips <- list()
-  child <- phangorn::Children(tr, c.to.nn(tr,coord))
+  child <- phangorn::Children(tr, name.to.nn(tr,coord))
+  if (length(child) < 2) stop(paste0(coord,' is a tip'))
   if (length(child) > 2) stop("Tree is not soley binary.") #TODO: Bit of validation - consider better location
   l.tips[['up']] <- sapply(unlist(phangorn::Descendants(tr,child[1],type='tips')), function(x) nn.to.name(tr, x))
   l.tips[['down']] <- sapply(unlist(phangorn::Descendants(tr,child[2],type='tips')), function(x) nn.to.name(tr, x))

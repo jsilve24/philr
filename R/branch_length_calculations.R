@@ -1,7 +1,3 @@
-# tip.boosted - factor (numeric) to multiply tip lengths by to 'boost'
-#    their importance in the weighting scheme.
-#
-
 #' Calculate Branch Length Weightings for ILR Coordinates
 #'
 #' Calculates the weightings for ILR coordinates based on branch lenghts of
@@ -10,8 +6,6 @@
 #' @param tree a \code{phylo} class tree object that is binary (see \code{\link[ape]{multi2di}})
 #' @param method options include: (default) \code{'sum.children'} and \code{'mean.descendants'}
 #' see details for more information.
-#' @param tip.boosted (Optional) numeric factor to multiply tip lengths by to 'boost their importance
-#' in the weightings. \emph{Note:} this feature is largely unstudied.
 #' @return vector of weightings for ILR coordinates produced via specified method.
 #' @details
 #' ILR balances built from a binary partition of a phylogenetic tree
@@ -31,16 +25,14 @@
 #' @export
 #' @seealso \code{\link{philr}}
 #' @examples
-#' library(phyloseq)
-#' data(CSS)
-#' tree <- phy_tree(CSS)
-#' calculate.blw(tree, method='sum.children')[1:10]
-#' calculate.blw(tree, method='mean.descendants')[1:10]
-calculate.blw <- function(tree, method='sum.children', tip.boosted=NULL){
+#' tr <- named_rtree(50)
+#' calculate.blw(tr, method='sum.children')[1:10]
+#' calculate.blw(tr, method='mean.descendants')[1:10]
+calculate.blw <- function(tree, method='sum.children'){
     nTips = ape::Ntip(tree)
 
     # Note that some of the terminal branches of the tree have zero length.
-    # In these cases  I will replace those zero values with
+    # In these cases will replace those zero values with
     # the minimum branch length (greater than 0) found in the tree.
     # Note this is like adding a psudocount to branch lengths.
     min.nonzero <- min(tree$edge.length[tree$edge.length>0 & !is.na(tree$edge.length)])
@@ -55,18 +47,12 @@ calculate.blw <- function(tree, method='sum.children', tip.boosted=NULL){
         tree$edge.length[tip.edges.zero] <- min.nonzero
     }
 
-    # If using tip.boosting
-    if (!is.null(tip.boosted)){
-        tips <- tree$edge[,2] <= nTips
-        tree$edge.length[tips] <- tree$edge.length[tips]*tip.boosted
-    }
-
     if (method=='sum.children')return(blw.sum.children(tree))
     else if (method=='mean.descendants')return(blw.mean.descendants.sum.children(tree))
 }
 
 # Now calculate Branch Length Weighting as the sum of a nodes
-# child's weights
+#  two (direct) child's weights
 blw.sum.children <- function(tree){
     nTips =  nTips = ape::Ntip(tree)
     X <- phangorn::Children(tree, (nTips+1):(nTips+tree$Nnode))
@@ -78,17 +64,43 @@ blw.sum.children <- function(tree){
     res
 }
 
-# Calculates the average distance from a node to its descendant tips
+# Calculates the sum of the children's nodes average distance to descendant tips
+# Which should be a slightly better calculation than MDTT when we are
+# primarily interested in weightings on ILR coordinates
+blw.mean.descendants.sum.children <- function(tree){
+  nTips = ape::Ntip(tree)
+  X <- phangorn::Children(tree, (nTips+1):(nTips+tree$Nnode))
+
+  # Children's average branch length to tips (zero for tips)
+  BMD <- mean_dist_to_tips(tree)
+  names(BMD) <- NULL
+  BMD <- c(numeric(nTips), BMD)
+
+  # Each child's edge length
+  EL <- numeric(max(tree$edge))
+  EL[tree$edge[,2]] <- tree$edge.length
+
+  fun <- function(x, el, bmd)sum(el[x] + bmd[x])
+  res <- sapply(X, fun, EL, BMD)
+  if(!is.null(tree$node.label)) names(res) <- tree$node.label
+  return(res)
+}
 
 #' Mean distance from internal nodes to descendant tips
 #'
 #' Calculates the mean distance from each internal node to its descendant tips
 #'
 #' @inheritParams calculate.blw
-#' @details
-#' This is a function used by \code{\link{calculate.blw}} when \code{method='mean.descendants'}.
+#' @details This is a function used by \code{\link{calculate.blw}} when
+#'   \code{method='mean.descendants'}, there this function is called twice, once
+#'   for each direct child of a given internal node and the results are summed
+#'   for each node.
 #' @export
-blw.mean.descendants <- function(tree){
+#' @return vector (named if internal nodes are named)
+#' @examples
+#' tr <- named_rtree(5)
+#' mean_dist_to_tips(tr)
+mean_dist_to_tips <- function(tree){
     nTips = ape::Ntip(tree)
 
     dist <- ape::dist.nodes(tree)
@@ -106,22 +118,4 @@ blw.mean.descendants <- function(tree){
     return(res)
 }
 
-# Calculates the sum of the children's nodes average distance to descendant tips
-blw.mean.descendants.sum.children <- function(tree){
-  nTips = ape::Ntip(tree)
-  X <- phangorn::Children(tree, (nTips+1):(nTips+tree$Nnode))
 
-  # Children's average branch length to tips (zero for tips)
-  BMD <- blw.mean.descendants(tree)
-  names(BMD) <- NULL
-  BMD <- c(numeric(nTips), BMD)
-
-  # Each child's edge length
-  EL <- numeric(max(tree$edge))
-  EL[tree$edge[,2]] <- tree$edge.length
-
-  fun <- function(x, el, bmd)sum(el[x] + bmd[x])
-  res <- sapply(X, fun, EL, BMD)
-  if(!is.null(tree$node.label)) names(res) <- tree$node.label
-  return(res)
-}
