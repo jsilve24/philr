@@ -19,6 +19,22 @@ matrix
 \description{
 Calculated using weighted CLR transform (\link{clrp})
 }
+\examples{
+# Weights
+p <- seq(.1,1,by=.2)
+
+# Shifted Composition
+c <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
+x <- miniclo(c)
+y <- shiftp(x, p)
+
+# Contrast Matrix
+tr <- named_rtree(5)
+sbp <- phylo2sbp(tr)
+V <- buildilrBasep(sbp, p)
+
+ilrp(y, p, V)
+}
 \author{
 Justin Silverman
 }

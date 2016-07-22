@@ -13,8 +13,10 @@
 #' \describe{
 #' \item{\code{'uniform'}}{(default) uses the uniform reference measure}
 #' \item{\code{'gm.counts'}}{geometric mean of parts of df}
-#' \item{\code{'anorm'}}{aitchison norm of parts of df}
-#' \item{\code{'anorm.x.gm.counts'}}{\code{'anorm' times 'gm.counts'}, often gives good results}
+#' \item{\code{'anorm'}}{aitchison norm of parts of df (after closure)}
+#' \item{\code{'anorm.x.gm.counts'}}{\code{'anorm'} times \code{'gm.counts'}}
+#' \item{\code{'enorm'}}{euclidean norm of parts of df (after closure)}
+#' \item{\code{'enorm.x.gm.counts'}}{\code{'enorm'} times \code{'gm.counts'}, often gives good results}
 #' }
 #' @param ilr.weights weightings for the ILR coordiantes can be a named vector with names
 #' corresponding to names of internal nodes of \code{tree} otherwise can be a string,
@@ -26,7 +28,7 @@
 #' \item{\code{'mean.descendants'}}{sum of children's branch lengths PLUS the sum of
 #' each child's mean distance to its descendent tips}
 #' }
-#' @param return.all return all computed parts (e.g., computed sign matrix(\code{sbp} ),
+#' @param return.all return all computed parts (e.g., computed sign matrix(\code{sbp}),
 #' part weightings (code{p}), ilr weightings (code{ilr.weights}), contrast matrix (\code{V}))
 #' as a list (default=\code{FALSE}) in addition to in addition to returning the transformed data (\code{df.ilrp}).
 #' If \code{return.all==FALSE} then only returns the transformed data (not in list format)
@@ -48,9 +50,9 @@
 #' give the same results as not weighting at all. \cr \cr
 #' Parallelization is done through \code{parallel} package using type "FORK".
 #' Note parallelization is rarely needed, even for trees of upwards of 40,000 leaves.
+#' @return matrix if \code{return.all=FALSE}, if \code{return.all=TRUE} then a list is returned (see above).
 #' @author Justin Silverman
 #' @export
-#' @import compositions
 #' @seealso \code{\link{phylo2sbp}} \code{\link{calculate.blw}}
 #' @examples
 #' tr <- named_rtree(5)
@@ -84,16 +86,29 @@ philr <- function(df, tree, sbp=NULL,
     p <- rep(1, ncol(df))
     names(p) <- rownames(sbp)
   } else if (part.weights=='gm.counts'){
-    p <- geometricmeanCol(df)
+    p <- g.colMeans(df)
     p <- p[rownames(sbp)]
   } else if (part.weights=='anorm'){
-    p <- apply(acomp(t(df)), 1, norm.acomp)
+    p <- apply(miniclo(t(df)), 1, function(x) normp(x, rep(1, nrow(df))))
   } else if (part.weights=='anorm.x.gm.counts'){
-    gm.counts <- geometricmeanCol(df)
+    gm.counts <- g.colMeans(df)
     gm.counts <- gm.counts[rownames(sbp)]
-    anorm <- apply(acomp(t(df)), 1, norm.acomp)
+    #INCORRECT so commented out TODO: Remove before release
+    #anorm <- apply(compositions::acomp(t(df)), 1, compositions::norm.acomp)
+    ##########################
+    anorm <- apply(miniclo(t(df)), 1, function(x) normp(x, rep(1, nrow(df))))
     anorm <- anorm[rownames(sbp)]
     p <- gm.counts*anorm
+  } else if (part.weights=='enorm') {
+    enorm <- apply(miniclo(t(df)), 1, function(x) sqrt(sum(x^2)))
+    enorm <- enorm[rownames(sbp)]
+    p <- enorm
+  } else if (part.weights=='enorm.x.gm.counts'){
+    gm.counts <- g.colMeans(df)
+    gm.counts <- gm.counts[rownames(sbp)]
+    enorm <- apply(miniclo(t(df)), 1, function(x) sqrt(sum(x^2)))
+    enorm <- enorm[rownames(sbp)]
+    p <- gm.counts*enorm
   }
 
   # Make sure everything is lined up (else throw an error)
@@ -102,7 +117,8 @@ philr <- function(df, tree, sbp=NULL,
   }
 
   # shift the dataset with respect to the new reference measure
-  df <- as(acomp(df) - acomp(p), 'matrix')
+  #df <- as(acomp(df) - acomp(p), 'matrix')
+  df <- shiftp(miniclo(df), p)
 
   # Now create basis contrast matrix
   print('Building Contrast Matrix...')

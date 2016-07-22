@@ -19,9 +19,9 @@ matrix
 Weighted ILR Contrast Matrix
 }
 \examples{
+p <- seq(.1,1,by=.2)
 tr <- named_rtree(5)
 sbp <- phylo2sbp(tr)
-p <- seq(.1,1,by=.2)
 buildilrBasep(sbp, p)
 }
 \author{

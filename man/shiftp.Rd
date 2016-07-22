@@ -18,6 +18,12 @@ shifted data matrix \code{y} (no closure is applied) rows are
 \description{
 Shift must be applied before transformation
 }
+\examples{
+p <- seq(.1,1,by=.2)
+c <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
+x <- miniclo(c)
+shiftp(x, p)
+}
 \author{
 Justin Silverman & J. J. Egozcue
 }

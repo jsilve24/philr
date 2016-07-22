@@ -23,8 +23,10 @@ corresponding to \code{colnames(df)} otherwise can be a string, options include:
 \describe{
 \item{\code{'uniform'}}{(default) uses the uniform reference measure}
 \item{\code{'gm.counts'}}{geometric mean of parts of df}
-\item{\code{'anorm'}}{aitchison norm of parts of df}
-\item{\code{'anorm.x.gm.counts'}}{\code{'anorm' times 'gm.counts'}, often gives good results}
+\item{\code{'anorm'}}{aitchison norm of parts of df (after closure)}
+\item{\code{'anorm.x.gm.counts'}}{\code{'anorm'} times \code{'gm.counts'}}
+\item{\code{'enorm'}}{euclidean norm of parts of df (after closure)}
+\item{\code{'enorm.x.gm.counts'}}{\code{'enorm'} times \code{'gm.counts'}, often gives good results}
 }}
 
 \item{ilr.weights}{weightings for the ILR coordiantes can be a named vector with names
@@ -38,13 +40,16 @@ options include:
 each child's mean distance to its descendent tips}
 }}
 
-\item{return.all}{return all computed parts (e.g., computed sign matrix(\code{sbp} ),
+\item{return.all}{return all computed parts (e.g., computed sign matrix(\code{sbp}),
 part weightings (code{p}), ilr weightings (code{ilr.weights}), contrast matrix (\code{V}))
 as a list (default=\code{FALSE}) in addition to in addition to returning the transformed data (\code{df.ilrp}).
 If \code{return.all==FALSE} then only returns the transformed data (not in list format)
 If \code{FALSE} then just returns list containing \code{df.ilrp}.}
 
 \item{n_cores}{(Optional) integer specifying the number of cores to use. See Details.}
+}
+\value{
+matrix if \code{return.all=FALSE}, if \code{return.all=TRUE} then a list is returned (see above).
 }
 \description{
 This is the main function for building the phylogenetic ILR basis, calculating the

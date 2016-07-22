@@ -14,7 +14,7 @@ vignette: >
 TODO
 
 ```{r, echo=TRUE, message=FALSE}
-library(philr); packageVersion("philr")
+#library(philr); packageVersion("philr")
 library(phyloseq); packageVersion("phyloseq")
 library(ape); packageVersion("ape")
 library(ggplot2); packageVersion("ggplot2")
@@ -42,7 +42,7 @@ make the choice of this pseudocount relatively unimportant(TODO: Cite our paper)
 Alternatively other replacement methods (multiplicative replacement etc...) may be 
 used instead if desired. 
 
-```{r, message=TRUE, warning=TRUE}
+```{r, message=FALSE, warning=FALSE}
 GP <-  filter_taxa(GlobalPatterns, function(x) sum(x > 3) > (0.2*length(x)), TRUE)
 GP <-  filter_taxa(GP, function(x) sd(x)/mean(x) > 3.0, TRUE)
 GP <- transform_sample_counts(GP, function(x) x+1)
@@ -57,7 +57,7 @@ GP
 
 ## Process Phylogenetic Tree
 Next we check that the tree is rooted and binary (all multichotomies have been resolved). 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 is.rooted(phy_tree(GP)) # Is the tree Rooted?
 is.binary.tree(phy_tree(GP)) # All multichotomies resolved?
 ```
@@ -167,7 +167,8 @@ we choose so that the resulting number of non-zero coefficients is $\approx 5$
 (for easy of visualization in this tutorial). 
 
 ```{r}
-top.coords <- as.matrix(coefficients(glmmod, s=0.2526))
+top.coords <- as.matrix(coefficients(glmmod, s=0.173900))
+#top.coords <- as.matrix(coefficients(glmmod, s=0.2526))
 top.coords <- rownames(top.coords)[which(top.coords != 0)]
 top.coords <- top.coords[2:length(top.coords)] # remove the intercept as a coordinate
 top.coords
@@ -219,16 +220,16 @@ label these two clades.
 ```{r, message=FALSE, warning=FALSE}
 tc.nn <- name.to.nn(tree, top.coords)
 tc.colors <- c('#a6cee3', '#1f78b4', '#b2df8a', '#33a02c', '#fb9a99')
-p <- ggtree(tree, layout='fan') + 
+p <- ggtree(tree, layout='fan') +
   geom_balance(node=tc.nn[1], fill=tc.colors[1], alpha=0.6) +
   geom_balance(node=tc.nn[2], fill=tc.colors[2], alpha=0.6) +
   geom_balance(node=tc.nn[3], fill=tc.colors[3], alpha=0.6) +
   geom_balance(node=tc.nn[4], fill=tc.colors[4], alpha=0.6) +
   geom_balance(node=tc.nn[5], fill=tc.colors[5], alpha=0.6)
-p <- annotate_balance(tree, 'n16', p=p, labels = c('n16+', 'n16-'), 
-                 offset.text=0.15, bar=FALSE)
-annotate_balance(tree, 'n730', p=p, labels = c('n730+', 'n730-'), 
-                 offset.text=0.15, bar=FALSE)
+# p <- annotate_balance(tree, 'n16', p=p, labels = c('n16+', 'n16-'),
+#                  offset.text=0.15, bar=FALSE)
+# annotate_balance(tree, 'n730', p=p, labels = c('n730+', 'n730-'),
+#                  offset.text=0.15, bar=FALSE)
 ```
 
 We can also view the distribution of these 5 balances for human/non-human sources.
@@ -237,29 +238,29 @@ data to long format. We have included a function `philr::convert_to_long()` for
 this purpose. 
 
 ```{r}
-gp.philr.long <- convert_to_long(gp.philr, get_variable(GP, 'human')) %>%
-  filter(coord %in% top.coords)
-
-ggplot(gp.philr.long, aes(x=labels, y=value)) +
-  geom_boxplot(fill='lightgrey') +
-  facet_grid(.~coord, scales='free_x') +
-  xlab('Human') + ylab('Balance Value') +
-  theme_bw()
+# gp.philr.long <- convert_to_long(gp.philr, get_variable(GP, 'human')) %>%
+#   filter(coord %in% top.coords)
+# 
+# ggplot(gp.philr.long, aes(x=labels, y=value)) +
+#   geom_boxplot(fill='lightgrey') +
+#   facet_grid(.~coord, scales='free_x') +
+#   xlab('Human') + ylab('Balance Value') +
+#   theme_bw()
 ```
 
 # Use Balances for Dimention Reduction
 Lets just look at balance n16 vs. balance n730 (the ones we annotated in the above tree). 
 ```{r, message=FALSE, warning=FALSE}
-library(tidyr); packageVersion('tidyr')
-
-gp.philr.long %>% 
-  rename(Human=labels) %>% 
-  filter(coord %in% c('n16', 'n730')) %>% 
-  spread(coord, value) %>% 
-  ggplot(aes(x=n16, y=n730, color=Human)) +
-  geom_point(size=4) +
-  xlab(tc.names['n16']) + ylab(tc.names['n730']) +
-  theme_bw()
+# library(tidyr); packageVersion('tidyr')
+# 
+# gp.philr.long %>% 
+#   rename(Human=labels) %>% 
+#   filter(coord %in% c('n16', 'n730')) %>% 
+#   spread(coord, value) %>% 
+#   ggplot(aes(x=n16, y=n730, color=Human)) +
+#   geom_point(size=4) +
+#   xlab(tc.names['n16']) + ylab(tc.names['n730']) +
+#   theme_bw()
 ```
 
 
