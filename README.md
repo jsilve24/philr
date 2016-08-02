@@ -5,6 +5,7 @@
 PhILR = Phylogenetic Isometric Log-Ratio Transform.
 This package provides functions for the analysis of compositional data (e.g., data representing proportions of different variables/parts). Specifically this package allows analysis of compositional data where the parts can be related through a phylogenetic tree and makes available the Isometric Log Ratio transform build from the phylogenetic tree and utilizing a weighted reference measure. 
 
+![screenshot](balances_main.png)
 
 ## Authors ##
 Justin Silverman, Duke University 
