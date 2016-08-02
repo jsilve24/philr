@@ -21,7 +21,7 @@ library(ggplot2); packageVersion("ggplot2")
 ```
 
 # Overview of PhILR Analysis
-The goal of PhILR is to transform input microbiota data into a Euclidean vector space while preserving all information contained in the original composition.  For a given set of  samples consisting of measurements of  taxa, we transform data into a new space of  samples and  orthonormal coordinates termed ‘balances’. Each balance  is associated with a single internal node  of a phylogenetic tree with the taxa as leaves. The balance represents the log-ratio of the geometric means of the two groups of taxa that descend from (TODO: Citation to Main Paper). 
+The goal of PhILR is to transform input microbiota data into a orthogonal vector space with phylogenetic / evolutionary interpretation while preserving all information contained in the original composition.  For a given set of  samples consisting of measurements of  taxa, we transform data into a new space of  samples and  orthonormal coordinates termed ‘balances’. Each balance  is associated with a single internal node  of a phylogenetic tree with the taxa as leaves. The balance represents the log-ratio of the geometric means of the two groups of taxa that descend from (TODO: Citation to Main Paper). 
 
 # Loading and Preprocessing Dataset
 Here we will demonstrate PhILR analysis using the Global Patterns dataset that

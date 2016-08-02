@@ -2,6 +2,9 @@
 *A phylogenetic transform for analysis for analysis of compositional microbiome data*
 
 ***
+PhILR = Phylogenetic Isometric Log-Ratio Transform.
+This package provides functions for the analysis of compositional data (e.g., data representing proportions of different variables/parts). Specifically this package allows analysis of compositional data where the parts can be related through a phylogenetic tree and makes available the Isometric Log Ratio transform build from the phylogenetic tree and utilizing a weighted reference measure. 
+
 
 ## Authors ##
 Justin Silverman, Duke University 
@@ -18,10 +21,8 @@ TODO: Update with repository and how to install from here (as the development ve
 ## Documentation ##
 TODO: Update with vignette info and how to call it - below call currently does not work
 ``` r
-vignette("CSS_analysis", package='philr')
+vignette("philr-intro", package='philr')
 ```
 
 ## Bugs/Feature requests ##
-I appreciate bug reports and feature requests. Please post to the github issue tracker [here](https://github.com/LAD-LAB/philr/issues). 
-
-TODO: Update link if repository shifts ownership to my account. 
+I appreciate bug reports and feature requests. Please post to the github issue tracker [here](https://github.com/jsilve24/philr/issues). 
