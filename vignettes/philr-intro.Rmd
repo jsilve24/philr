@@ -6,7 +6,7 @@ bibliography: philr.bib
 output: BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{Introduction to PhILR}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngimne{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -14,7 +14,7 @@ vignette: >
 TODO
 
 ```{r, echo=TRUE, message=FALSE}
-#library(philr); packageVersion("philr")
+library(philr); packageVersion("philr")
 library(phyloseq); packageVersion("phyloseq")
 library(ape); packageVersion("ape")
 library(ggplot2); packageVersion("ggplot2")
@@ -126,7 +126,7 @@ Here we will use the same weightings as we used in the main paper (TODO: Cite ma
 
 ```{r}
 gp.philr <- philr(otu.table, tree, 
-                  part.weights='anorm.x.gm.counts', 
+                  part.weights='enorm.x.gm.counts', 
                   ilr.weights='blw.sqrt')
 gp.philr[1:5,1:5]
 ```
@@ -167,8 +167,7 @@ we choose so that the resulting number of non-zero coefficients is $\approx 5$
 (for easy of visualization in this tutorial). 
 
 ```{r}
-top.coords <- as.matrix(coefficients(glmmod, s=0.173900))
-#top.coords <- as.matrix(coefficients(glmmod, s=0.2526))
+top.coords <- as.matrix(coefficients(glmmod, s=0.2526))
 top.coords <- rownames(top.coords)[which(top.coords != 0)]
 top.coords <- top.coords[2:length(top.coords)] # remove the intercept as a coordinate
 top.coords
@@ -226,10 +225,10 @@ p <- ggtree(tree, layout='fan') +
   geom_balance(node=tc.nn[3], fill=tc.colors[3], alpha=0.6) +
   geom_balance(node=tc.nn[4], fill=tc.colors[4], alpha=0.6) +
   geom_balance(node=tc.nn[5], fill=tc.colors[5], alpha=0.6)
-# p <- annotate_balance(tree, 'n16', p=p, labels = c('n16+', 'n16-'),
-#                  offset.text=0.15, bar=FALSE)
-# annotate_balance(tree, 'n730', p=p, labels = c('n730+', 'n730-'),
-#                  offset.text=0.15, bar=FALSE)
+p <- annotate_balance(tree, 'n16', p=p, labels = c('n16+', 'n16-'),
+                 offset.text=0.15, bar=FALSE)
+annotate_balance(tree, 'n730', p=p, labels = c('n730+', 'n730-'),
+                 offset.text=0.15, bar=FALSE)
 ```
 
 We can also view the distribution of these 5 balances for human/non-human sources.
@@ -238,29 +237,29 @@ data to long format. We have included a function `philr::convert_to_long()` for
 this purpose. 
 
 ```{r}
-# gp.philr.long <- convert_to_long(gp.philr, get_variable(GP, 'human')) %>%
-#   filter(coord %in% top.coords)
-# 
-# ggplot(gp.philr.long, aes(x=labels, y=value)) +
-#   geom_boxplot(fill='lightgrey') +
-#   facet_grid(.~coord, scales='free_x') +
-#   xlab('Human') + ylab('Balance Value') +
-#   theme_bw()
+gp.philr.long <- convert_to_long(gp.philr, get_variable(GP, 'human')) %>%
+  filter(coord %in% top.coords)
+
+ggplot(gp.philr.long, aes(x=labels, y=value)) +
+  geom_boxplot(fill='lightgrey') +
+  facet_grid(.~coord, scales='free_x') +
+  xlab('Human') + ylab('Balance Value') +
+  theme_bw()
 ```
 
 # Use Balances for Dimention Reduction
 Lets just look at balance n16 vs. balance n730 (the ones we annotated in the above tree). 
 ```{r, message=FALSE, warning=FALSE}
-# library(tidyr); packageVersion('tidyr')
-# 
-# gp.philr.long %>% 
-#   rename(Human=labels) %>% 
-#   filter(coord %in% c('n16', 'n730')) %>% 
-#   spread(coord, value) %>% 
-#   ggplot(aes(x=n16, y=n730, color=Human)) +
-#   geom_point(size=4) +
-#   xlab(tc.names['n16']) + ylab(tc.names['n730']) +
-#   theme_bw()
+library(tidyr); packageVersion('tidyr')
+
+gp.philr.long %>%
+  rename(Human=labels) %>%
+  filter(coord %in% c('n16', 'n730')) %>%
+  spread(coord, value) %>%
+  ggplot(aes(x=n16, y=n730, color=Human)) +
+  geom_point(size=4) +
+  xlab(tc.names['n16']) + ylab(tc.names['n730']) +
+  theme_bw()
 ```
 
 

@@ -30,9 +30,9 @@ miniclo <- function(c,k=1){
 #' @return shifted data matrix \code{y} (no closure is applied) rows are
 #'   samples, columns are parts
 #' @author Justin Silverman & J. J. Egozcue
-#' @references J. J. Egozcue, V. Pawlowsky-Glahn. \emph{Changing the Reference
+#' @references J. J. Egozcue, V. Pawlowsky-Glahn (2016) \emph{Changing the Reference
 #'   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
-#'   Statistics, 2016
+#'   Statistics 45(4):25-44
 #' @export
 #' @examples
 #' p <- seq(.1,1,by=.2)
@@ -58,9 +58,9 @@ shiftp <- function(x, p){
 #' @param p weights (should not be closed)
 #'
 #' @return vector (weighted geometric mean of rows)
-#' @references J. J. Egozcue, V. Pawlowsky-Glahn. \emph{Changing the Reference
+#' @references J. J. Egozcue, V. Pawlowsky-Glahn (2016) \emph{Changing the Reference
 #'   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
-#'   Statistics, 2016
+#'   Statistics 45(4):25-44
 #'
 #' @seealso gp.colMeans
 #' @examples
@@ -132,9 +132,9 @@ distp <- function(y,p){
 #' @export
 #'
 #' @author Justin Silverman
-#' @references J. J. Egozcue, V. Pawlowsky-Glahn. \emph{Changing the Reference
+#' @references J. J. Egozcue, V. Pawlowsky-Glahn (2016) \emph{Changing the Reference
 #'   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
-#'   Statistics, 2016
+#'   Statistics 45(4):25-44
 #' @examples
 #' p <- seq(.1,1,by=.2)
 #' c <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
@@ -161,9 +161,9 @@ clrp <- function(y,p){
 #' @return matrix
 #' @export
 #' @author Justin Silverman
-#' @references J. J. Egozcue, V. Pawlowsky-Glahn. \emph{Changing the Reference
+#' @references J. J. Egozcue, V. Pawlowsky-Glahn (2016) \emph{Changing the Reference
 #'   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
-#'   Statistics, 2016
+#'   Statistics 45(4):25-44
 #' @examples
 #' # Weights
 #' p <- seq(.1,1,by=.2)
@@ -196,9 +196,9 @@ ilrp <- function(y,p,V){
 #' @return matrix
 #' @export
 #' @author Justin Silverman (adapted from \link[compositions]{gsi.buildilrBase})
-#' @references J. J. Egozcue, V. Pawlowsky-Glahn. \emph{Changing the Reference
+#' @references J. J. Egozcue, V. Pawlowsky-Glahn (2016) \emph{Changing the Reference
 #'   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
-#'   Statistics, 2016
+#'   Statistics 45(4):25-44
 #' @examples
 #' p <- seq(.1,1,by=.2)
 #' tr <- named_rtree(5)

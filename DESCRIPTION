@@ -5,7 +5,13 @@ Version: 0.1.4
 Author: Justin Silverman
 Date: 2016-02-28
 Maintainer: Justin Silverman <jsilve24@gmail.com>
-Description: *** With change reference measure / weighted parts
+Description: PhILR = Phylogenetic Isometric Log-Ratio Transform.
+This package provides functions for the analysis of compositional
+data (e.g., data representing proportions of different variables/parts). Specifically
+this package allows analysis of compositional data where the parts can be
+related through a phylogenetic tree and makes available the Isometric Log Ratio
+transform build from the phylogenetic tree and utilizing a weighted reference
+measure.
 License: GPL-3
 LazyData: TRUE
 RoxygenNote: 5.0.1
@@ -13,4 +19,4 @@ Imports: ape, phangorn, dplyr, tidyr, ggplot2, ggtree
 Depends:
 Suggests: testthat, knitr, rmarkdown, BiocStyle, phyloseq, glmnet
 VignetteBuilder: knitr
-biocViews: Sequencing, Microbiome, Metagenomics
+biocViews: Sequencing, Microbiome, Metagenomics, Software

@@ -89,6 +89,7 @@ name.balance <- function(tr, tax, coord, method="voting", thresh=0.95, return.vo
 # Returns a list of the 'up' and 'down' subtree's root nodes
 # e.g., the child node of a given coordinate
 # nn is node number
+#' @importFrom phangorn Children
 get.ud.nodes <- function(tr,coord, return.nn=FALSE){
   nn <- name.to.nn(tr, coord) # get node number
   l.nodes <- list()
