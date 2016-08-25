@@ -68,7 +68,7 @@ shiftp <- function(x, p){
 #' c <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
 #' x <- miniclo(c)
 #' y <- shiftp(x, p)
-#' gp.rowMeans(y, p)
+#' philr:::gp.rowMeans(y, p)
 gp.rowMeans <- function(y, p=rep(1, nrow(y))){
   sp <- sum(p) # as given in text on page 4
   exp(1/sp*rowSums(log(y)%*%diag(p)))
@@ -86,7 +86,7 @@ gp.rowMeans <- function(y, p=rep(1, nrow(y))){
 #'
 #' @seealso gp.rowMeans
 #' @examples
-#' g.colMeans(rbind(c(2,4,4), c(2,4,4)))
+#' philr:::g.colMeans(rbind(c(2,4,4), c(2,4,4)))
 g.colMeans <- function(x){
   if(is.vector(x)) x <- matrix(x, nrow=1)
   exp(colMeans(log(x)))

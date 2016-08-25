@@ -24,12 +24,12 @@ p <- seq(.1,1,by=.2)
 c <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
 x <- miniclo(c)
 y <- shiftp(x, p)
-gp.rowMeans(y, p)
+philr:::gp.rowMeans(y, p)
 }
 \references{
-J. J. Egozcue, V. Pawlowsky-Glahn. \emph{Changing the Reference
+J. J. Egozcue, V. Pawlowsky-Glahn (2016) \emph{Changing the Reference
   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
-  Statistics, 2016
+  Statistics 45(4):25-44
 }
 \seealso{
 gp.colMeans

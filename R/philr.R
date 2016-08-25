@@ -71,7 +71,7 @@ philr <- function(df, tree, sbp=NULL,
 
   # Create the sequential binary partition sign matrix
   if (is.null(sbp)){
-    print('Building Sequential Binary Partition from Tree...')
+    message('Building Sequential Binary Partition from Tree...')
     sbp <-  phylo2sbp(tree, n_cores)
   } else {
     if ( (nrow(sbp)!=ncol(df)) | (ncol(sbp)!=ncol(df)-1) ){
@@ -121,16 +121,16 @@ philr <- function(df, tree, sbp=NULL,
   df <- shiftp(miniclo(df), p)
 
   # Now create basis contrast matrix
-  print('Building Contrast Matrix...')
+  message('Building Contrast Matrix...')
   V <- buildilrBasep(sbp, p)
 
   # Finally transform the df
-  print('Transforming the Data...')
+  message('Transforming the Data...')
   df.ilrp <- ilrp(df, p, V)
 
   # Now calculate ILR Weightings
   if (is.character(ilr.weights)){
-    print('Calculating ILR Weights...')
+    message('Calculating ILR Weights...')
     if (ilr.weights=='blw'){
       ilr.weights <- calculate.blw(tree, method='sum.children')
     } else if (ilr.weights=='blw.sqrt'){

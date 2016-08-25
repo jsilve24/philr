@@ -6,7 +6,7 @@ bibliography: philr.bib
 output: BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{Introduction to PhILR}
-  %\VignetteEngimne{knitr::rmarkdown}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 

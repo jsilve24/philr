@@ -31,8 +31,8 @@ clrp(y, p)
 Justin Silverman
 }
 \references{
-J. J. Egozcue, V. Pawlowsky-Glahn. \emph{Changing the Reference
+J. J. Egozcue, V. Pawlowsky-Glahn (2016) \emph{Changing the Reference
   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
-  Statistics, 2016
+  Statistics 45(4):25-44
 }
 

@@ -9,16 +9,13 @@ This package provides functions for the analysis of compositional data (e.g., da
 Justin Silverman, Duke University 
 
 ## Citation ##
-TODO: (coming) - update with prepublication 
+Comming soon
 
 ## License ##
 All source code freely availale under [GPL-3 License](https://www.gnu.org/licenses/gpl-3.0.en.html). 
 
-## Instalation ##
-TODO: Update with repository and how to install from here (as the development version)
-
 ## Documentation ##
-TODO: Update with vignette info and how to call it - below call currently does not work
+Each exported function in the package has been documented and we have also written an intoductory vignette that is accessible by calling 
 ``` r
 vignette("philr-intro", package='philr')
 ```
