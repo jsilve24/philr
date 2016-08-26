@@ -11,7 +11,13 @@ vignette: >
 ---
 
 # Introduction
-TODO
+PhILR is short for "Phylogenetic Isometric Log-Ratio Transform". 
+This package provides functions for the analysis of compositional
+data (e.g., data representing proportions of different variables/parts). 
+Specifically this package allows analysis of compositional data where the parts can be
+related through a phylogenetic tree and makes available the Isometric Log Ratio
+transform build from the phylogenetic tree and utilizing a weighted reference
+measure[@egozcue2016]. 
 
 ```{r, echo=TRUE, message=FALSE}
 library(philr); packageVersion("philr")
@@ -21,7 +27,7 @@ library(ggplot2); packageVersion("ggplot2")
 ```
 
 # Overview of PhILR Analysis
-The goal of PhILR is to transform input microbiota data into a orthogonal vector space with phylogenetic / evolutionary interpretation while preserving all information contained in the original composition.  For a given set of  samples consisting of measurements of  taxa, we transform data into a new space of  samples and  orthonormal coordinates termed ‘balances’. Each balance  is associated with a single internal node  of a phylogenetic tree with the taxa as leaves. The balance represents the log-ratio of the geometric means of the two groups of taxa that descend from (TODO: Citation to Main Paper). 
+The goal of PhILR is to transform input compositional data data into an orthogonal unconstrained space (real space) with phylogenetic / evolutionary interpretation while preserving all information contained in the original composition.  For a given set of  samples consisting of measurements of  taxa, we transform data into a new space of  samples and  orthonormal coordinates termed ‘balances’. Each balance  is associated with a single internal node  of a phylogenetic tree with the taxa as leaves. The balance represents the log-ratio of the geometric means of the two groups of taxa that descend from  
 
 # Loading and Preprocessing Dataset
 Here we will demonstrate PhILR analysis using the Global Patterns dataset that
@@ -38,7 +44,7 @@ and taxa with a coefficient of variation ≤ 3.0 are removed. This later step is
 intended to "protect against OTUs with small mean & trivially large C.V."
 [@mcmurdie2013]. Finally we add a pseudocount of 1 to the remaining OTUs to avoid 
 calculating log-ratios involving zeros. Note that downstream weighting procedures
-make the choice of this pseudocount relatively unimportant(TODO: Cite our paper). 
+make the choice of this pseudocount relatively unimportant. 
 Alternatively other replacement methods (multiplicative replacement etc...) may be 
 used instead if desired. 
 
@@ -122,7 +128,7 @@ to the function `philr::philr()` before it is closed (normalized) to relative ab
 some of the preset weightings of the taxa use the original count data to down weight low 
 abundance taxa. 
 
-Here we will use the same weightings as we used in the main paper (TODO: Cite main paper).
+Here we will use the same weightings as we used in the main paper.
 
 ```{r}
 gp.philr <- philr(otu.table, tree, 

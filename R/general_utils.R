@@ -44,22 +44,6 @@ name.to.nn <- function(tr, x){
   match(x, labels)
 }
 
-# Main accessor of node number through coordinate name
-# depricated - use name.to.nn
-c.to.nn <- function(tr, c){
-  .Deprecated('name.to.nn')
-  return(which(tr$node.label==c)+ape::Ntip(tr))
-}
-
-# Main accessor of node number through tip name
-# depricated - use name.to.nn
-t.to.nn <- function(tr, t){
-  .Deprecated('name.to.nn')
-  return(which(tr$tip.label==t))
-}
-
-
-
 
 # Generally Helpful for Plotting ------------------------------------------
 
