@@ -20,7 +20,7 @@ Each exported function in the package has been documented and we have also writt
 vignette("philr-intro", package='philr')
 ```
 
-## Instalation ##
+## Installation ##
 If you don't already have the `devtools` package installed, run:
 ``` r
 install.packages("devtools")
