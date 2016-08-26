@@ -71,7 +71,7 @@ philr <- function(df, tree, sbp=NULL,
   # Create the sequential binary partition sign matrix
   if (is.null(sbp)){
     message('Building Sequential Binary Partition from Tree...')
-    sbp <-  phylo2sbp(tree, n_cores)
+    sbp <-  phylo2sbp(tree)
   } else {
     if ( (nrow(sbp)!=ncol(df)) | (ncol(sbp)!=ncol(df)-1) ){
       stop("given sbp does not match dimentions required dimentions (e.g., ncol(df) x ncol(df)-1")
