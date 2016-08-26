@@ -62,14 +62,14 @@ shiftp <- function(x, p){
 #'   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
 #'   Statistics 45(4):25-44
 #'
-#' @seealso gp.colMeans
+#' @seealso g.colMeans
 #' @examples
 #' p <- seq(.1,1,by=.2)
 #' c <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
 #' x <- miniclo(c)
 #' y <- shiftp(x, p)
-#' philr:::gp.rowMeans(y, p)
-gp.rowMeans <- function(y, p=rep(1, nrow(y))){
+#' philr:::g.rowMeans(y, p)
+g.rowMeans <- function(y, p=rep(1, nrow(y))){
   sp <- sum(p) # as given in text on page 4
   exp(1/sp*rowSums(log(y)%*%diag(p)))
 }
@@ -78,13 +78,13 @@ gp.rowMeans <- function(y, p=rep(1, nrow(y))){
 #' Geometric Means of Columns
 #'
 #' Calculates geometric mean of columns. Does not calculate
-#' WEIGHTED geometric means (vs. \link{gp.rowMeans})
+#' WEIGHTED geometric means (vs. \link{g.rowMeans})
 #'
 #' @param x matrix or vector
 #'
 #' @return vector (geometric mean of columns)
 #'
-#' @seealso gp.rowMeans
+#' @seealso g.rowMeans
 #' @examples
 #' philr:::g.colMeans(rbind(c(2,4,4), c(2,4,4)))
 g.colMeans <- function(x){
@@ -147,7 +147,7 @@ clrp <- function(y,p){
 
   if(is.vector(y)) y <- matrix(y, nrow=1)
   y <- miniclo(y)
-  log(y/gp.rowMeans(y,p))
+  log(y/g.rowMeans(y,p))
 }
 
 #' Weighted ILR Transform

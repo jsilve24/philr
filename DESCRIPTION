@@ -1,7 +1,7 @@
 Package: philr
 Type: Package
 Title: Phylogenetic paritioning based ILR transform for metagenomics data
-Version: 0.1.4
+Version: 0.3.0
 Date: 2016-02-28
 Authors@R: c(person("Justin", "Silverman", role=c("aut", "cre"),
                      email = "jsilve24@gmail.com"))
@@ -17,8 +17,8 @@ Description: PhILR is short for Phylogenetic Isometric Log-Ratio Transform.
 License: GPL-3
 LazyData: TRUE
 RoxygenNote: 5.0.1
-Imports: ape, phangorn, dplyr, tidyr, ggplot2, ggtree
+Imports: ape, phangorn, tidyr, ggplot2, ggtree
 Depends:
-Suggests: testthat, knitr, rmarkdown, BiocStyle, phyloseq, glmnet
+Suggests: testthat, knitr, rmarkdown, BiocStyle, phyloseq, glmnet, dplyr
 VignetteBuilder: knitr
 biocViews: Sequencing, Microbiome, Metagenomics, Software

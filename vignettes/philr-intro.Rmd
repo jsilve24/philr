@@ -169,8 +169,7 @@ we choose so that the resulting number of non-zero coefficients is $\approx 5$
 ```{r}
 top.coords <- as.matrix(coefficients(glmmod, s=0.2526))
 top.coords <- rownames(top.coords)[which(top.coords != 0)]
-top.coords <- top.coords[2:length(top.coords)] # remove the intercept as a coordinate
-top.coords
+(top.coords <- top.coords[2:length(top.coords)]) # remove the intercept as a coordinate
 ```
 
 # Name Balances

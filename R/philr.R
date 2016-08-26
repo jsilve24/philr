@@ -59,8 +59,8 @@
 #' df <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
 #' colnames(df) <- tr$tip.label
 #'
-#' philr(df, tr, part.weights='anorm.x.gm.counts',
-#'                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
+#' philr(df, tr, part.weights='enorm.x.gm.counts',
+#'                   ilr.weights='blw.sqrt', return.all=FALSE)
 philr <- function(df, tree, sbp=NULL,
                             part.weights='uniform', ilr.weights='uniform',
                             return.all=FALSE, n_cores=1){

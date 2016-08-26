@@ -35,14 +35,14 @@ test_that('BuildilrBasep returns correct results', {
                     tolerance=1e-7)
 })
 
-test_that('gp.rowMeans returns correct', {
+test_that('g.rowMeans returns correct', {
   x <- matrix(c(2,4,4,2,4,4,2,4,4), nrow = 3, byrow=TRUE)
   p <- rep(1, 3)
 
-  expect_equal(gp.rowMeans(x, p), rep(32^(1/3), 3))
+  expect_equal(g.rowMeans(x, p), rep(32^(1/3), 3))
 
   # Test defaults have not been changed
-  expect_equal(gp.rowMeans(x), rep(32^(1/3), 3))
+  expect_equal(g.rowMeans(x), rep(32^(1/3), 3))
 })
 
 test_that('g.colMeans returns correct', {
