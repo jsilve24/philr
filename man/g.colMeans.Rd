@@ -14,12 +14,12 @@ vector (geometric mean of columns)
 }
 \description{
 Calculates geometric mean of columns. Does not calculate
-WEIGHTED geometric means (vs. \link{gp.rowMeans})
+WEIGHTED geometric means (vs. \link{g.rowMeans})
 }
 \examples{
-g.colMeans(rbind(c(2,4,4), c(2,4,4)))
+philr:::g.colMeans(rbind(c(2,4,4), c(2,4,4)))
 }
 \seealso{
-gp.rowMeans
+g.rowMeans
 }
 

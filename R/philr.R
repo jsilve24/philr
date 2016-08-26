@@ -59,8 +59,8 @@
 #' df <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
 #' colnames(df) <- tr$tip.label
 #'
-#' philr(df, tr, part.weights='anorm.x.gm.counts',
-#'                   ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
+#' philr(df, tr, part.weights='enorm.x.gm.counts',
+#'                   ilr.weights='blw.sqrt', return.all=FALSE)
 philr <- function(df, tree, sbp=NULL,
                             part.weights='uniform', ilr.weights='uniform',
                             return.all=FALSE, n_cores=1){
@@ -71,7 +71,7 @@ philr <- function(df, tree, sbp=NULL,
 
   # Create the sequential binary partition sign matrix
   if (is.null(sbp)){
-    print('Building Sequential Binary Partition from Tree...')
+    message('Building Sequential Binary Partition from Tree...')
     sbp <-  phylo2sbp(tree, n_cores)
   } else {
     if ( (nrow(sbp)!=ncol(df)) | (ncol(sbp)!=ncol(df)-1) ){
@@ -121,16 +121,16 @@ philr <- function(df, tree, sbp=NULL,
   df <- shiftp(miniclo(df), p)
 
   # Now create basis contrast matrix
-  print('Building Contrast Matrix...')
+  message('Building Contrast Matrix...')
   V <- buildilrBasep(sbp, p)
 
   # Finally transform the df
-  print('Transforming the Data...')
+  message('Transforming the Data...')
   df.ilrp <- ilrp(df, p, V)
 
   # Now calculate ILR Weightings
   if (is.character(ilr.weights)){
-    print('Calculating ILR Weights...')
+    message('Calculating ILR Weights...')
     if (ilr.weights=='blw'){
       ilr.weights <- calculate.blw(tree, method='sum.children')
     } else if (ilr.weights=='blw.sqrt'){

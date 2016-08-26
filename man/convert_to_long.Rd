@@ -29,7 +29,8 @@ tr <- named_rtree(5)
 df <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
 colnames(df) <- tr$tip.label
 
-philr(df, tr, part.weights='anorm.x.gm.counts',
-      ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
+df.philr <- philr(df, tr, part.weights='enorm.x.gm.counts',
+      ilr.weights='blw.sqrt', return.all=FALSE)
+convert_to_long(df.philr, rep(c('a','b'), 5))
 }
 

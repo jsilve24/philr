@@ -30,9 +30,9 @@ miniclo <- function(c,k=1){
 #' @return shifted data matrix \code{y} (no closure is applied) rows are
 #'   samples, columns are parts
 #' @author Justin Silverman & J. J. Egozcue
-#' @references J. J. Egozcue, V. Pawlowsky-Glahn. \emph{Changing the Reference
+#' @references J. J. Egozcue, V. Pawlowsky-Glahn (2016) \emph{Changing the Reference
 #'   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
-#'   Statistics, 2016
+#'   Statistics 45(4):25-44
 #' @export
 #' @examples
 #' p <- seq(.1,1,by=.2)
@@ -58,18 +58,18 @@ shiftp <- function(x, p){
 #' @param p weights (should not be closed)
 #'
 #' @return vector (weighted geometric mean of rows)
-#' @references J. J. Egozcue, V. Pawlowsky-Glahn. \emph{Changing the Reference
+#' @references J. J. Egozcue, V. Pawlowsky-Glahn (2016) \emph{Changing the Reference
 #'   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
-#'   Statistics, 2016
+#'   Statistics 45(4):25-44
 #'
-#' @seealso gp.colMeans
+#' @seealso g.colMeans
 #' @examples
 #' p <- seq(.1,1,by=.2)
 #' c <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
 #' x <- miniclo(c)
 #' y <- shiftp(x, p)
-#' gp.rowMeans(y, p)
-gp.rowMeans <- function(y, p=rep(1, nrow(y))){
+#' philr:::g.rowMeans(y, p)
+g.rowMeans <- function(y, p=rep(1, nrow(y))){
   sp <- sum(p) # as given in text on page 4
   exp(1/sp*rowSums(log(y)%*%diag(p)))
 }
@@ -78,15 +78,15 @@ gp.rowMeans <- function(y, p=rep(1, nrow(y))){
 #' Geometric Means of Columns
 #'
 #' Calculates geometric mean of columns. Does not calculate
-#' WEIGHTED geometric means (vs. \link{gp.rowMeans})
+#' WEIGHTED geometric means (vs. \link{g.rowMeans})
 #'
 #' @param x matrix or vector
 #'
 #' @return vector (geometric mean of columns)
 #'
-#' @seealso gp.rowMeans
+#' @seealso g.rowMeans
 #' @examples
-#' g.colMeans(rbind(c(2,4,4), c(2,4,4)))
+#' philr:::g.colMeans(rbind(c(2,4,4), c(2,4,4)))
 g.colMeans <- function(x){
   if(is.vector(x)) x <- matrix(x, nrow=1)
   exp(colMeans(log(x)))
@@ -132,9 +132,9 @@ distp <- function(y,p){
 #' @export
 #'
 #' @author Justin Silverman
-#' @references J. J. Egozcue, V. Pawlowsky-Glahn. \emph{Changing the Reference
+#' @references J. J. Egozcue, V. Pawlowsky-Glahn (2016) \emph{Changing the Reference
 #'   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
-#'   Statistics, 2016
+#'   Statistics 45(4):25-44
 #' @examples
 #' p <- seq(.1,1,by=.2)
 #' c <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
@@ -147,7 +147,7 @@ clrp <- function(y,p){
 
   if(is.vector(y)) y <- matrix(y, nrow=1)
   y <- miniclo(y)
-  log(y/gp.rowMeans(y,p))
+  log(y/g.rowMeans(y,p))
 }
 
 #' Weighted ILR Transform
@@ -161,9 +161,9 @@ clrp <- function(y,p){
 #' @return matrix
 #' @export
 #' @author Justin Silverman
-#' @references J. J. Egozcue, V. Pawlowsky-Glahn. \emph{Changing the Reference
+#' @references J. J. Egozcue, V. Pawlowsky-Glahn (2016) \emph{Changing the Reference
 #'   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
-#'   Statistics, 2016
+#'   Statistics 45(4):25-44
 #' @examples
 #' # Weights
 #' p <- seq(.1,1,by=.2)
@@ -196,9 +196,9 @@ ilrp <- function(y,p,V){
 #' @return matrix
 #' @export
 #' @author Justin Silverman (adapted from \link[compositions]{gsi.buildilrBase})
-#' @references J. J. Egozcue, V. Pawlowsky-Glahn. \emph{Changing the Reference
+#' @references J. J. Egozcue, V. Pawlowsky-Glahn (2016) \emph{Changing the Reference
 #'   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
-#'   Statistics, 2016
+#'   Statistics 45(4):25-44
 #' @examples
 #' p <- seq(.1,1,by=.2)
 #' tr <- named_rtree(5)

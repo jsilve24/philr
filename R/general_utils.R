@@ -78,20 +78,22 @@ t.to.nn <- function(tr, t){
 #' \item value
 #' }
 #' @export
-#' @importFrom tidyr gather
+#' @importFrom tidyr gather_
 #' @examples
 #' tr <- named_rtree(5)
 #' df <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
 #' colnames(df) <- tr$tip.label
 #'
-#' philr(df, tr, part.weights='anorm.x.gm.counts',
-#'       ilr.weights='blw.sqrt', return.all=FALSE, n_cores=1)
+#' df.philr <- philr(df, tr, part.weights='enorm.x.gm.counts',
+#'       ilr.weights='blw.sqrt', return.all=FALSE)
+#' convert_to_long(df.philr, rep(c('a','b'), 5))
 convert_to_long <- function(df, labels){
   coord.names <- colnames(df)
   df.long <- as.data.frame(df)
   df.long$sample <- rownames(df.long)
   df.long$labels <- labels
-  df.long <- gather(df.long, coord, value, -labels, -sample)
+  df.long <- gather_(df.long, "coord", "value",
+                     setdiff(names(df.long), c("labels", "sample")))
   return(df.long)
 }
 
