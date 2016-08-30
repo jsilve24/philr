@@ -1,7 +1,7 @@
 Package: philr
 Type: Package
 Title: Phylogenetic paritioning based ILR transform for metagenomics data
-Version: 0.3.0
+Version: 0.99.0
 Date: August 26, 2016
 Authors@R: c(person("Justin", "Silverman", role=c("aut", "cre"),
                      email = "jsilve24@gmail.com"))
