@@ -4,12 +4,10 @@
 \alias{phylo2sbp}
 \title{Create Sequential Binary Partition from Phylogenetic Tree}
 \usage{
-phylo2sbp(tr, n_cores = 1)
+phylo2sbp(tr)
 }
 \arguments{
 \item{tr}{a \code{phylo} tree object with n leaves}
-
-\item{n_cores}{(Optional) integer specifying the number of cores to use. See Details.}
 }
 \value{
 a n by n-1 matrix of the sequential binary partition sign matrix
@@ -20,8 +18,10 @@ parition to be used to then build an ILR basis for compositional
 metagenomic data.
 }
 \details{
-Parallelization is done through \code{parallel} package using type "FORK".
-Note parallelization is rarely needed, even for trees of upwards of 40,000 leaves.
+The choice of orientation for a balance (i.e., which of the two descendant
+clades of an internal node is in the numerator or denominator of the
+log-ratio) is given by the default of the function phangorn::Children
+and that choise is used consistently throughout the philr package.
 }
 \examples{
 tr <- named_rtree(5)

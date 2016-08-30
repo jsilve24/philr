@@ -11,36 +11,35 @@ vignette: >
 ---
 
 # Introduction
-TODO
-
-```{r, echo=TRUE, message=FALSE}
-library(philr); packageVersion("philr")
-library(phyloseq); packageVersion("phyloseq")
-library(ape); packageVersion("ape")
-library(ggplot2); packageVersion("ggplot2")
-```
+PhILR is short for "Phylogenetic Isometric Log-Ratio Transform".
+This package provides functions for the analysis of [compositional data](https://en.wikipedia.org/wiki/Compositional_data) (e.g., data representing proportions of different variables/parts). Specifically this package allows analysis of compositional data where the parts can be related through a phylogenetic tree (as is common in microbiota survey data) and makes available the Isometric Log Ratio transform build from the phylogenetic tree and utilizing a weighted reference measure [@egozcue2016]. 
 
 # Overview of PhILR Analysis
-The goal of PhILR is to transform input microbiota data into a orthogonal vector space with phylogenetic / evolutionary interpretation while preserving all information contained in the original composition.  For a given set of  samples consisting of measurements of  taxa, we transform data into a new space of  samples and  orthonormal coordinates termed ‘balances’. Each balance  is associated with a single internal node  of a phylogenetic tree with the taxa as leaves. The balance represents the log-ratio of the geometric means of the two groups of taxa that descend from (TODO: Citation to Main Paper). 
+The goal of PhILR is to transform compositional data into an orthogonal unconstrained space (real space) with phylogenetic / evolutionary interpretation while preserving all information contained in the original composition. Unlike in the original compositional space, in the transformed real space, standard statistical tools may be applied. For a given set of samples consisting of measurements of  taxa, we transform data into a new space of  samples and  orthonormal coordinates termed ‘balances’. Each balance  is associated with a single internal node  of a phylogenetic tree with the taxa as leaves. The balance represents the log-ratio of the geometric mean abundance of the two groups of taxa that descend from the given internal node. 
 
 # Loading and Preprocessing Dataset
 Here we will demonstrate PhILR analysis using the Global Patterns dataset that
 was originally published by @caporaso2011. This dataset is provided with the 
 `phyloseq` package [@mcmurdie2013] and our analysis follows, in part, that of the authors 
 [GitHub Tutorial](http://joey711.github.io/phyloseq/preprocess.html).
-```{r}
+
+```{r, echo=TRUE, message=FALSE}
+library(philr); packageVersion("philr")
+library(phyloseq); packageVersion("phyloseq")
+library(ape); packageVersion("ape")
+library(ggplot2); packageVersion("ggplot2")
+
 data(GlobalPatterns)
 ```
 
 ## Filter Extreemly Low Abundance OTUs
-Taxa that were not seen with more than 3 counts in at aleast 20% of samples are removed
-and taxa with a coefficient of variation ≤ 3.0 are removed. This later step is 
-intended to "protect against OTUs with small mean & trivially large C.V."
-[@mcmurdie2013]. Finally we add a pseudocount of 1 to the remaining OTUs to avoid 
-calculating log-ratios involving zeros. Note that downstream weighting procedures
-make the choice of this pseudocount relatively unimportant(TODO: Cite our paper). 
-Alternatively other replacement methods (multiplicative replacement etc...) may be 
-used instead if desired. 
+Taxa that were not seen with more than 3 counts in at least 20% of samples are filtered.
+Subsequently, those witha coefficient of variation ≤ 3 are filtered. These steps follow 
+those of [@mcmurdie2013]. Finally we add a pseudocount of 1 to the remaining OTUs to avoid 
+calculating log-ratios involving zeros. Alternatively other replacement methods 
+(multiplicative replacement etc...) may be used instead if desired; the 
+subsequent taxa weighting procedure we will describe complements a variety of 
+zero replacement methods. 
 
 ```{r, message=FALSE, warning=FALSE}
 GP <-  filter_taxa(GlobalPatterns, function(x) sum(x > 3) > (0.2*length(x)), TRUE)
@@ -70,7 +69,7 @@ Once this is done, we name the internal nodes of the tree so they
 are easier to work with. We prefix the node number with `n` and thus the root 
 is named `n1`. 
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 phy_tree(GP) <- makeNodeLabel(phy_tree(GP), method="number", prefix='n')
 ```
 
@@ -110,8 +109,8 @@ using the function `philr::phylo2sbp()`
 2. Calculate the weighting of the taxa (aka parts) or use the user specified weights
 3. Built the contrast matrix from the SBP and taxa weights using the function 
 `philr::buildilrBasep()`
-4. Convert OTU table to relative abundance and 'shift' dataset using the weightings
-[@egozcue2016] using the function `philr::shiftp()`.
+4. Convert OTU table to relative abundance (using `philr::miniclo()`) and 
+'shift' dataset using the weightings [@egozcue2016] using the function `philr::shiftp()`.
 5. Transform the data to PhILR space using the function `philr::ilrp()`
 6. (Optional) Weight the resulting PhILR space using phylogenetic distance. These
 weights are either provided by the user or can be calculated by the function 
@@ -122,7 +121,7 @@ to the function `philr::philr()` before it is closed (normalized) to relative ab
 some of the preset weightings of the taxa use the original count data to down weight low 
 abundance taxa. 
 
-Here we will use the same weightings as we used in the main paper (TODO: Cite main paper).
+Here we will use the same weightings as we used in the main paper.
 
 ```{r}
 gp.philr <- philr(otu.table, tree, 
@@ -152,7 +151,7 @@ logistic regression (from the `glmnet` pacakge) to identify a small number of
 balances that best distinguish human from non-human samples. 
 
 First we will make a new variable distinguishing human/non-human
-```{r}
+```{r, message=FALSE, warning=FALSE}
 sample_data(GP)$human <- factor(get_variable(GP, "SampleType") %in% c("Feces", "Mock", "Skin", "Tongue"))
 ```
 
@@ -178,7 +177,7 @@ To find the taxonomic labels that correspond to these balances we can use the fu
 the two descendent clades of a given balance separately. For a given clade, 
 the taxonomy table is subset to only contain taxa from that clade. Starting 
 at the finest taxonomic rank (e.g., species) the subset taxonomy table is checked to see
-if any label (e.g., species name) represents ≥threshold (default 95%) of
+if any label (e.g., species name) represents ≥ threshold (default 95%) of
 the table entries at that taxonomic rank. If no consensus identifier is found, the table is checked at the next-most specific taxonomic rank (etc...). 
 
 ```{r}
@@ -204,10 +203,10 @@ library(ggtree); packageVersion("ggtree")
 library(dplyr); packageVersion('dplyr')
 ```
 
-So these are the top 5 coordinates (balances) that distinguish whether a 
+Above we found the top 5 coordinates (balances) that distinguish whether a 
 sample is from a human or non-human source. Now using the `ggtree` package we 
-can visualize these balances on the tree. To use this function we need
-to know the acctual node number (not just the names we have given) of these balances
+can visualize these balances on the tree using the `geom_balance` object. 
+To use these functions we need to know the acctual node number (not just the names we have given) of these balances
 on the tree. To convert between node number and name, we have added the functions
 `philr::name.to.nn()` and `philr::nn.to.name()`.  
 In addition, it is important that we know which clade of the balance is in the 
