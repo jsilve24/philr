@@ -5,18 +5,19 @@
 #' metagenomic data.
 #'
 #' @param tr a \code{phylo} tree object with n leaves
-#' @param n_cores (Optional) integer specifying the number of cores to use. See Details.
 #' @return a n by n-1 matrix of the sequential binary partition sign matrix
 #' @details
-#' Parallelization is done through \code{parallel} package using type "FORK".
-#' Note parallelization is rarely needed, even for trees of upwards of 40,000 leaves.
+#' The choice of orientation for a balance (i.e., which of the two descendant
+#' clades of an internal node is in the numerator or denominator of the
+#' log-ratio) is given by the default of the function phangorn::Children
+#' and that choise is used consistently throughout the philr package.
 #' @author Justin Silverman
 #' @export
 #' @seealso \code{\link{philr}}
 #' @examples
 #' tr <- named_rtree(5)
 #' phylo2sbp(tr)
-phylo2sbp <- function (tr, n_cores=1){
+phylo2sbp <- function (tr){
     nTips <- ape::Ntip(tr)
     ch <- phangorn::Children(tr, (nTips+1):(nTips+tr$Nnode))
     ti <- phangorn::Descendants(tr,(nTips+1):(nTips+tr$Nnode), 'tips')
@@ -34,13 +35,7 @@ phylo2sbp <- function (tr, n_cores=1){
         return(tmp)
     }
 
-    if (n_cores > 1){
-        cl <- parallel::makeCluster(n_cores, type='FORK')
-        sbp <- parallel::parSapply(cl, ch, bpVec, ti)
-        parallel::stopCluster(cl)
-    } else {
-        sbp <- sapply(ch, bpVec, ti)
-    }
+    sbp <- sapply(ch, bpVec, ti)
 
     colnames(sbp) <- tr$node.label
     rownames(sbp) <- tr$tip.label

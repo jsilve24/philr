@@ -6,7 +6,7 @@
 \title{Data transformation and driver of PhILR.}
 \usage{
 philr(df, tree, sbp = NULL, part.weights = "uniform",
-  ilr.weights = "uniform", return.all = FALSE, n_cores = 1)
+  ilr.weights = "uniform", return.all = FALSE)
 }
 \arguments{
 \item{df}{matrix of data to be transformed (samples are rows,
@@ -45,8 +45,6 @@ part weightings (code{p}), ilr weightings (code{ilr.weights}), contrast matrix (
 as a list (default=\code{FALSE}) in addition to in addition to returning the transformed data (\code{df.ilrp}).
 If \code{return.all==FALSE} then only returns the transformed data (not in list format)
 If \code{FALSE} then just returns list containing \code{df.ilrp}.}
-
-\item{n_cores}{(Optional) integer specifying the number of cores to use. See Details.}
 }
 \value{
 matrix if \code{return.all=FALSE}, if \code{return.all=TRUE} then a list is returned (see above).

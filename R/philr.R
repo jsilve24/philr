@@ -33,7 +33,6 @@
 #' as a list (default=\code{FALSE}) in addition to in addition to returning the transformed data (\code{df.ilrp}).
 #' If \code{return.all==FALSE} then only returns the transformed data (not in list format)
 #' If \code{FALSE} then just returns list containing \code{df.ilrp}.
-#' @param n_cores (Optional) integer specifying the number of cores to use. See Details.
 #' @inheritParams calculate.blw
 #' @details
 #' This is a utility function that pulls together a number of other functions
@@ -63,7 +62,7 @@
 #'                   ilr.weights='blw.sqrt', return.all=FALSE)
 philr <- function(df, tree, sbp=NULL,
                             part.weights='uniform', ilr.weights='uniform',
-                            return.all=FALSE, n_cores=1){
+                            return.all=FALSE){
   # Check for Zero values in df
   if (any(df == 0)){
     stop('Zero values must be removed either through use of pseudocount, multiplicative replacement or other method.')
@@ -72,7 +71,7 @@ philr <- function(df, tree, sbp=NULL,
   # Create the sequential binary partition sign matrix
   if (is.null(sbp)){
     message('Building Sequential Binary Partition from Tree...')
-    sbp <-  phylo2sbp(tree, n_cores)
+    sbp <-  phylo2sbp(tree)
   } else {
     if ( (nrow(sbp)!=ncol(df)) | (ncol(sbp)!=ncol(df)-1) ){
       stop("given sbp does not match dimentions required dimentions (e.g., ncol(df) x ncol(df)-1")
