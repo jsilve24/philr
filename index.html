@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="PhILR : A phylogenetic transform for analysis of compositional genome survey data">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>PhILR</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/jsilve24/philr">View on GitHub</a>
+
+          <h1 id="project_title">PhILR</h1>
+          <h2 id="project_tagline">A phylogenetic transform for analysis of compositional genome survey data</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/jsilve24/philr/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/jsilve24/philr/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h3>
+<a id="overview" class="anchor" href="#overview" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Overview</h3>
+
+<p>PhILR = Phylogenetic Isometric Log-Ratio Transform. This R package provides functions for the analysis of compositional data (e.g., data representing proportions of different variables/parts). Specifically this package allows analysis of compositional data where the parts can be related through a phylogenetic tree (as is common in microbiota/genome survey data) and makes available the Isometric Log Ratio transform built from the phylogenetic tree and utilizing a weighted reference measure.</p>
+
+<h3>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h3>
+
+<p>If you don't already have the <code>devtools</code> package installed, run:</p>
+
+<div class="highlight highlight-source-r"><pre>install.packages(<span class="pl-s"><span class="pl-pds">'</span>devtools<span class="pl-pds">'</span></span>)</pre></div>
+
+<p>The development version is maintained on GitHub, try:</p>
+
+<div class="highlight highlight-source-r"><pre><span class="pl-e">devtools</span><span class="pl-k">::</span>install_github(<span class="pl-s"><span class="pl-pds">'</span>jsilve24/philr<span class="pl-pds">'</span></span>)</pre></div>
+
+<p>Alternatively, download and decompress package and then run:</p>
+
+<div class="highlight highlight-source-r"><pre>source(<span class="pl-s"><span class="pl-pds">'</span>http://bioconductor.org/biocLite.R<span class="pl-pds">'</span></span>)
+<span class="pl-e">devtools</span><span class="pl-k">::</span>install_local(‘<span class="pl-smi">x</span>’)  <span class="pl-c"># replace x with path to decompressed package</span></pre></div>
+
+<h3>
+<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Documentation</h3>
+
+<p>Each exported function in the package has been documented and we have also written an introductory vignette that is accessible by calling </p>
+
+<div class="highlight highlight-source-r"><pre>vignette(<span class="pl-s"><span class="pl-pds">'</span>philr-intro<span class="pl-pds">'</span></span>, <span class="pl-v">package</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>philr<span class="pl-pds">'</span></span>)</pre></div>
+
+<h3>
+<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+
+<p>Justin Silverman (<a href="https://github.com/jsilve24" class="user-mention">@jsilve24</a>), Duke University</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">PhILR maintained by <a href="https://github.com/jsilve24">jsilve24</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
