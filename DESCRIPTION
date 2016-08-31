@@ -22,3 +22,5 @@ Depends:
 Suggests: testthat, knitr, rmarkdown, BiocStyle, phyloseq, glmnet, dplyr
 VignetteBuilder: knitr
 biocViews: Sequencing, Microbiome, Metagenomics, Software
+URL: https://github.com/jsilve24/philr 
+BugReports: https://github.com/jsilve24/philr/issues
