@@ -53,4 +53,10 @@ annotate_balance(tr, 'n4', bar=TRUE, geom='label', size=8, offset.text=0.1)
 \author{
 Justin Silverman
 }
+\references{
+Guangchuang Yu, David Smith, Huachen Zhu, Yi Guan, Tommy Tsan-Yuk Lam.
+\emph{ggtree: an R package for visualization and annotation of phylogenetic trees with 
+their covariates and other associated data.}
+Methods in Ecology and Evolution 2016, doi:10.1111/2041-210X.12628
+}
 

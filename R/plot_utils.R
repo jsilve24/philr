@@ -24,6 +24,10 @@
 #'
 #' @export
 #' @author Justin Silverman
+#' @references Guangchuang Yu, David Smith, Huachen Zhu, Yi Guan, Tommy Tsan-Yuk Lam.
+#' \emph{ggtree: an R package for visualization and annotation of phylogenetic trees with 
+#' their covariates and other associated data.}
+#' Methods in Ecology and Evolution 2016, doi:10.1111/2041-210X.12628
 #'
 #' @examples
 #' tr <- named_rtree(10)
