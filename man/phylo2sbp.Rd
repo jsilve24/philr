@@ -30,6 +30,10 @@ phylo2sbp(tr)
 \author{
 Justin Silverman
 }
+\references{
+Schliep K.P. 2011. phangorn: phylogenetic analysis in R. 
+Bioinformatics, 27(4) 592-593
+}
 \seealso{
 \code{\link{philr}}
 }

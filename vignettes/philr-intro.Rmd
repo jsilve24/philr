@@ -204,7 +204,7 @@ library(dplyr); packageVersion('dplyr')
 ```
 
 Above we found the top 5 coordinates (balances) that distinguish whether a 
-sample is from a human or non-human source. Now using the `ggtree` package we 
+sample is from a human or non-human source. Now using the `ggtree` [@yu2016] package we 
 can visualize these balances on the tree using the `geom_balance` object. 
 To use these functions we need to know the acctual node number (not just the names we have given) of these balances
 on the tree. To convert between node number and name, we have added the functions
