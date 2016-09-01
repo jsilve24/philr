@@ -9,7 +9,7 @@ This R package provides functions for the analysis of compositional data (e.g., 
 Justin Silverman, Duke University 
 
 ## Citation ##
-Comming soon
+Silverman JS, Washburne A, Mukherjee S, David LA. 2016. A phylogenetic transform enhances analysis of compositional microbiota data. bioRxiv doi: 10.1101/072413
 
 ## License ##
 All source code freely availale under [GPL-3 License](https://www.gnu.org/licenses/gpl-3.0.en.html). 
