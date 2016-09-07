@@ -1,3 +1,19 @@
+CHANGES IN VERSION 0.99.0
+--------------------------
+  
+    - removed deprecated functions (c.to.nn and t.to.nn)
+    - removed options for parallel processing in phylo2sbp, with the 
+      algorithmic speedups to this function parallel processing 
+      is superfluous and not used (even for trees of >45,000 leaves). 
+    - Updated introduction to philr-intro vignette. 
+    - Added Install instructions (from source) to readme
+    - Added citation info to readme (paper not on bioRxiv) 
+      http://biorxiv.org/content/early/2016/08/31/072413
+      Silverman JS, Washburne A, Mukherjee S, David LA. 2016. 
+      A phylogenetic transform enhances analysis of compositional microbiota data. 
+      bioRxiv doi: 10.1101/072413
+
+
 CHANGES IN VERSION 0.3.0
 --------------------------
 

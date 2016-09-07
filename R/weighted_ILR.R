@@ -102,27 +102,6 @@ normp <- function(y,p){
   sqrt(inner.prodp(y,y,p))
 }
 
-# pg 5
-# for a pair of samples
-distp.pair <- function(y1,y2,p){
-  sqrt(sum(p*(clrp(y1,p)-clrp(y2,p))^2))
-}
-
-#pg 5
-# This function is for a matrix where each row is a sample
-distp <- function(y,p){
-  n <- dim(y)[1]
-  tmp <- matrix(rep(NA,n),ncol = n, nrow = n)
-  for (i in 1:n){
-    for (j in 1:i) {
-      if (i!=j){
-        tmp[i,j] <- distp.pair(y[i,],y[j,],p)
-      }
-    }
-  }
-  return(stats::as.dist(tmp))
-}
-
 #' Weighted CLR Transform
 #'
 #' @param y shifted data matrix (e.g., output of \link{shiftp})
