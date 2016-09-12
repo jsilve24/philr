@@ -1,0 +1,6 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+README.md
+TODO.txt
+^.*\.DS_Store
+docs
