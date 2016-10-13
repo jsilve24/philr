@@ -74,7 +74,10 @@ CHANGES IN VERSION 0.1.0
 --------------------------
 
 USER-VISIBLE CHANGES
-    - Basic functions from paper in added
-    - name.balance can now show vote tallies
-    - Rhilr function now warns if zeroes present
-    - Added convert_to_long function
+    o Basic functions from paper in added
+    
+    o name.balance can now show vote tallies
+    
+    o Philr function now warns if zeroes present
+    
+    o Added convert_to_long function
