@@ -1,59 +1,83 @@
 CHANGES IN VERSION 0.99.0
 --------------------------
-  
-    - removed deprecated functions (c.to.nn and t.to.nn)
-    - removed options for parallel processing in phylo2sbp, with the 
-      algorithmic speedups to this function parallel processing 
-      is superfluous and not used (even for trees of >45,000 leaves). 
-    - Updated introduction to philr-intro vignette. 
-    - Added Install instructions (from source) to readme
-    - Added citation info to readme (paper not on bioRxiv) 
+
+USER-VISIBLE CHANGES
+
+    o Removed deprecated functions (c.to.nn and t.to.nn)
+
+    o Removed options for parallel processing in phylo2sbp, with the
+      algorithmic speedups to this function parallel processing
+      is superfluous and not used (even for trees of >45,000 leaves).
+
+    o Updated introduction to philr-intro vignette.
+
+    o Added Install instructions (from source) to readme
+
+    o Added citation info to readme (paper not on bioRxiv)
       http://biorxiv.org/content/early/2016/08/31/072413
-      Silverman JS, Washburne A, Mukherjee S, David LA. 2016. 
-      A phylogenetic transform enhances analysis of compositional microbiota data. 
+      Silverman JS, Washburne A, Mukherjee S, David LA. 2016.
+      A phylogenetic transform enhances analysis of compositional microbiota data.
       bioRxiv doi: 10.1101/072413
+
+    o News file is now parsed by news() function.
 
 
 CHANGES IN VERSION 0.3.0
 --------------------------
 
-  INTERNAL
-    - Fixed confusing difference between gp.rowMeans and g.colMeans (now
-    gp.rowMeans -> g.rowMeans)
-    - Bug Fixes
+INTERNAL CHANGES
+
+    o Fixed confusing difference between gp.rowMeans and g.colMeans (now
+      gp.rowMeans -> g.rowMeans)
+
+    o Various other bug fixes
 
 CHANGES IN VERSION 0.1.4
 --------------------------
 
-    - Introduced new vignette ('philr-intro') based on Global Patterns dataset
-    from phyloseq
-    - name.to.nn which (as well as nn.to.name) are now exported!
-    - internal plotting functions replaced with annotate_balance and new
-    geom_balance which was implemented in the package ggtree.
-    - resolved anorm vs. enorm bug (previously anorm was calculating the
-    euclidean norm due to subsetting behavior in compositions package). With
-    this, also removed dependency on compositions package and reimplemented
-    closure in philr.
+USER-VISIBLE CHANGES
 
-  INTERNAL
-    - gp.rowMeans and g.colMeans now handle calculation of geometric means
-    for rows and columns respectively. Note 'gp' because rowMeans for rows
-    needs to be calculated with weights. (See reference in the documentation
-    for that function).
+    o Introduced new vignette ('philr-intro') based on Global Patterns dataset
+      from phyloseq
+
+    o name.to.nn which (as well as nn.to.name) are now exported!
+
+    o Internal plotting functions replaced with annotate_balance and new
+    geom_balance which was implemented in the package ggtree.
+
+    o Resolved anorm vs. enorm bug (previously anorm was calculating the
+      euclidean norm due to subsetting behavior in compositions package). With
+      this, also removed dependency on compositions package and reimplemented
+      closure in philr.
+
+INTERNAL
+
+    o gp.rowMeans and g.colMeans now handle calculation of geometric means
+      for rows and columns respectively. Note 'gp' because rowMeans for rows
+      needs to be calculated with weights. (See reference in the documentation
+      for that function).
 
 CHANGES IN VERSION 0.1.3
 --------------------------
 
-    - Weighted / Genralized ILR functions now exported (shiftp, clrp, ilrp,
-    buildilrBasep)
-    - renamed function blw.mean.descendants to mean_dist_to_tips
-    -  t.to.nn and c.to.nn replaced by name.to.nn which (as well as nn.to.name)
-    are now vectorized.
+USER-VISIBLE CHANGES
+
+    o Weighted / Genralized ILR functions now exported (shiftp, clrp, ilrp,
+      buildilrBasep)
+
+    o Renamed function blw.mean.descendants to mean_dist_to_tips
+
+    o t.to.nn and c.to.nn replaced by name.to.nn which (as well as nn.to.name)
+      are now vectorized.
 
 CHANGES IN VERSION 0.1.0
 --------------------------
 
-    - Basic functions from paper in added
-    - name.balance can now show vote tallies
-    - philr function now warns if zeroes present
-    - added convert_to_long function
+USER-VISIBLE CHANGES
+    o Basic functions from paper in added
+    
+    o name.balance can now show vote tallies
+    
+    o Philr function now warns if zeroes present
+    
+    o Added convert_to_long function
