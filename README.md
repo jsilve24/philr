@@ -21,17 +21,21 @@ vignette('philr-intro', package='philr')
 ```
 
 ## Installation ##
-If you don't already have the `devtools` package installed, run:
+The release verion of philr is maintained on (Bioconductor)[http://bioconductor.org/packages/philr/]
 ``` r
-install.packages('devtools')
+## try http:// if https:// URLs are not supported
+source("https://bioconductor.org/biocLite.R")
+## biocLite("BiocUpgrade") ## you may need this
+biocLite("philr")
 ```
-
-The development version is maintained on GitHub, try:
+The development version is maintained on GitHub and can be downloaded as follows:
 ``` r 
+## install.packages('devtools') # if devtools not installed
 devtools::install_github('jsilve24/philr')
 ```
 Alternatively, download and decompress package and then run:
 ```r
+## install.packages('devtools') # if devtools not installed
 source('http://bioconductor.org/biocLite.R')
 devtools::install_local(‘x’)  # replace x with path to decompressed package
 ```
