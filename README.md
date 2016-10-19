@@ -21,7 +21,7 @@ vignette('philr-intro', package='philr')
 ```
 
 ## Installation ##
-The release verion of philr is maintained on (Bioconductor)[http://bioconductor.org/packages/philr/]
+The release verion of philr is maintained on [Bioconductor](http://bioconductor.org/packages/philr/)
 ``` r
 ## try http:// if https:// URLs are not supported
 source("https://bioconductor.org/biocLite.R")
