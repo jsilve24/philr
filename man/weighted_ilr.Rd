@@ -2,9 +2,12 @@
 % Please edit documentation in R/weighted_ILR.R
 \name{ilrp}
 \alias{ilrp}
+\alias{ilrpInv}
 \title{Weighted ILR Transform}
 \usage{
 ilrp(y, p, V)
+
+ilrpInv(y.star, V)
 }
 \arguments{
 \item{y}{shifted data matrix (e.g., output of \link{shiftp})}
@@ -12,6 +15,8 @@ ilrp(y, p, V)
 \item{p}{weights (should not be closed)}
 
 \item{V}{weighted contrast matrix (e.g., output of \link{buildilrBasep})}
+
+\item{y.star}{a data matrix that represents data transformed by \code{ilrp}}
 }
 \value{
 matrix
@@ -33,7 +38,12 @@ tr <- named_rtree(5)
 sbp <- phylo2sbp(tr)
 V <- buildilrBasep(sbp, p)
 
-ilrp(y, p, V)
+y.star <- ilrp(y, p, V)
+y.star
+
+# Untransform data (note use of shiftp and miniclo to return to x)
+y.closed <- ilrpInv(y.star, V)
+all.equal(miniclo(shiftpInv(y.closed, p)), x, check.attributes=FALSE)
 }
 \author{
 Justin Silverman
@@ -42,5 +52,8 @@ Justin Silverman
 J. J. Egozcue, V. Pawlowsky-Glahn (2016) \emph{Changing the Reference
   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
   Statistics 45(4):25-44
+}
+\seealso{
+\code{\link{philrInv}}
 }
 

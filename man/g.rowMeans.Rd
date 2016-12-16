@@ -32,6 +32,6 @@ J. J. Egozcue, V. Pawlowsky-Glahn (2016) \emph{Changing the Reference
   Statistics 45(4):25-44
 }
 \seealso{
-g.colMeans
+\code{\link{g.colMeans}}
 }
 

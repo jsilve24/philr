@@ -15,7 +15,7 @@ multiplicative replacement, or another method.}
 
 \item{tree}{a \code{phylo} class tree object that is binary (see \code{\link[ape]{multi2di}})}
 
-\item{sbp}{(Optional) give a precomputed sbp matrix \code{link{phylo2sbp}}
+\item{sbp}{(Optional) give a precomputed sbp matrix \code{\link{phylo2sbp}}
 if you are going to build multiple ILR bases (e.g., with different weightings).}
 
 \item{part.weights}{weightings for parts, can be a named vector with names
@@ -66,8 +66,9 @@ in \code{philr}. The steps that are executed are as follows:
 }
 Note for both the reference measure (part weightings) and the ILR weightings, specifying \code{'uniform'} will
 give the same results as not weighting at all. \cr \cr
-Parallelization is done through \code{parallel} package using type "FORK".
-Note parallelization is rarely needed, even for trees of upwards of 40,000 leaves.
+Note that some of the prespecified part.weights assume \code{df} is given as
+counts and not as relative abundances. Except in this case counts or relative
+abundances can be given.
 }
 \examples{
 tr <- named_rtree(5)
