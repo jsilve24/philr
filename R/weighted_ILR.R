@@ -26,6 +26,7 @@ miniclo <- function(c,k=1){
 #' Shift must be applied before transformation
 #'
 #' @param x closed compositional data matrix (or vector)
+#' @param y the shifted composition output by \code{shiftp}
 #' @param p weights (should not be closed)
 #' @return shifted data matrix \code{y} (no closure is applied) rows are
 #'   samples, columns are parts
@@ -33,17 +34,30 @@ miniclo <- function(c,k=1){
 #' @references J. J. Egozcue, V. Pawlowsky-Glahn (2016) \emph{Changing the Reference
 #'   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
 #'   Statistics 45(4):25-44
-#' @export
+#' @name shift
 #' @examples
 #' p <- seq(.1,1,by=.2)
 #' c <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
 #' x <- miniclo(c)
 #' shiftp(x, p)
+NULL
+
+#' @rdname shift
+#' @export
 shiftp <- function(x, p){
   check.zeroes(p, "weights (p)")
   if(is.vector(x)) x <- matrix(x, nrow=1)
   y <- x / outer(rep(1,nrow(x)), p)
   y
+}
+
+#' @rdname shift
+#' @export
+shiftpInv <- function(y, p){
+  check.zeroes(p, "weights (p)")
+  if(is.vector(y)) y <- matrix(y, nrow=1)
+  x <- y * outer(rep(1, nrow(y)), p)
+  x
 }
 
 
@@ -62,7 +76,7 @@ shiftp <- function(x, p){
 #'   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
 #'   Statistics 45(4):25-44
 #'
-#' @seealso g.colMeans
+#' @seealso \code{\link{g.colMeans}}
 #' @examples
 #' p <- seq(.1,1,by=.2)
 #' c <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
@@ -106,8 +120,12 @@ normp <- function(y,p){
 #'
 #' @param y shifted data matrix (e.g., output of \link{shiftp})
 #' @param p weights (should not be closed)
+#' @param y.star a data matrix that represents data transformed by \code{clrp}
 #' @return matrix
 #' @details Note that this function will close the dataset \code{y} to 1.
+#' @rdname weighted_clr
+#' @details Inverting \code{clrp} transform should be followed by \code{shiftpInv}
+#' to return to unshifted original compositoin (see examples).
 #' @export
 #'
 #' @author Justin Silverman
@@ -119,21 +137,36 @@ normp <- function(y,p){
 #' c <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
 #' x <- miniclo(c)
 #' y <- shiftp(x, p)
-#' clrp(y, p)
-clrp <- function(y,p){
-  check.zeroes(p, 'weights(p)')
+#' y.star <- clrp(y, p)
+#' y.star
+#'
+#' # Untransform data (note use of shiftp and miniclo to return to x)
+#' y.closed <- clrpInv(y.star)
+#' all.equal(miniclo(shiftpInv(y.closed, p)), x)
+clrp <- function(y, p){
   check.zeroes(y, 'dataset')
+  check.zeroes(p, 'weights(p)')
 
   if(is.vector(y)) y <- matrix(y, nrow=1)
   y <- miniclo(y)
   log(y/g.rowMeans(y,p))
 }
 
+#' @rdname weighted_clr
+#' @export
+clrpInv <- function(y.star){
+  if(is.vector(y.star)) y.star <- matrix(y.star, nrow=1)
+  miniclo(exp(y.star))
+}
+
+
+
 #' Weighted ILR Transform
 #'
 #' Calculated using weighted CLR transform (\link{clrp})
 #'
 #' @param y shifted data matrix (e.g., output of \link{shiftp})
+#' @param y.star a data matrix that represents data transformed by \code{ilrp}
 #' @param p weights (should not be closed)
 #' @param V weighted contrast matrix (e.g., output of \link{buildilrBasep})
 #'
@@ -143,6 +176,8 @@ clrp <- function(y,p){
 #' @references J. J. Egozcue, V. Pawlowsky-Glahn (2016) \emph{Changing the Reference
 #'   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
 #'   Statistics 45(4):25-44
+#' @rdname weighted_ilr
+#' @seealso \code{\link{philrInv}}
 #' @examples
 #' # Weights
 #' p <- seq(.1,1,by=.2)
@@ -157,13 +192,25 @@ clrp <- function(y,p){
 #' sbp <- phylo2sbp(tr)
 #' V <- buildilrBasep(sbp, p)
 #'
-#' ilrp(y, p, V)
+#' y.star <- ilrp(y, p, V)
+#' y.star
+#'
+#' # Untransform data (note use of shiftp and miniclo to return to x)
+#' y.closed <- ilrpInv(y.star, V)
+#' all.equal(miniclo(shiftpInv(y.closed, p)), x, check.attributes=FALSE)
 ilrp <- function(y,p,V){
   check.zeroes(p, 'weights(p)')
   check.zeroes(y, 'dataset')
 
   # if(is.vector(y)) y <- matrix(y, nrow=1) # run in clrp anyways
   clrp(y,p)%*%diag(p)%*%V
+}
+
+#' @rdname weighted_ilr
+#' @export
+ilrpInv <- function(y.star, V){
+  if(is.vector(y.star)) y.star <- matrix(y.star, nrow=1)
+  miniclo(exp(y.star%*%t(V)))
 }
 
 
