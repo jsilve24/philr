@@ -147,7 +147,10 @@ philr <- function(df, tree, sbp=NULL,
   }
 
   #TODO: Speed up by not computing if 'uniform'
-  ilr.weights <- ilr.weights[colnames(df.ilrp)]
+  if (!is.null(colnames(df.ilrp))){
+    ilr.weights <- ilr.weights[colnames(df.ilrp)]
+  }
+  #ilr.weights <- ilr.weights[colnames(df.ilrp)]
   tmp.names <- colnames(df.ilrp)
   df.ilrp <- df.ilrp %*% diag(ilr.weights)
   colnames(df.ilrp) <- tmp.names
