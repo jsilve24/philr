@@ -33,4 +33,3 @@ df.philr <- philr(df, tr, part.weights='enorm.x.gm.counts',
       ilr.weights='blw.sqrt', return.all=FALSE)
 convert_to_long(df.philr, rep(c('a','b'), 5))
 }
-

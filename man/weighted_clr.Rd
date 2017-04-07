@@ -2,14 +2,19 @@
 % Please edit documentation in R/weighted_ILR.R
 \name{clrp}
 \alias{clrp}
+\alias{clrpInv}
 \title{Weighted CLR Transform}
 \usage{
 clrp(y, p)
+
+clrpInv(y.star)
 }
 \arguments{
 \item{y}{shifted data matrix (e.g., output of \link{shiftp})}
 
 \item{p}{weights (should not be closed)}
+
+\item{y.star}{a data matrix that represents data transformed by \code{clrp}}
 }
 \value{
 matrix
@@ -19,20 +24,27 @@ Weighted CLR Transform
 }
 \details{
 Note that this function will close the dataset \code{y} to 1.
+
+Inverting \code{clrp} transform should be followed by \code{shiftpInv}
+to return to unshifted original compositoin (see examples).
 }
 \examples{
 p <- seq(.1,1,by=.2)
 c <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
 x <- miniclo(c)
 y <- shiftp(x, p)
-clrp(y, p)
-}
-\author{
-Justin Silverman
+y.star <- clrp(y, p)
+y.star
+
+# Untransform data (note use of shiftp and miniclo to return to x)
+y.closed <- clrpInv(y.star)
+all.equal(miniclo(shiftpInv(y.closed, p)), x)
 }
 \references{
 J. J. Egozcue, V. Pawlowsky-Glahn (2016) \emph{Changing the Reference
   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
   Statistics 45(4):25-44
 }
-
+\author{
+Justin Silverman
+}

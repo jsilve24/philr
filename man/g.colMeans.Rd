@@ -22,4 +22,3 @@ philr:::g.colMeans(rbind(c(2,4,4), c(2,4,4)))
 \seealso{
 g.rowMeans
 }
-

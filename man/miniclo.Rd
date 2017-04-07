@@ -24,4 +24,3 @@ c <- matrix(c(1,2,3,1,2,3,1,2,3), nrow = 3, byrow=TRUE)
 miniclo(c)
 miniclo(c, k=2)
 }
-

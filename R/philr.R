@@ -6,7 +6,7 @@
 #' @param df matrix of data to be transformed (samples are rows,
 #' compositional parts are columns) - zero must be dealt with either with pseudocount,
 #' multiplicative replacement, or another method.
-#' @param sbp (Optional) give a precomputed sbp matrix \code{link{phylo2sbp}}
+#' @param sbp (Optional) give a precomputed sbp matrix \code{\link{phylo2sbp}}
 #' if you are going to build multiple ILR bases (e.g., with different weightings).
 #' @param part.weights weightings for parts, can be a named vector with names
 #' corresponding to \code{colnames(df)} otherwise can be a string, options include:
@@ -47,8 +47,9 @@
 #' }
 #' Note for both the reference measure (part weightings) and the ILR weightings, specifying \code{'uniform'} will
 #' give the same results as not weighting at all. \cr \cr
-#' Parallelization is done through \code{parallel} package using type "FORK".
-#' Note parallelization is rarely needed, even for trees of upwards of 40,000 leaves.
+#' Note that some of the prespecified part.weights assume \code{df} is given as
+#' counts and not as relative abundances. Except in this case counts or relative
+#' abundances can be given.
 #' @return matrix if \code{return.all=FALSE}, if \code{return.all=TRUE} then a list is returned (see above).
 #' @author Justin Silverman
 #' @export
@@ -116,7 +117,6 @@ philr <- function(df, tree, sbp=NULL,
   }
 
   # shift the dataset with respect to the new reference measure
-  #df <- as(acomp(df) - acomp(p), 'matrix')
   df <- shiftp(miniclo(df), p)
 
   # Now create basis contrast matrix
@@ -147,7 +147,10 @@ philr <- function(df, tree, sbp=NULL,
   }
 
   #TODO: Speed up by not computing if 'uniform'
-  ilr.weights <- ilr.weights[colnames(df.ilrp)]
+  if (!is.null(colnames(df.ilrp))){
+    ilr.weights <- ilr.weights[colnames(df.ilrp)]
+  }
+  #ilr.weights <- ilr.weights[colnames(df.ilrp)]
   tmp.names <- colnames(df.ilrp)
   df.ilrp <- df.ilrp %*% diag(ilr.weights)
   colnames(df.ilrp) <- tmp.names
@@ -164,3 +167,75 @@ philr <- function(df, tree, sbp=NULL,
   }
   return(l.return)
 }
+
+#' Inverse of PhILR Transform
+#'
+#' @param df.ilrp transformed data to which the inverse transform will be applied
+#' @param tree (optional) to be used to build sbp and contrast matrix (see details)
+#' @param sbp (optional) the sbp (sequential binary partition) used to build a
+#' contrast matrix (see details)
+#' @param V (optional) the contrast matrix (see details)
+#' @param part.weights weightings for parts, can be a named vector with names
+#' corresponding to \code{colnames(df)}. Defaults to 'uniform' (part.weights = 1,...,1)
+#' @param ilr.weights weightings for the ILR coordiantes can be a named vector with names
+#' corresponding to names of internal nodes of \code{tree}.
+#' Defaults to 'uniform' (ilr.weights = 1,...,1)
+#'
+#' @details This is a utility function for calculating the inverse of the
+#' \code{\link{philr}} transform. Note that at least one of the following
+#' parameters must be specified (\code{tree}, \code{sbp}, or \code{V}).
+#' @return a matrix of compositions (rows are samples, columns are parts),
+#' function removes the effects of ilr weights, part weights, and unshifts
+#' the composition.
+#'
+#' @author Justin Silverman
+#' @export
+#' @seealso \code{\link{philr}}
+#'
+#' @examples
+#'  tr <- named_rtree(5)
+#'  df <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
+#'  colnames(df) <- tr$tip.label
+#'  d <- philr(df, tr, part.weights='enorm.x.gm.counts',
+#'                 ilr.weights='blw.sqrt', return.all=TRUE)
+#'  d.inverted <- philrInv(d$df.ilrp, V=d$V, part.weights = d$p,
+#'                         ilr.weights = d$ilr.weights)
+#'  all.equal(miniclo(df), d.inverted)
+philrInv <- function(df.ilrp, tree=NULL, sbp=NULL, V=NULL, part.weights=NULL, ilr.weights=NULL){
+  if (all(c(is.null(tree), is.null(sbp), is.null(V)))){
+    stop('At least one of the parameters (tree, sbp, V) must be non-null')
+  }
+
+  if(is.vector(df.ilrp)) df.ilrp <- matrix(df.ilrp, nrow=1)
+
+  if (!is.null(V)) NULL
+  else if (!is.null(sbp)) V <- buildilrBasep(sbp, part.weights)
+  else V <- buildilrBasep(phylo2sbp(tree), part.weights)
+  V <- V[,colnames(df.ilrp)] # make sure everything is lined up
+
+  # Undo ILR weights - note: doing nothing (e.g., not matching criteria)
+  # is equivalent to undoing uniform ilr.weights (1,...,1)
+  if (!is.null(ilr.weights)) {
+    ilr.weights <- ilr.weights[colnames(df.ilrp)] # ensure things are lined up
+    df.ilrp <- df.ilrp / outer(rep(1,nrow(df.ilrp)), ilr.weights)
+  }
+
+  # Inverse ILR -> y (the shifted composition - but closed)
+  if (is.null(part.weights)){
+    part.weights <- rep(1, ncol(df.ilrp))
+    names(part.weights) <- colnames(V)
+  }
+
+  # Make sure everything is lined up (else throw an error)
+  if (!all.equal(colnames(V), colnames(df.ilrp))) {
+    stop("Colnames of V, Colnames of df!")
+  }
+  if (!all.equal(rownames(V), names(part.weights))){
+    stop("rownames of V and names of parts.weights not equal")
+  }
+
+  y <- ilrpInv(df.ilrp, V)
+  x <- miniclo(shiftpInv(y, part.weights))
+  x
+}
+

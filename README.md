@@ -9,7 +9,7 @@ This R package provides functions for the analysis of compositional data (e.g., 
 Justin Silverman, Duke University 
 
 ## Citation ##
-Silverman JS, Washburne A, Mukherjee S, David LA. 2016. A phylogenetic transform enhances analysis of compositional microbiota data. bioRxiv doi: [10.1101/072413](http://biorxiv.org/content/early/2016/08/31/072413)
+Justin D Silverman, Alex D Washburne, Sayan Mukherjee, Lawrence A David. A phylogenetic transform enhances analysis of compositional microbiota data. [eLife 2017;6:e21887](https://elifesciences.org/content/6/e21887)
 
 ## License ##
 All source code freely availale under [GPL-3 License](https://www.gnu.org/licenses/gpl-3.0.en.html). 
@@ -21,17 +21,21 @@ vignette('philr-intro', package='philr')
 ```
 
 ## Installation ##
-If you don't already have the `devtools` package installed, run:
+The release verion of philr is maintained on [Bioconductor](http://bioconductor.org/packages/philr/)
 ``` r
-install.packages('devtools')
+## try http:// if https:// URLs are not supported
+source("https://bioconductor.org/biocLite.R")
+## biocLite("BiocUpgrade") ## you may need this
+biocLite("philr")
 ```
-
-The development version is maintained on GitHub, try:
+The development version is maintained on GitHub and can be downloaded as follows:
 ``` r 
+## install.packages('devtools') # if devtools not installed
 devtools::install_github('jsilve24/philr')
 ```
 Alternatively, download and decompress package and then run:
 ```r
+## install.packages('devtools') # if devtools not installed
 source('http://bioconductor.org/biocLite.R')
 devtools::install_local(‘x’)  # replace x with path to decompressed package
 ```
