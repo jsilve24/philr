@@ -1,0 +1,17 @@
+citHeader("To cite philr in publications use:")
+
+citEntry(
+  entry = "article",
+  title = "A phylogenetic transform enhances analysis of compositional microbiota data",
+  author = c("Justin D Silverman",
+  "Alex D Washburne",
+  "Sayan Mukherjee",
+  "Lawrence A David"),
+  year = 2017,
+  journal = "eLife",
+  volume = "6",
+  doi = "10.7554/eLife.21887",
+  url = "https://elifesciences.org/content/6/e21887",
+
+  textVersion = "Justin D Silverman, Alex D Washburne, Sayan Mukherjee, Lawrence A David. A phylogenetic transform enhances analysis of compositional microbiota data. eLife 2017;6:e21887"
+)

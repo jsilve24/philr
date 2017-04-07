@@ -1,4 +1,4 @@
-CHANGES IN VERSION 1.0.1
+CHANGES IN VERSION 1.1.0
 --------------------------
 
 USER-VISIBLE CHANGES
@@ -9,10 +9,12 @@ USER-VISIBLE CHANGES
     o In order to untransformed more generally transformed PhILR data (e.g., with
       branch length weights), a philrInv function has been created, this is
       likely the most userfriendly way to invert any transformed data.
- 
+
     o Updated documentation
 
     o Various Bugfixes
+
+    o Added updated citation information for package
 
 
 CHANGES IN VERSION 0.99.0
