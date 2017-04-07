@@ -47,10 +47,9 @@ parameters must be specified (\code{tree}, \code{sbp}, or \code{V}).
                         ilr.weights = d$ilr.weights)
  all.equal(miniclo(df), d.inverted)
 }
-\author{
-Justin Silverman
-}
 \seealso{
 \code{\link{philr}}
 }
-
+\author{
+Justin Silverman
+}

@@ -30,12 +30,11 @@ c <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
 x <- miniclo(c)
 shiftp(x, p)
 }
-\author{
-Justin Silverman & J. J. Egozcue
-}
 \references{
 J. J. Egozcue, V. Pawlowsky-Glahn (2016) \emph{Changing the Reference
   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
   Statistics 45(4):25-44
 }
-
+\author{
+Justin Silverman & J. J. Egozcue
+}

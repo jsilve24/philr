@@ -40,12 +40,11 @@ y.star
 y.closed <- clrpInv(y.star)
 all.equal(miniclo(shiftpInv(y.closed, p)), x)
 }
-\author{
-Justin Silverman
-}
 \references{
 J. J. Egozcue, V. Pawlowsky-Glahn (2016) \emph{Changing the Reference
   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
   Statistics 45(4):25-44
 }
-
+\author{
+Justin Silverman
+}

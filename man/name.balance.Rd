@@ -66,10 +66,9 @@ name.balance(tr, tax, 'n1')
 name.balance(tr, tax, 'n34')
 name.balance(tr,tax, 'n34', return.votes = c('up', 'down'))
 }
-\author{
-Justin Silverman
-}
 \seealso{
 \code{\link{philr}}
 }
-
+\author{
+Justin Silverman
+}

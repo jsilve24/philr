@@ -34,4 +34,3 @@ J. J. Egozcue, V. Pawlowsky-Glahn (2016) \emph{Changing the Reference
 \seealso{
 \code{\link{g.colMeans}}
 }
-

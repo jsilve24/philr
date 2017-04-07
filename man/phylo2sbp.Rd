@@ -27,9 +27,6 @@ and that choise is used consistently throughout the philr package.
 tr <- named_rtree(5)
 phylo2sbp(tr)
 }
-\author{
-Justin Silverman
-}
 \references{
 Schliep K.P. 2011. phangorn: phylogenetic analysis in R. 
 Bioinformatics, 27(4) 592-593
@@ -37,4 +34,6 @@ Bioinformatics, 27(4) 592-593
 \seealso{
 \code{\link{philr}}
 }
-
+\author{
+Justin Silverman
+}

@@ -19,4 +19,3 @@ function is laregly for use in examples throughout this package.
 \examples{
 named_rtree(5)
 }
-

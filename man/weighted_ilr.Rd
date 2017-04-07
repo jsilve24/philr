@@ -45,9 +45,6 @@ y.star
 y.closed <- ilrpInv(y.star, V)
 all.equal(miniclo(shiftpInv(y.closed, p)), x, check.attributes=FALSE)
 }
-\author{
-Justin Silverman
-}
 \references{
 J. J. Egozcue, V. Pawlowsky-Glahn (2016) \emph{Changing the Reference
   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
@@ -56,4 +53,6 @@ J. J. Egozcue, V. Pawlowsky-Glahn (2016) \emph{Changing the Reference
 \seealso{
 \code{\link{philrInv}}
 }
-
+\author{
+Justin Silverman
+}

@@ -25,4 +25,3 @@ This is a function used by \code{\link{calculate.blw}} when
 tr <- named_rtree(5)
 mean_dist_to_tips(tr)
 }
-

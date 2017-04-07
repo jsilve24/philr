@@ -24,12 +24,11 @@ tr <- named_rtree(5)
 sbp <- phylo2sbp(tr)
 buildilrBasep(sbp, p)
 }
-\author{
-Justin Silverman (adapted from \link[compositions]{gsi.buildilrBase})
-}
 \references{
 J. J. Egozcue, V. Pawlowsky-Glahn (2016) \emph{Changing the Reference
   Measure in the Simplex and its Weighting Effects}. Austrian Journal of
   Statistics 45(4):25-44
 }
-
+\author{
+Justin Silverman (adapted from \link[compositions]{gsi.buildilrBase})
+}
