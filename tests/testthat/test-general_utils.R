@@ -25,3 +25,10 @@ test_that('get.ud.*** throws error if given a tip', {
   expect_error(get.ud.tips(tr.fixed, 't1'), "t1 is a tip")
   expect_error(get.ud.nodes(tr.fixed, 't1'), "t1 is a tip")
 })
+
+test_that("vec_to_mat correctly handles named vectors", {
+  a <- c("a"=5, "b"=2)
+  b <- vec_to_mat(a)
+  expect_equal(colnames(b), names(a))
+  expect_equal(class(b), "matrix")
+})

@@ -1,3 +1,10 @@
+CHANGES IN VERSION 1.2.1
+--------------------------
+
+USER-VISIBLE CHANGES
+
+  o Squashed Bug in philr and philrInv handling of vector input
+
 CHANGES IN VERSION 1.1.0
 --------------------------
 

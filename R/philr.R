@@ -64,10 +64,20 @@
 philr <- function(df, tree, sbp=NULL,
                             part.weights='uniform', ilr.weights='uniform',
                             return.all=FALSE){
+  # Convert vector input for df to matrix
+  df <- vec_to_mat(df)
+
   # Check for Zero values in df
   if (any(df == 0)){
     stop('Zero values must be removed either through use of pseudocount, multiplicative replacement or other method.')
   }
+
+  # # Check to make sure df is a matrix otherwise convert it to one
+  # if(is.vector(df)) {
+  #   tmp <- names(df)
+  #   df <- matrix(df, nrow=1)
+  #   colnames(df) <- tmp
+  # }
 
   # Create the sequential binary partition sign matrix
   if (is.null(sbp)){
@@ -78,6 +88,7 @@ philr <- function(df, tree, sbp=NULL,
       stop("given sbp does not match dimentions required dimentions (e.g., ncol(df) x ncol(df)-1")
     }
   }
+  if (is.null(colnames(df))) stop("Input data must have column names that align with phylogenetic tree to prevent logical errors.")
   sbp <- sbp[colnames(df), ] #Very Important line to avoid logical errors
 
   # Now need to create the weights on the parts
@@ -93,9 +104,6 @@ philr <- function(df, tree, sbp=NULL,
   } else if (part.weights=='anorm.x.gm.counts'){
     gm.counts <- g.colMeans(df)
     gm.counts <- gm.counts[rownames(sbp)]
-    #INCORRECT so commented out TODO: Remove before release
-    #anorm <- apply(compositions::acomp(t(df)), 1, compositions::norm.acomp)
-    ##########################
     anorm <- apply(miniclo(t(df)), 1, function(x) normp(x, rep(1, nrow(df))))
     anorm <- anorm[rownames(sbp)]
     p <- gm.counts*anorm
@@ -206,7 +214,19 @@ philrInv <- function(df.ilrp, tree=NULL, sbp=NULL, V=NULL, part.weights=NULL, il
     stop('At least one of the parameters (tree, sbp, V) must be non-null')
   }
 
-  if(is.vector(df.ilrp)) df.ilrp <- matrix(df.ilrp, nrow=1)
+  # Convert vector input for df to matrix
+  df.ilrp <- vec_to_mat(df.ilrp)
+
+  # if(is.vector(df.ilrp)) {
+  #   tmp <- names(df.ilrp)
+  #   df.ilrp <- matrix(df.ilrp, nrow=1)
+  #   colnames(df.ilrp) <- tmp
+  # }
+
+  # Inverse ILR -> y (the shifted composition - but closed)
+  if (is.null(part.weights)){
+    part.weights <- rep(1, ncol(df.ilrp)+1)
+  }
 
   if (!is.null(V)) NULL
   else if (!is.null(sbp)) V <- buildilrBasep(sbp, part.weights)
@@ -220,18 +240,15 @@ philrInv <- function(df.ilrp, tree=NULL, sbp=NULL, V=NULL, part.weights=NULL, il
     df.ilrp <- df.ilrp / outer(rep(1,nrow(df.ilrp)), ilr.weights)
   }
 
-  # Inverse ILR -> y (the shifted composition - but closed)
-  if (is.null(part.weights)){
-    part.weights <- rep(1, ncol(df.ilrp))
-    names(part.weights) <- colnames(V)
-  }
-
   # Make sure everything is lined up (else throw an error)
   if (!all.equal(colnames(V), colnames(df.ilrp))) {
     stop("Colnames of V, Colnames of df!")
   }
-  if (!all.equal(rownames(V), names(part.weights))){
-    stop("rownames of V and names of parts.weights not equal")
+
+  if (!all(part.weights==1)){
+    if (!all.equal(rownames(V), names(part.weights))){
+      stop("rownames of V and names of parts.weights not equal")
+    }
   }
 
   y <- ilrpInv(df.ilrp, V)

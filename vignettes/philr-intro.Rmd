@@ -1,4 +1,4 @@
----
+= = ---
 title: "Introduction to PhILR"
 author: "Justin Silverman"
 date: "`r Sys.Date()`"

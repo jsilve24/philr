@@ -9,6 +9,16 @@ check.zeroes <- function(x, target){
   }
 }
 
+# convert vector to row vector.
+vec_to_mat <- function(x){
+  if (is.vector(x)) {
+    n <- names(x)
+    x <- matrix(x, nrow = 1)
+    colnames(x) <- n
+  }
+  x
+}
+
 # ACCESSOR FUNCTIONS FROM NAMES TO NUMBERS --------------------------------
 
 #' Convert between node/tip labels and integer node numbers
