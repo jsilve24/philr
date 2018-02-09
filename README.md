@@ -1,9 +1,9 @@
 # philr
-*A phylogenetic transform for analysis for analysis of compositional microbiome data*
+*A phylogenetic transform for analysis of compositional microbiome data*
 
 ***
 PhILR = Phylogenetic Isometric Log-Ratio Transform.
-This R package provides functions for the analysis of compositional data (e.g., data representing proportions of different variables/parts). Specifically this package allows analysis of compositional data where the parts can be related through a phylogenetic tree (as is common in microbiota survey data) and makes available the Isometric Log Ratio transform built from the phylogenetic tree and utilizing a weighted reference measure. 
+This R package provides functions for the analysis of compositional data (e.g., data representing proportions of different variables/parts). Specifically, this package allows analysis of compositional data where the parts can be related through a phylogenetic tree (as is common in microbiota survey data) and makes available the Isometric Log Ratio transform built from the phylogenetic tree and utilizing a weighted reference measure. 
 
 ## Authors ##
 Justin Silverman, Duke University 
@@ -21,7 +21,7 @@ vignette('philr-intro', package='philr')
 ```
 
 ## Installation ##
-The release verion of philr is maintained on [Bioconductor](http://bioconductor.org/packages/philr/)
+The release version of philr is maintained on [Bioconductor](http://bioconductor.org/packages/philr/)
 ``` r
 ## try http:// if https:// URLs are not supported
 source("https://bioconductor.org/biocLite.R")
