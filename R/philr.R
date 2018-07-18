@@ -3,7 +3,7 @@
 #' This is the main function for building the phylogenetic ILR basis, calculating the
 #' weightings (of the parts and the ILR coordinates) and then transforming the data.
 #' @aliases  build.phylo.ilr
-#' @param df matrix of data to be transformed (samples are rows,
+#' @param df \strong{matrix} of data to be transformed (samples are rows,
 #' compositional parts are columns) - zero must be dealt with either with pseudocount,
 #' multiplicative replacement, or another method.
 #' @param sbp (Optional) give a precomputed sbp matrix \code{\link{phylo2sbp}}
@@ -64,6 +64,17 @@
 philr <- function(df, tree, sbp=NULL,
                             part.weights='uniform', ilr.weights='uniform',
                             return.all=FALSE){
+
+  # Convert df to mat with warning
+  df.name <- deparse(substitute(df))
+  if (is.data.frame(df)) {
+    st <- paste("Converting ", df.name, " to matrix from data.frame",
+                " consider adding as.matrix(", df.name, ") to function call",
+                " to control conversion manually", sep="")
+    warning(st)
+    df <- as.matrix(df)
+  }
+
   # Convert vector input for df to matrix
   df <- vec_to_mat(df)
 

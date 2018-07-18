@@ -9,7 +9,7 @@ philr(df, tree, sbp = NULL, part.weights = "uniform",
   ilr.weights = "uniform", return.all = FALSE)
 }
 \arguments{
-\item{df}{matrix of data to be transformed (samples are rows,
+\item{df}{\strong{matrix} of data to be transformed (samples are rows,
 compositional parts are columns) - zero must be dealt with either with pseudocount,
 multiplicative replacement, or another method.}
 

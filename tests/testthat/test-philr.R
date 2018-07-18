@@ -38,3 +38,13 @@ test_that("philr and philrInv conserve distances of circle", {
 
   expect_equal(max(dist(circ1)), max(dist(circ2)))
 })
+
+
+test_that("philr handles data.frame input with warning", {
+  tr <- named_rtree(5)
+  df <- c(1,4,1,22,2)
+  names(df) <- tr$tip.label
+  dfxxx <- as.data.frame(t(as.data.frame(df)))
+
+  expect_warning(philr(dfxxx, tr, return.all=F), "dfxxx")
+})
