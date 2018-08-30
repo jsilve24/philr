@@ -24,9 +24,10 @@ vignette('philr-intro', package='philr')
 The release version of philr is maintained on [Bioconductor](http://bioconductor.org/packages/philr/)
 ``` r
 ## try http:// if https:// URLs are not supported
-source("https://bioconductor.org/biocLite.R")
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
 ## biocLite("BiocUpgrade") ## you may need this
-biocLite("philr")
+BiocManager::install("philr")
 ```
 The development version is maintained on GitHub and can be downloaded as follows:
 ``` r 
@@ -36,7 +37,8 @@ devtools::install_github('jsilve24/philr')
 Alternatively, download and decompress package and then run:
 ```r
 ## install.packages('devtools') # if devtools not installed
-source('http://bioconductor.org/biocLite.R')
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
 devtools::install_local(‘x’)  # replace x with path to decompressed package
 ```
 
