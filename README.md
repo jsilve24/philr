@@ -26,7 +26,7 @@ The release version of philr is maintained on [Bioconductor](http://bioconductor
 ## try http:// if https:// URLs are not supported
 if (!requireNamespace("BiocManager", quietly=TRUE))
     install.packages("BiocManager")
-## biocLite("BiocUpgrade") ## you may need this
+## BiocManager::install("BiocUpgrade") ## you may need this
 BiocManager::install("philr")
 ```
 The development version is maintained on GitHub and can be downloaded as follows:
