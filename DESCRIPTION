@@ -1,7 +1,7 @@
 Package: philr
 Type: Package
 Title: Phylogenetic partitioning based ILR transform for metagenomics data
-Version: 1.9.0
+Version: 1.9.1
 Date: 2017-04-07
 Authors@R: c(person("Justin", "Silverman", role=c("aut", "cre"),
                      email = "jsilve24@gmail.com"))
@@ -21,6 +21,6 @@ Imports: ape, phangorn, tidyr, ggplot2, ggtree
 Depends:
 Suggests: testthat, knitr, rmarkdown, BiocStyle, phyloseq, glmnet, dplyr
 VignetteBuilder: knitr
-biocViews: Sequencing, Microbiome, Metagenomics, Software
+biocViews: ImmunoOncology, Sequencing, Microbiome, Metagenomics, Software
 URL: https://github.com/jsilve24/philr 
 BugReports: https://github.com/jsilve24/philr/issues
