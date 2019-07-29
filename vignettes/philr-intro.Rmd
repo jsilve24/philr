@@ -32,7 +32,7 @@ library(ggplot2); packageVersion("ggplot2")
 data(GlobalPatterns)
 ```
 
-## Filter Extreemly Low Abundance OTUs
+## Filter Extremely Low-Abundance OTUs
 Taxa that were not seen with more than 3 counts in at least 20% of samples are filtered.
 Subsequently, those witha coefficient of variation ≤ 3 are filtered. These steps follow 
 those of [@mcmurdie2013]. Finally we add a pseudocount of 1 to the remaining OTUs to avoid 
@@ -245,7 +245,7 @@ ggplot(gp.philr.long, aes(x=labels, y=value)) +
   theme_bw()
 ```
 
-# Use Balances for Dimention Reduction
+# Use Balances for Dimension Reduction
 Lets just look at balance n16 vs. balance n730 (the ones we annotated in the above tree). 
 ```{r, message=FALSE, warning=FALSE}
 library(tidyr); packageVersion('tidyr')
