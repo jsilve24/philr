@@ -4,9 +4,9 @@
 \alias{annotate_balance}
 \title{annotate_balance}
 \usage{
-annotate_balance(tr, coord, p = NULL, labels = c("+", "-"), offset = 0,
-  offset.text = 0.03, bar = TRUE, barsize = 0.01, barfill = "darkgrey",
-  geom = "text", ...)
+annotate_balance(tr, coord, p = NULL, labels = c("+", "-"),
+  offset = 0, offset.text = 0.03, bar = TRUE, barsize = 0.01,
+  barfill = "darkgrey", geom = "text", ...)
 }
 \arguments{
 \item{tr}{phylo object}

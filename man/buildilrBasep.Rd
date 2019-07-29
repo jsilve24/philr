@@ -30,5 +30,5 @@ J. J. Egozcue, V. Pawlowsky-Glahn (2016) \emph{Changing the Reference
   Statistics 45(4):25-44
 }
 \author{
-Justin Silverman (adapted from \link[compositions]{gsi.buildilrBase})
+Justin Silverman (adapted from compositions::gsi.buildilrBase)
 }
