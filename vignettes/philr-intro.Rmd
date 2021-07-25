@@ -54,8 +54,8 @@ and phyloseq [@mcmurdie2013].
 
 The use of these two formats are demonstrated in the following example workflows:
 
- - [phyloseq](philr-intro-phyloseq.md)
- - [TreeSummarizedExperiment (TreeSE)](philr-intro-treese.md) 
+ - [phyloseq](philr-intro-phyloseq.html)
+ - [TreeSummarizedExperiment (TreeSE)](philr-intro-treese.html) 
 
 
 # References
