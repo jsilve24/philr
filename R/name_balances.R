@@ -37,6 +37,8 @@
 #' for that child of \code{coord}. If no then move to coarser taxonomic level (leftward) and repeat.
 #' }
 #' @author Justin Silverman
+#' @importFrom methods as
+#' @importFrom methods is
 #' @export
 #' @seealso \code{\link{philr}}
 #' @examples

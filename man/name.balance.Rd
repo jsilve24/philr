@@ -4,8 +4,14 @@
 \alias{name.balance}
 \title{Name a balance (coordinate) based on taxonomy}
 \usage{
-name.balance(tr, tax, coord, method = "voting", thresh = 0.95,
-  return.votes = NULL)
+name.balance(
+  tr,
+  tax,
+  coord,
+  method = "voting",
+  thresh = 0.95,
+  return.votes = NULL
+)
 }
 \arguments{
 \item{tr}{an object of class \code{'phylo'}}

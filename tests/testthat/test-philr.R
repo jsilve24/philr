@@ -5,7 +5,7 @@ test_that("philrInv inverses the philr transform", {
   df <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
   colnames(df) <- tr$tip.label
 
-  d <- philr(df, tr, part.weights='enorm.x.gm.counts',
+  d <- philr(df, tree=tr, part.weights='enorm.x.gm.counts',
              ilr.weights='blw.sqrt', return.all=TRUE)
 
   expect_equal(philrInv(d$df.ilrp, V=d$V, part.weights = d$p, ilr.weights = d$ilr.weights),
@@ -17,7 +17,7 @@ test_that("philr and philrInv handles vectors and default uniform arguments", {
   df <- c(1,4,1,22,2)
   names(df) <- tr$tip.label
 
-  df.ilr <- philr(df, tr, return.all=F)
+  df.ilr <- philr(df, tree=tr, return.all=F)
 
   expect_equivalent(philrInv(df.ilr, tr),
                miniclo(df))
@@ -27,7 +27,6 @@ test_that("philr and philrInv handles vectors and default uniform arguments", {
 test_that("philr and philrInv conserve distances of circle", {
   phy1 <- named_rtree(3)
   phy2 <- named_rtree(3)
-
   t <- seq(0, 2*pi, by = 0.1)
   x <- cos(t)
   y <- sin(t)
@@ -46,5 +45,5 @@ test_that("philr handles data.frame input with warning", {
   names(df) <- tr$tip.label
   dfxxx <- as.data.frame(t(as.data.frame(df)))
 
-  expect_warning(philr(dfxxx, tr, return.all=F), "dfxxx")
+  expect_warning(philr(dfxxx, tree=tr, return.all=F), "dfxxx")
 })

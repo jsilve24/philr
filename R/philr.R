@@ -33,6 +33,9 @@
 #' as a list (default=\code{FALSE}) in addition to in addition to returning the transformed data (\code{df.ilrp}).
 #' If \code{return.all==FALSE} then only returns the transformed data (not in list format)
 #' If \code{FALSE} then just returns list containing \code{df.ilrp}.
+#' @param abund_values A single character value for selecting the
+#'   \code{\link[SummarizedExperiment:SummarizedExperiment-class]{assay}} to be
+#'   used. Only used when \code{df} is object from this class. Default: "counts".
 #' @inheritParams calculate.blw
 #' @details
 #' This is a utility function that pulls together a number of other functions
@@ -51,20 +54,110 @@
 #' counts and not as relative abundances. Except in this case counts or relative
 #' abundances can be given.
 #' @return matrix if \code{return.all=FALSE}, if \code{return.all=TRUE} then a list is returned (see above).
-#' @author Justin Silverman
-#' @export
+#' @author Justin Silverman; S3 methods by Leo Lahti
+#' @export 
 #' @seealso \code{\link{phylo2sbp}} \code{\link{calculate.blw}}
 #' @examples
+#' # Prepare example data
 #' tr <- named_rtree(5)
-#' df <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
+#' df <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65 # add a small pseudocount
 #' colnames(df) <- tr$tip.label
-#'
 #' philr(df, tr, part.weights='enorm.x.gm.counts',
 #'                   ilr.weights='blw.sqrt', return.all=FALSE)
-philr <- function(df, tree, sbp=NULL,
-                            part.weights='uniform', ilr.weights='uniform',
-                            return.all=FALSE){
+#'
+#'
+#'
+#' # Running philr on a TreeSummarizedExperiment object
+#'
+#' ## Prepare example data
+#' library(mia)
+#' library(tidyr)
+#' data(GlobalPatterns, package="mia")
+#'
+#' ## Select prevalent taxa 
+#' tse <-  GlobalPatterns %>% subsetByPrevalentTaxa(
+#'                                detection = 3,
+#'                                prevalence = 20/100,
+#'                                as_relative = FALSE)
+#'
+#' ## Pick taxa that have notable abundance variation across sammples
+#' variable.taxa <- apply(assay(tse, "counts"), 1, function(x) sd(x)/mean(x) > 3.0)
+#' tse <- tse[variable.taxa,]
+#'
+#' # Collapse the tree
+#' tree <- ape::keep.tip(phy = rowTree(tse), tip = rowLinks(tse)$nodeNum)
+#' rowTree(tse) <- tree
+#'
+#' ## Add a new assay with a pseudocount 
+#' assays(tse)$counts.shifted <- assay(tse, "counts") + 1
+#' 
+#' ## Run philr for TreeSummarizedExperiment object
+#' ## using the pseudocount data
+#' res.tse <- philr(tse, part.weights='enorm.x.gm.counts',
+#'                   ilr.weights='blw.sqrt', return.all=FALSE,
+#'                   abund_values="counts.shifted")
+#'
+#'
+#' # Running philr on a phyloseq object
+#' \dontrun{
+#'   pseq <- makePhyloseqFromTreeSummarizedExperiment(tse)
+#'   res.pseq <- philr(pseq, part.weights='enorm.x.gm.counts',
+#'                   ilr.weights='blw.sqrt', return.all=FALSE)
+#' }
+#'
+philr <- function(df, tree=NULL, abund_values="counts", sbp=NULL, part.weights='enorm.x.gm.counts', ilr.weights='blw.sqrt', return.all=FALSE) { UseMethod("philr") }
 
+
+#' @export 
+philr.default <- function(df, ...){
+  warning(paste("philr does not know how to handle object of class ",
+  class(df),
+  "and can only be used on classes TBA"))
+}
+
+#' @export 
+philr.numeric <- function(df, tree, ...){
+    philr.data.frame(df, tree, ...)
+}
+
+#' @export 
+philr.phyloseq <- function(df, ...){
+
+    otu.table <- t(phyloseq::otu_table(df))
+    tree <- phyloseq::phy_tree(df)
+
+    philr.data.frame(otu.table, tree=tree, ...)
+
+}
+
+
+
+#' @export
+#' @importFrom TreeSummarizedExperiment rowTree
+#' @importFrom SummarizedExperiment assays
+philr.TreeSummarizedExperiment <- function(df, tree=NULL, abund_values, ...){
+    tree <- rowTree(df)
+    otu.table <- t(assays(df)[[abund_values]])
+    philr.data.frame(otu.table, tree=tree, ...)
+}
+
+
+
+#' @export 
+philr.matrix <- function(df, tree, ...){
+    philr.data.frame(df, tree, ...)
+}
+
+#' @export
+philr.array <- function(df, tree, ...){
+    philr.data.frame(df, tree, ...)
+}
+
+#' @export 
+philr.data.frame <- function(df, tree=NULL, abund_values=NULL, sbp=NULL,
+                            part.weights='uniform', ilr.weights='uniform',
+                            return.all=FALSE, ...){
+  
   # Convert df to mat with warning
   df.name <- deparse(substitute(df))
   if (is.data.frame(df)) {
@@ -82,13 +175,6 @@ philr <- function(df, tree, sbp=NULL,
   if (any(df == 0)){
     stop('Zero values must be removed either through use of pseudocount, multiplicative replacement or other method.')
   }
-
-  # # Check to make sure df is a matrix otherwise convert it to one
-  # if(is.vector(df)) {
-  #   tmp <- names(df)
-  #   df <- matrix(df, nrow=1)
-  #   colnames(df) <- tmp
-  # }
 
   # Create the sequential binary partition sign matrix
   if (is.null(sbp)){
@@ -227,12 +313,6 @@ philrInv <- function(df.ilrp, tree=NULL, sbp=NULL, V=NULL, part.weights=NULL, il
 
   # Convert vector input for df to matrix
   df.ilrp <- vec_to_mat(df.ilrp)
-
-  # if(is.vector(df.ilrp)) {
-  #   tmp <- names(df.ilrp)
-  #   df.ilrp <- matrix(df.ilrp, nrow=1)
-  #   colnames(df.ilrp) <- tmp
-  # }
 
   # Inverse ILR -> y (the shifted composition - but closed)
   if (is.null(part.weights)){

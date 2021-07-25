@@ -5,8 +5,15 @@
 \alias{build.phylo.ilr}
 \title{Data transformation and driver of PhILR.}
 \usage{
-philr(df, tree, sbp = NULL, part.weights = "uniform",
-  ilr.weights = "uniform", return.all = FALSE)
+philr(
+  df,
+  tree = NULL,
+  abund_values = "counts",
+  sbp = NULL,
+  part.weights = "enorm.x.gm.counts",
+  ilr.weights = "blw.sqrt",
+  return.all = FALSE
+)
 }
 \arguments{
 \item{df}{\strong{matrix} of data to be transformed (samples are rows,
@@ -14,6 +21,10 @@ compositional parts are columns) - zero must be dealt with either with pseudocou
 multiplicative replacement, or another method.}
 
 \item{tree}{a \code{phylo} class tree object that is binary (see \code{\link[ape]{multi2di}})}
+
+\item{abund_values}{A single character value for selecting the
+\code{\link[SummarizedExperiment:SummarizedExperiment-class]{assay}} to be
+used. Only used when \code{df} is object from this class. Default: "counts".}
 
 \item{sbp}{(Optional) give a precomputed sbp matrix \code{\link{phylo2sbp}}
 if you are going to build multiple ILR bases (e.g., with different weightings).}
@@ -71,16 +82,57 @@ counts and not as relative abundances. Except in this case counts or relative
 abundances can be given.
 }
 \examples{
+# Prepare example data
 tr <- named_rtree(5)
-df <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
+df <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65 # add a small pseudocount
 colnames(df) <- tr$tip.label
-
 philr(df, tr, part.weights='enorm.x.gm.counts',
                   ilr.weights='blw.sqrt', return.all=FALSE)
+
+
+
+# Running philr on a TreeSummarizedExperiment object
+
+## Prepare example data
+library(mia)
+library(tidyr)
+data(GlobalPatterns, package="mia")
+
+## Select prevalent taxa 
+tse <-  GlobalPatterns \%>\% subsetByPrevalentTaxa(
+                               detection = 3,
+                               prevalence = 20/100,
+                               as_relative = FALSE)
+
+## Pick taxa that have notable abundance variation across sammples
+variable.taxa <- apply(assay(tse, "counts"), 1, function(x) sd(x)/mean(x) > 3.0)
+tse <- tse[variable.taxa,]
+
+# Collapse the tree
+tree <- ape::keep.tip(phy = rowTree(tse), tip = rowLinks(tse)$nodeNum)
+rowTree(tse) <- tree
+
+## Add a new assay with a pseudocount 
+assays(tse)$counts.shifted <- assay(tse, "counts") + 1
+
+## Run philr for TreeSummarizedExperiment object
+## using the pseudocount data
+res.tse <- philr(tse, part.weights='enorm.x.gm.counts',
+                  ilr.weights='blw.sqrt', return.all=FALSE,
+                  abund_values="counts.shifted")
+
+
+# Running philr on a phyloseq object
+\dontrun{
+  pseq <- makePhyloseqFromTreeSummarizedExperiment(tse)
+  res.pseq <- philr(pseq, part.weights='enorm.x.gm.counts',
+                  ilr.weights='blw.sqrt', return.all=FALSE)
+}
+
 }
 \seealso{
 \code{\link{phylo2sbp}} \code{\link{calculate.blw}}
 }
 \author{
-Justin Silverman
+Justin Silverman; S3 methods by Leo Lahti
 }

@@ -4,8 +4,14 @@
 \alias{philrInv}
 \title{Inverse of PhILR Transform}
 \usage{
-philrInv(df.ilrp, tree = NULL, sbp = NULL, V = NULL,
-  part.weights = NULL, ilr.weights = NULL)
+philrInv(
+  df.ilrp,
+  tree = NULL,
+  sbp = NULL,
+  V = NULL,
+  part.weights = NULL,
+  ilr.weights = NULL
+)
 }
 \arguments{
 \item{df.ilrp}{transformed data to which the inverse transform will be applied}
