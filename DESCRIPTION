@@ -8,8 +8,6 @@ Authors@R:
                      email = "jsilve24@gmail.com"),
       person(given = "Leo", family = "Lahti", role = c("ctb"),
              comment = c(ORCID = "0000-0001-5537-637X")))
-Author: Justin Silverman
-Maintainer: Justin Silverman <jsilve24@gmail.com>
 Description: PhILR is short for Phylogenetic Isometric Log-Ratio Transform.
  This package provides functions for the analysis of compositional
  data (e.g., data representing proportions of different variables/parts).
