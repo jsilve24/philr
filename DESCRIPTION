@@ -16,7 +16,6 @@ Description: PhILR is short for Phylogenetic Isometric Log-Ratio Transform.
  data) and makes available the Isometric Log Ratio transform built from the
  phylogenetic tree and utilizing a weighted reference measure.
 License: GPL-3
-LazyData: TRUE
 RoxygenNote: 7.1.1
 Imports:
     ape,
@@ -28,6 +27,7 @@ Imports:
     SummarizedExperiment,
     TreeSummarizedExperiment        
 Depends:
+    rmarkdown
 Suggests:
     testthat,
     knitr,
