@@ -34,7 +34,7 @@
 #' If \code{return.all==FALSE} then only returns the transformed data (not in list format)
 #' If \code{FALSE} then just returns list containing \code{df.ilrp}.
 #' @param abund_values A single character value for selecting the
-#'   \code{\link[SummarizedExperiment:SummarizedExperiment-class]{assay}} to be
+#'   \code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{assay}} to be
 #'   used. Only used when \code{df} is object from this class. Default: "counts".
 #' @inheritParams calculate.blw
 #' @details
@@ -53,6 +53,13 @@
 #' Note that some of the prespecified part.weights assume \code{df} is given as
 #' counts and not as relative abundances. Except in this case counts or relative
 #' abundances can be given.
+#'
+#' The tree argument is ignored if the \code{df} argument is
+#' \code{\link[phyloseq:phyloseq-class]{phyloseq}} or
+#' \code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{TreeSummarizedExperiment}} object.
+#' These objects can include a phylogenetic tree. If the phylogenetic tree is missing from these objects,
+#' it should be integrated directly in these objects before running \code{philr}.
+#'
 #' @return matrix if \code{return.all=FALSE}, if \code{return.all=TRUE} then a list is returned (see above).
 #' @author Justin Silverman; S3 methods by Leo Lahti
 #' @export 
@@ -64,8 +71,6 @@
 #' colnames(df) <- tr$tip.label
 #' philr(df, tr, part.weights='enorm.x.gm.counts',
 #'                   ilr.weights='blw.sqrt', return.all=FALSE)
-#'
-#'
 #'
 #' # Running philr on a TreeSummarizedExperiment object
 #'
