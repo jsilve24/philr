@@ -105,7 +105,7 @@
 #'                   ilr.weights='blw.sqrt', return.all=FALSE)
 #' }
 #'
-philr <- function(df, tree=NULL, abund_values="counts", sbp=NULL, part.weights='enorm.x.gm.counts', ilr.weights='blw.sqrt', return.all=FALSE) { UseMethod("philr") }
+philr <- function(df, tree=NULL, sbp=NULL, part.weights='uniform', ilr.weights='uniform', return.all=FALSE, abund_values="counts") { UseMethod("philr") }
 
 
 #' @export 
