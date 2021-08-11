@@ -125,9 +125,9 @@ philr <- function(df, tree=NULL, sbp=NULL, part.weights='uniform', ilr.weights='
 
 #' @export 
 philr.default <- function(df, ...){
-  warning(paste("philr does not know how to handle object of class ",
-  class(df),
-  "and can only be used on classes TBA"))
+    warning(paste("philr does not know how to handle object of class ",
+    class(df),
+    "and can only be used on classes TBA"))
 }
 
 #' @export 
@@ -146,9 +146,11 @@ philr.phyloseq <- function(df, ...){
 }
 
 
-
 #' @export
-philr.TreeSummarizedExperiment <- function(df, abund_values="counts", ...){
+philr.TreeSummarizedExperiment <- function(df, tree=NULL, sbp=NULL,
+                            part.weights='uniform', ilr.weights='uniform',
+                            return.all=FALSE, abund_values="counts", ...){
+
     tree <- TreeSummarizedExperiment::rowTree(df)
     otu.table <- t(SummarizedExperiment::assays(df)[[abund_values]])
     philr.data.frame(otu.table, tree=tree, ...)

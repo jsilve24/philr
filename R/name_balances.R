@@ -12,8 +12,9 @@
 #' @param thresh threshold for assignment of taxonomy to a given part of a balance
 #' (must be greater than 0.5 if \code{method='voting'}; see details).
 #' @param return.votes whether voting results by taxonomic level should be shown for \code{coord}. Note: this is helpful when
-#' \code{name.balance} does not return a clear winner, as may be the case when a given \code{coord} represents more than one
-#' taxonomic lineage. votes are returned as a list indexed by \code{colnames(tax)} Options include:
+#' \code{name.balance} does not return a clear winner, as may be the case when a given
+#' \code{coord} represents more than one taxonomic lineage. votes are returned as a list
+#' indexed by \code{colnames(tax)} Options include:
 #' \describe{
 #' \item{\code{NULL}}{(default) only returns the combined consensus name of the balance}
 #' \item{\code{'up'}}{adds tallied votes for the 'up' node to the output list}

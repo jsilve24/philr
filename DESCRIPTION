@@ -24,8 +24,6 @@ Imports:
     ggplot2,
     ggtree,
     methods
-Depends:
-    rmarkdown
 Suggests:
     testthat,
     knitr,
