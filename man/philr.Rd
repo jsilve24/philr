@@ -101,8 +101,8 @@ to incorporate tree information.
 tr <- named_rtree(5)
 df <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65 # add a small pseudocount
 colnames(df) <- tr$tip.label
-philr(df, tr, part.weights='enorm.x.gm.counts',
-               ilr.weights='blw.sqrt', return.all=FALSE)
+philr(df, tr, part.weights='uniform',
+               ilr.weights='uniform', return.all=FALSE)
 
 # Running philr on a TreeSummarizedExperiment object
 
@@ -130,16 +130,16 @@ assays(tse)$counts.shifted <- assay(tse, "counts") + 1
 
 ## Run philr for TreeSummarizedExperiment object
 ## using the pseudocount data
-res.tse <- philr(tse, part.weights='enorm.x.gm.counts',
-               ilr.weights='blw.sqrt', return.all=FALSE,
+res.tse <- philr(tse, part.weights='uniform',
+               ilr.weights='uniform', return.all=FALSE,
                abund_values="counts.shifted")
 
 
 # Running philr on a phyloseq object
 \dontrun{
   pseq <- makePhyloseqFromTreeSummarizedExperiment(tse)
-  res.pseq <- philr(pseq, part.weights='enorm.x.gm.counts',
-               ilr.weights='blw.sqrt', return.all=FALSE)
+  res.pseq <- philr(pseq, part.weights='uniform',
+               ilr.weights='uniform', return.all=FALSE)
 }
 
 }

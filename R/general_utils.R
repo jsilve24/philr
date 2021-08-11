@@ -78,8 +78,8 @@ name.to.nn <- function(tr, x){
 #' df <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
 #' colnames(df) <- tr$tip.label
 #'
-#' df.philr <- philr(df, tree=tr, part.weights='enorm.x.gm.counts',
-#'       ilr.weights='blw.sqrt', return.all=FALSE)
+#' df.philr <- philr(df, tree=tr, part.weights='uniform',
+#'       ilr.weights='uniform', return.all=FALSE)
 #' convert_to_long(df.philr, rep(c('a','b'), 5))
 convert_to_long <- function(df, labels){
   coord.names <- colnames(df)

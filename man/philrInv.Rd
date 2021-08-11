@@ -47,8 +47,8 @@ parameters must be specified (\code{tree}, \code{sbp}, or \code{V}).
  tr <- named_rtree(5)
  df <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
  colnames(df) <- tr$tip.label
- d <- philr(df, tr, part.weights='enorm.x.gm.counts',
-                ilr.weights='blw.sqrt', return.all=TRUE)
+ d <- philr(df, tr, part.weights='uniform',
+                ilr.weights='uniform', return.all=TRUE)
  d.inverted <- philrInv(d$df.ilrp, V=d$V, part.weights = d$p,
                         ilr.weights = d$ilr.weights)
  all.equal(miniclo(df), d.inverted)
