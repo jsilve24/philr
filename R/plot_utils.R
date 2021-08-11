@@ -56,38 +56,38 @@ annotate_balance <- function(tr, coord, p=NULL, labels=c('+','-'), offset=0,
 
   # Create Dataframe that contains location and dimentions of bar
   xmax <- get_clade_position(p, node=name.to.nn(tr, coord))[,'xmax']
-  df.up <- get_clade_position(p, node=ch.nn['up'])
-  df.down <- get_clade_position(p, node=ch.nn['down'])
-  df <- rbind(df.up, df.down)
-  rownames(df) <- c('up','down')
-  df[,'xmin'] <- xmax + offset
-  df[, 'xmax'] <- df[,'xmin'] + barsize
-  df[,'ymin'] <- df[,'ymin'] + 0.2
-  df[,'ymax'] <- df[,'ymax'] - 0.2
+  x.up <- get_clade_position(p, node=ch.nn['up'])
+  x.down <- get_clade_position(p, node=ch.nn['down'])
+  x <- rbind(x.up, x.down)
+  rownames(x) <- c('up','down')
+  x[,'xmin'] <- xmax + offset
+  x[, 'xmax'] <- x[,'xmin'] + barsize
+  x[,'ymin'] <- x[,'ymin'] + 0.2
+  x[,'ymax'] <- x[,'ymax'] - 0.2
 
   if (bar){
     p <- p +
       annotate(geom = geom,
-               x=df['up',]$xmax+offset.text,
-               y=(df['up',]$ymax + df['up',]$ymin)/2,
+               x=x['up',]$xmax+offset.text,
+               y=(x['up',]$ymax + x['up',]$ymin)/2,
                label=labels['up'], ...) +
       annotate(geom = geom,
-               x=df['down',]$xmax+offset.text,
-               y=(df['down',]$ymax + df['down',]$ymin)/2,
+               x=x['down',]$xmax+offset.text,
+               y=(x['down',]$ymax + x['down',]$ymin)/2,
                label=labels['down'], ...) +
-      annotate('rect', xmin=df['up',]$xmin, xmax=df['up',]$xmax,
-               ymin=df['up',]$ymin, ymax=df['up',]$ymax, fill=barfill) +
-      annotate('rect', xmin=df['down',]$xmin, xmax=df['down',]$xmax,
-               ymin=df['down',]$ymin, ymax=df['down',]$ymax, fill=barfill)
+      annotate('rect', xmin=x['up',]$xmin, xmax=x['up',]$xmax,
+               ymin=x['up',]$ymin, ymax=x['up',]$ymax, fill=barfill) +
+      annotate('rect', xmin=x['down',]$xmin, xmax=x['down',]$xmax,
+               ymin=x['down',]$ymin, ymax=x['down',]$ymax, fill=barfill)
   } else {
     p <- p +
       annotate(geom = geom,
                x=xmax+offset.text,
-               y=(df['up',]$ymax + df['up',]$ymin)/2,
+               y=(x['up',]$ymax + x['up',]$ymin)/2,
                label=labels['up'], ...) +
       annotate(geom = geom,
                x=xmax+offset.text,
-               y=(df['down',]$ymax + df['down',]$ymin)/2,
+               y=(x['down',]$ymax + x['down',]$ymin)/2,
                label=labels['down'], ...)
   }
   p

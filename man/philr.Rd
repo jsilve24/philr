@@ -6,7 +6,7 @@
 \title{Data transformation and driver of PhILR.}
 \usage{
 philr(
-  df,
+  x,
   tree = NULL,
   sbp = NULL,
   part.weights = "uniform",
@@ -16,7 +16,7 @@ philr(
 )
 }
 \arguments{
-\item{df}{\strong{matrix} of data to be transformed (samples are rows,
+\item{x}{\strong{matrix} of data to be transformed (samples are rows,
 compositional parts are columns) - zero must be dealt with either with pseudocount,
 multiplicative replacement, or another method.}
 
@@ -26,13 +26,13 @@ multiplicative replacement, or another method.}
 if you are going to build multiple ILR bases (e.g., with different weightings).}
 
 \item{part.weights}{weightings for parts, can be a named vector with names
-corresponding to \code{colnames(df)} otherwise can be a string, options include:
+corresponding to \code{colnames(x)} otherwise can be a string, options include:
 \describe{
 \item{\code{'uniform'}}{(default) uses the uniform reference measure}
-\item{\code{'gm.counts'}}{geometric mean of parts of df}
-\item{\code{'anorm'}}{aitchison norm of parts of df (after closure)}
+\item{\code{'gm.counts'}}{geometric mean of parts of x}
+\item{\code{'anorm'}}{aitchison norm of parts of x (after closure)}
 \item{\code{'anorm.x.gm.counts'}}{\code{'anorm'} times \code{'gm.counts'}}
-\item{\code{'enorm'}}{euclidean norm of parts of df (after closure)}
+\item{\code{'enorm'}}{euclidean norm of parts of x (after closure)}
 \item{\code{'enorm.x.gm.counts'}}{\code{'enorm'} times \code{'gm.counts'}, often gives good results}
 }}
 
@@ -49,13 +49,13 @@ each child's mean distance to its descendent tips}
 
 \item{return.all}{return all computed parts (e.g., computed sign matrix(\code{sbp}),
 part weightings (code{p}), ilr weightings (code{ilr.weights}), contrast matrix (\code{V}))
-as a list (default=\code{FALSE}) in addition to in addition to returning the transformed data (\code{df.ilrp}).
+as a list (default=\code{FALSE}) in addition to in addition to returning the transformed data (\code{.ilrp}).
 If \code{return.all==FALSE} then only returns the transformed data (not in list format)
-If \code{FALSE} then just returns list containing \code{df.ilrp}.}
+If \code{FALSE} then just returns list containing \code{x.ilrp}.}
 
 \item{abund_values}{A single character value for selecting the
 \code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{assay}} to be
-used. Only used when \code{df} is object from this class. Default: "counts".}
+used. Only used when \code{x} is object from this class. Default: "counts".}
 }
 \value{
 matrix if \code{return.all=FALSE}, if \code{return.all=TRUE} then a list is returned (see above).
@@ -77,11 +77,11 @@ in \code{philr}. The steps that are executed are as follows:
 }
 Note for both the reference measure (part weightings) and the ILR weightings, specifying \code{'uniform'} will
 give the same results as not weighting at all. \cr \cr
-Note that some of the prespecified part.weights assume \code{df} is given as
+Note that some of the prespecified part.weights assume \code{x} is given as
 counts and not as relative abundances. Except in this case counts or relative
 abundances can be given.
 
-The tree argument is ignored if the \code{df} argument is
+The tree argument is ignored if the \code{x} argument is
 \code{\link[phyloseq:phyloseq-class]{phyloseq}} or
 \code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{TreeSummarizedExperiment}} object.
 
@@ -99,9 +99,9 @@ to incorporate tree information.
 \examples{
 # Prepare example data
 tr <- named_rtree(5)
-df <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65 # add a small pseudocount
-colnames(df) <- tr$tip.label
-philr(df, tr, part.weights='uniform',
+x <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65 # add a small pseudocount
+colnames(x) <- tr$tip.label
+philr(x, tr, part.weights='uniform',
                ilr.weights='uniform', return.all=FALSE)
 
 # Running philr on a TreeSummarizedExperiment object

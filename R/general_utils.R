@@ -62,9 +62,9 @@ name.to.nn <- function(tr, x){
 #' Converts wide format ILR transformed data (see \code{\link{philr}}) to long format
 #' useful in various plotting functions where long format data is required.
 #'
-#' @param df PhILR transformed data in wide format (samples by balances) (see \code{\link{philr}})
-#' @param labels vector (of length \code{nrow(df)}) with labels to group samples by
-#' @return \code{df} in long format with columns
+#' @param x PhILR transformed data in wide format (samples by balances) (see \code{\link{philr}})
+#' @param labels vector (of length \code{nrow(x)}) with labels to group samples by
+#' @return \code{x} in long format with columns
 #' \itemize{
 #' \item sample
 #' \item labels
@@ -75,20 +75,20 @@ name.to.nn <- function(tr, x){
 #' @importFrom tidyr gather_
 #' @examples
 #' tr <- named_rtree(5)
-#' df <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
-#' colnames(df) <- tr$tip.label
+#' x <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
+#' colnames(x) <- tr$tip.label
 #'
-#' df.philr <- philr(df, tree=tr, part.weights='uniform',
+#' x.philr <- philr(x, tree=tr, part.weights='uniform',
 #'       ilr.weights='uniform', return.all=FALSE)
-#' convert_to_long(df.philr, rep(c('a','b'), 5))
-convert_to_long <- function(df, labels){
-  coord.names <- colnames(df)
-  df.long <- as.data.frame(df)
-  df.long$sample <- rownames(df.long)
-  df.long$labels <- labels
-  df.long <- gather_(df.long, "coord", "value",
-                     setdiff(names(df.long), c("labels", "sample")))
-  return(df.long)
+#' convert_to_long(x.philr, rep(c('a','b'), 5))
+convert_to_long <- function(x, labels){
+  coord.names <- colnames(x)
+  x.long <- as.data.frame(x)
+  x.long$sample <- rownames(x.long)
+  x.long$labels <- labels
+  x.long <- gather_(x.long, "coord", "value",
+                     setdiff(names(x.long), c("labels", "sample")))
+  return(x.long)
 }
 
 

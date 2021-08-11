@@ -4,15 +4,15 @@
 \alias{convert_to_long}
 \title{Converts wide format ILR transformed data to long format}
 \usage{
-convert_to_long(df, labels)
+convert_to_long(x, labels)
 }
 \arguments{
-\item{df}{PhILR transformed data in wide format (samples by balances) (see \code{\link{philr}})}
+\item{x}{PhILR transformed data in wide format (samples by balances) (see \code{\link{philr}})}
 
-\item{labels}{vector (of length \code{nrow(df)}) with labels to group samples by}
+\item{labels}{vector (of length \code{nrow(x)}) with labels to group samples by}
 }
 \value{
-\code{df} in long format with columns
+\code{x} in long format with columns
 \itemize{
 \item sample
 \item labels
@@ -26,10 +26,10 @@ useful in various plotting functions where long format data is required.
 }
 \examples{
 tr <- named_rtree(5)
-df <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
-colnames(df) <- tr$tip.label
+x <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
+colnames(x) <- tr$tip.label
 
-df.philr <- philr(df, tree=tr, part.weights='uniform',
+x.philr <- philr(x, tree=tr, part.weights='uniform',
       ilr.weights='uniform', return.all=FALSE)
-convert_to_long(df.philr, rep(c('a','b'), 5))
+convert_to_long(x.philr, rep(c('a','b'), 5))
 }

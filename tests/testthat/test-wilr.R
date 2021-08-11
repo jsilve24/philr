@@ -73,9 +73,9 @@ test_that('ilrpInv reverses effect of ilrp', {
   tr <- named_rtree(5)
   sbp <- phylo2sbp(tr)
   V <- buildilrBasep(sbp, p)
-  df <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
-  x <- miniclo(df)
-  y <- shiftp(miniclo(df), p)
+  x <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
+  x <- miniclo(x)
+  y <- shiftp(miniclo(x), p)
   y.star <- ilrp(y, p, V)
 
   y.inversed <- ilrpInv(y.star, V)
