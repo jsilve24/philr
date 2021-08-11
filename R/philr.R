@@ -57,8 +57,18 @@
 #' The tree argument is ignored if the \code{df} argument is
 #' \code{\link[phyloseq:phyloseq-class]{phyloseq}} or
 #' \code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{TreeSummarizedExperiment}} object.
-#' These objects can include a phylogenetic tree. If the phylogenetic tree is missing from these objects,
-#' it should be integrated directly in these objects before running \code{philr}.
+#' 
+#' These objects can include a phylogenetic tree. If the phylogenetic tree
+#' is missing from these objects, it should be integrated directly in these
+#' data objects before running \code{philr}. Alternatively, you can always
+#' provide the abundance matrix and tree separately in their standard formats.
+#'
+#' If you have a
+#' \code{\link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment}}
+#' object, this can be converted into
+#' \code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{TreeSummarizedExperiment}}
+#' to incorporate tree information.
+#'
 #'
 #' @return matrix if \code{return.all=FALSE}, if \code{return.all=TRUE} then a list is returned (see above).
 #' @author Justin Silverman; S3 methods by Leo Lahti
@@ -70,7 +80,7 @@
 #' df <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65 # add a small pseudocount
 #' colnames(df) <- tr$tip.label
 #' philr(df, tr, part.weights='enorm.x.gm.counts',
-#'                   ilr.weights='blw.sqrt', return.all=FALSE)
+#'                ilr.weights='blw.sqrt', return.all=FALSE)
 #'
 #' # Running philr on a TreeSummarizedExperiment object
 #'
@@ -99,15 +109,15 @@
 #' ## Run philr for TreeSummarizedExperiment object
 #' ## using the pseudocount data
 #' res.tse <- philr(tse, part.weights='enorm.x.gm.counts',
-#'                   ilr.weights='blw.sqrt', return.all=FALSE,
-#'                   abund_values="counts.shifted")
+#'                ilr.weights='blw.sqrt', return.all=FALSE,
+#'                abund_values="counts.shifted")
 #'
 #'
 #' # Running philr on a phyloseq object
 #' \dontrun{
 #'   pseq <- makePhyloseqFromTreeSummarizedExperiment(tse)
 #'   res.pseq <- philr(pseq, part.weights='enorm.x.gm.counts',
-#'                   ilr.weights='blw.sqrt', return.all=FALSE)
+#'                ilr.weights='blw.sqrt', return.all=FALSE)
 #' }
 #'
 philr <- function(df, tree=NULL, sbp=NULL, part.weights='uniform', ilr.weights='uniform', return.all=FALSE, abund_values="counts") { UseMethod("philr") }
@@ -138,15 +148,11 @@ philr.phyloseq <- function(df, ...){
 
 
 #' @export
-#' @importFrom TreeSummarizedExperiment rowTree
-#' @importFrom SummarizedExperiment assays
-philr.TreeSummarizedExperiment <- function(df, tree=NULL, abund_values, ...){
-    tree <- rowTree(df)
-    otu.table <- t(assays(df)[[abund_values]])
+philr.TreeSummarizedExperiment <- function(df, abund_values="counts", ...){
+    tree <- TreeSummarizedExperiment::rowTree(df)
+    otu.table <- t(SummarizedExperiment::assays(df)[[abund_values]])
     philr.data.frame(otu.table, tree=tree, ...)
 }
-
-
 
 #' @export 
 philr.matrix <- function(df, tree, ...){
@@ -159,123 +165,129 @@ philr.array <- function(df, tree, ...){
 }
 
 #' @export 
-philr.data.frame <- function(df, tree=NULL, abund_values=NULL, sbp=NULL,
+philr.data.frame <- function(df, tree, sbp=NULL,
                             part.weights='uniform', ilr.weights='uniform',
-                            return.all=FALSE, ...){
+                            return.all=FALSE, abund_values=NULL, ...){
   
-  # Convert df to mat with warning
-  df.name <- deparse(substitute(df))
-  if (is.data.frame(df)) {
-    st <- paste("Converting ", df.name, " to matrix from data.frame",
-                " consider adding as.matrix(", df.name, ") to function call",
-                " to control conversion manually", sep="")
-    warning(st)
-    df <- as.matrix(df)
-  }
-
-  # Convert vector input for df to matrix
-  df <- vec_to_mat(df)
-
-  # Check for Zero values in df
-  if (any(df == 0)){
-    stop('Zero values must be removed either through use of pseudocount, multiplicative replacement or other method.')
-  }
-
-  # Create the sequential binary partition sign matrix
-  if (is.null(sbp)){
-    message('Building Sequential Binary Partition from Tree...')
-    sbp <-  phylo2sbp(tree)
-  } else {
-    if ( (nrow(sbp)!=ncol(df)) | (ncol(sbp)!=ncol(df)-1) ){
-      stop("given sbp does not match dimentions required dimentions (e.g., ncol(df) x ncol(df)-1")
+    # Convert df to mat with warning
+    df.name <- deparse(substitute(df))
+    if (is.data.frame(df)) {
+        st <- paste("Converting ", df.name, " to matrix from data.frame",
+            " consider adding as.matrix(", df.name, ") to function call",
+            " to control conversion manually", sep="")
+        warning(st)
+        df <- as.matrix(df)
     }
-  }
-  if (is.null(colnames(df))) stop("Input data must have column names that align with phylogenetic tree to prevent logical errors.")
-  sbp <- sbp[colnames(df), ] #Very Important line to avoid logical errors
 
-  # Now need to create the weights on the parts
-  if (is.null(part.weights)){part.weights <- 'uniform'}
-  if (part.weights=='uniform'){
-    p <- rep(1, ncol(df))
-    names(p) <- rownames(sbp)
-  } else if (part.weights=='gm.counts'){
-    p <- g.colMeans(df)
-    p <- p[rownames(sbp)]
-  } else if (part.weights=='anorm'){
-    p <- apply(miniclo(t(df)), 1, function(x) normp(x, rep(1, nrow(df))))
-  } else if (part.weights=='anorm.x.gm.counts'){
-    gm.counts <- g.colMeans(df)
-    gm.counts <- gm.counts[rownames(sbp)]
-    anorm <- apply(miniclo(t(df)), 1, function(x) normp(x, rep(1, nrow(df))))
-    anorm <- anorm[rownames(sbp)]
-    p <- gm.counts*anorm
-  } else if (part.weights=='enorm') {
-    enorm <- apply(miniclo(t(df)), 1, function(x) sqrt(sum(x^2)))
-    enorm <- enorm[rownames(sbp)]
-    p <- enorm
-  } else if (part.weights=='enorm.x.gm.counts'){
-    gm.counts <- g.colMeans(df)
-    gm.counts <- gm.counts[rownames(sbp)]
-    enorm <- apply(miniclo(t(df)), 1, function(x) sqrt(sum(x^2)))
-    enorm <- enorm[rownames(sbp)]
-    p <- gm.counts*enorm
-  }
+    # Convert vector input for df to matrix
+    df <- vec_to_mat(df)
 
-  # Make sure everything is lined up (else throw an error)
-  if (!all.equal(rownames(sbp), colnames(df), names(p))) {
-      stop("Rownames of SBP, Colnames of df, and names of part weights not equal!")
-  }
-
-  # shift the dataset with respect to the new reference measure
-  df <- shiftp(miniclo(df), p)
-
-  # Now create basis contrast matrix
-  message('Building Contrast Matrix...')
-  V <- buildilrBasep(sbp, p)
-
-  # Finally transform the df
-  message('Transforming the Data...')
-  df.ilrp <- ilrp(df, p, V)
-
-  # Now calculate ILR Weightings
-  if (is.character(ilr.weights)){
-    message('Calculating ILR Weights...')
-    if (ilr.weights=='blw'){
-      ilr.weights <- calculate.blw(tree, method='sum.children')
-    } else if (ilr.weights=='blw.sqrt'){
-      ilr.weights <- sqrt(calculate.blw(tree, method='sum.children'))
-    } else if (ilr.weights=='uniform'){
-      ilr.weights <- rep(1, ncol(df.ilrp))
-      names(ilr.weights) <- colnames(df.ilrp)
-    } else if (ilr.weights=='mean.descendants'){
-        ilr.weights <- calculate.blw(tree, method='mean.descendants')
+    # Check for Zero values in df
+    if (any(df == 0)){
+        stop('Zero values must be removed either through use of pseudocount,
+            multiplicative replacement or other method.')
     }
-  } else { # Validate input of ilr.weights
-    if (!is.numeric(ilr.weights) | length(ilr.weights) != ncol(df.ilrp)){
-      stop("ilr.weights must be recognized string or numeric vector of length = ncol(df)-1")
+
+    # Create the sequential binary partition sign matrix
+    if (is.null(sbp)){
+        message('Building Sequential Binary Partition from Tree...')
+        sbp <-  phylo2sbp(tree)
+    } else {
+        if ( (nrow(sbp)!=ncol(df)) | (ncol(sbp)!=ncol(df)-1) ){
+            stop("given sbp does not match dimentions required dimentions 
+                (e.g., ncol(df) x ncol(df)-1")
+        }
     }
-  }
+    if (is.null(colnames(df))) {
+        stop("Input data must have column names that align with phylogenetic tree to 
+            prevent logical errors.")
+    }
+    sbp <- sbp[colnames(df), ] #Very Important line to avoid logical errors
 
-  #TODO: Speed up by not computing if 'uniform'
-  if (!is.null(colnames(df.ilrp))){
-    ilr.weights <- ilr.weights[colnames(df.ilrp)]
-  }
-  #ilr.weights <- ilr.weights[colnames(df.ilrp)]
-  tmp.names <- colnames(df.ilrp)
-  df.ilrp <- df.ilrp %*% diag(ilr.weights)
-  colnames(df.ilrp) <- tmp.names
+    # Now need to create the weights on the parts
+    if (is.null(part.weights)){part.weights <- 'uniform'}
+    if (part.weights=='uniform'){
+        p <- rep(1, ncol(df))
+        names(p) <- rownames(sbp)
+    } else if (part.weights=='gm.counts'){
+        p <- g.colMeans(df)
+        p <- p[rownames(sbp)]
+    } else if (part.weights=='anorm'){
+        p <- apply(miniclo(t(df)), 1, function(x) normp(x, rep(1, nrow(df))))
+    } else if (part.weights=='anorm.x.gm.counts'){
+        gm.counts <- g.colMeans(df)
+        gm.counts <- gm.counts[rownames(sbp)]
+        anorm <- apply(miniclo(t(df)), 1, function(x) normp(x, rep(1, nrow(df))))
+        anorm <- anorm[rownames(sbp)]
+        p <- gm.counts*anorm
+    } else if (part.weights=='enorm') {
+        enorm <- apply(miniclo(t(df)), 1, function(x) sqrt(sum(x^2)))
+        enorm <- enorm[rownames(sbp)]
+        p <- enorm
+    } else if (part.weights=='enorm.x.gm.counts'){
+        gm.counts <- g.colMeans(df)
+        gm.counts <- gm.counts[rownames(sbp)]
+        enorm <- apply(miniclo(t(df)), 1, function(x) sqrt(sum(x^2)))
+        enorm <- enorm[rownames(sbp)]
+        p <- gm.counts*enorm
+    }
 
-  # Build return list
-  if (return.all==FALSE)return(df.ilrp)
-  if (return.all==TRUE){
-    l.return = list()
-    l.return[['df.ilrp']] <- df.ilrp
-    l.return[['sbp']] <- sbp
-    l.return[['p']] <- p      # the part weights
-    l.return[['V']] <- V      # the contrast matrix
-    l.return[['ilr.weights']] <- ilr.weights
-  }
-  return(l.return)
+    # Make sure everything is lined up (else throw an error)
+    if (!all.equal(rownames(sbp), colnames(df), names(p))) {
+        stop("Rownames of SBP, Colnames of df, and names of part weights not equal!")
+    }
+
+    # shift the dataset with respect to the new reference measure
+    df <- shiftp(miniclo(df), p)
+
+    # Now create basis contrast matrix
+    message('Building Contrast Matrix...')
+    V <- buildilrBasep(sbp, p)
+
+    # Finally transform the df
+    message('Transforming the Data...')
+    df.ilrp <- ilrp(df, p, V)
+
+    # Now calculate ILR Weightings
+    if (is.character(ilr.weights)){
+        message('Calculating ILR Weights...')
+        if (ilr.weights=='blw'){
+            ilr.weights <- calculate.blw(tree, method='sum.children')
+        } else if (ilr.weights=='blw.sqrt'){
+            ilr.weights <- sqrt(calculate.blw(tree, method='sum.children'))
+        } else if (ilr.weights=='uniform'){
+            ilr.weights <- rep(1, ncol(df.ilrp))
+            names(ilr.weights) <- colnames(df.ilrp)
+        } else if (ilr.weights=='mean.descendants'){
+            ilr.weights <- calculate.blw(tree, method='mean.descendants')
+        }
+    } else { # Validate input of ilr.weights
+        if (!is.numeric(ilr.weights) | length(ilr.weights) != ncol(df.ilrp)){
+            stop("ilr.weights must be recognized string or numeric vector of 
+            length = ncol(df)-1")
+        }
+    }
+
+    # TODO: Speed up by not computing if 'uniform'
+    if (!is.null(colnames(df.ilrp))){
+        ilr.weights <- ilr.weights[colnames(df.ilrp)]
+    }
+    # ilr.weights <- ilr.weights[colnames(df.ilrp)]
+    tmp.names <- colnames(df.ilrp)
+    df.ilrp <- df.ilrp %*% diag(ilr.weights)
+    colnames(df.ilrp) <- tmp.names
+
+    # Build return list
+    if (return.all==FALSE)return(df.ilrp)
+    if (return.all==TRUE){
+        l.return = list()
+        l.return[['df.ilrp']] <- df.ilrp
+        l.return[['sbp']] <- sbp
+        l.return[['p']] <- p      # the part weights
+        l.return[['V']] <- V      # the contrast matrix
+        l.return[['ilr.weights']] <- ilr.weights
+    }
+    return(l.return)
 }
 
 #' Inverse of PhILR Transform
@@ -312,43 +324,43 @@ philr.data.frame <- function(df, tree=NULL, abund_values=NULL, sbp=NULL,
 #'                         ilr.weights = d$ilr.weights)
 #'  all.equal(miniclo(df), d.inverted)
 philrInv <- function(df.ilrp, tree=NULL, sbp=NULL, V=NULL, part.weights=NULL, ilr.weights=NULL){
-  if (all(c(is.null(tree), is.null(sbp), is.null(V)))){
-    stop('At least one of the parameters (tree, sbp, V) must be non-null')
-  }
-
-  # Convert vector input for df to matrix
-  df.ilrp <- vec_to_mat(df.ilrp)
-
-  # Inverse ILR -> y (the shifted composition - but closed)
-  if (is.null(part.weights)){
-    part.weights <- rep(1, ncol(df.ilrp)+1)
-  }
-
-  if (!is.null(V)) NULL
-  else if (!is.null(sbp)) V <- buildilrBasep(sbp, part.weights)
-  else V <- buildilrBasep(phylo2sbp(tree), part.weights)
-  V <- V[,colnames(df.ilrp)] # make sure everything is lined up
-
-  # Undo ILR weights - note: doing nothing (e.g., not matching criteria)
-  # is equivalent to undoing uniform ilr.weights (1,...,1)
-  if (!is.null(ilr.weights)) {
-    ilr.weights <- ilr.weights[colnames(df.ilrp)] # ensure things are lined up
-    df.ilrp <- df.ilrp / outer(rep(1,nrow(df.ilrp)), ilr.weights)
-  }
-
-  # Make sure everything is lined up (else throw an error)
-  if (!all.equal(colnames(V), colnames(df.ilrp))) {
-    stop("Colnames of V, Colnames of df!")
-  }
-
-  if (!all(part.weights==1)){
-    if (!all.equal(rownames(V), names(part.weights))){
-      stop("rownames of V and names of parts.weights not equal")
+    if (all(c(is.null(tree), is.null(sbp), is.null(V)))){
+        stop('At least one of the parameters (tree, sbp, V) must be non-null')
     }
-  }
 
-  y <- ilrpInv(df.ilrp, V)
-  x <- miniclo(shiftpInv(y, part.weights))
-  x
+    # Convert vector input for df to matrix
+    df.ilrp <- vec_to_mat(df.ilrp)
+
+    # Inverse ILR -> y (the shifted composition - but closed)
+    if (is.null(part.weights)){
+        part.weights <- rep(1, ncol(df.ilrp)+1)
+    }
+
+    if (!is.null(V)) NULL
+    else if (!is.null(sbp)) V <- buildilrBasep(sbp, part.weights)
+    else V <- buildilrBasep(phylo2sbp(tree), part.weights)
+    V <- V[,colnames(df.ilrp)] # make sure everything is lined up
+
+    # Undo ILR weights - note: doing nothing (e.g., not matching criteria)
+    # is equivalent to undoing uniform ilr.weights (1,...,1)
+    if (!is.null(ilr.weights)) {
+        ilr.weights <- ilr.weights[colnames(df.ilrp)] # ensure things are lined up
+        df.ilrp <- df.ilrp / outer(rep(1,nrow(df.ilrp)), ilr.weights)
+    }
+
+    # Make sure everything is lined up (else throw an error)
+    if (!all.equal(colnames(V), colnames(df.ilrp))) {
+        stop("Colnames of V, Colnames of df!")
+    }
+
+    if (!all(part.weights==1)){
+        if (!all.equal(rownames(V), names(part.weights))){
+            stop("rownames of V and names of parts.weights not equal")
+        }
+    }
+
+    y <- ilrpInv(df.ilrp, V)
+    x <- miniclo(shiftpInv(y, part.weights))
+    x
 }
 

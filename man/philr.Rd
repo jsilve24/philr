@@ -8,11 +8,11 @@
 philr(
   df,
   tree = NULL,
-  abund_values = "counts",
   sbp = NULL,
-  part.weights = "enorm.x.gm.counts",
-  ilr.weights = "blw.sqrt",
-  return.all = FALSE
+  part.weights = "uniform",
+  ilr.weights = "uniform",
+  return.all = FALSE,
+  abund_values = "counts"
 )
 }
 \arguments{
@@ -21,10 +21,6 @@ compositional parts are columns) - zero must be dealt with either with pseudocou
 multiplicative replacement, or another method.}
 
 \item{tree}{a \code{phylo} class tree object that is binary (see \code{\link[ape]{multi2di}})}
-
-\item{abund_values}{A single character value for selecting the
-\code{\link[SummarizedExperiment:SummarizedExperiment-class]{assay}} to be
-used. Only used when \code{df} is object from this class. Default: "counts".}
 
 \item{sbp}{(Optional) give a precomputed sbp matrix \code{\link{phylo2sbp}}
 if you are going to build multiple ILR bases (e.g., with different weightings).}
@@ -56,6 +52,10 @@ part weightings (code{p}), ilr weightings (code{ilr.weights}), contrast matrix (
 as a list (default=\code{FALSE}) in addition to in addition to returning the transformed data (\code{df.ilrp}).
 If \code{return.all==FALSE} then only returns the transformed data (not in list format)
 If \code{FALSE} then just returns list containing \code{df.ilrp}.}
+
+\item{abund_values}{A single character value for selecting the
+\code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{assay}} to be
+used. Only used when \code{df} is object from this class. Default: "counts".}
 }
 \value{
 matrix if \code{return.all=FALSE}, if \code{return.all=TRUE} then a list is returned (see above).
@@ -80,6 +80,21 @@ give the same results as not weighting at all. \cr \cr
 Note that some of the prespecified part.weights assume \code{df} is given as
 counts and not as relative abundances. Except in this case counts or relative
 abundances can be given.
+
+The tree argument is ignored if the \code{df} argument is
+\code{\link[phyloseq:phyloseq-class]{phyloseq}} or
+\code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{TreeSummarizedExperiment}} object.
+
+These objects can include a phylogenetic tree. If the phylogenetic tree
+is missing from these objects, it should be integrated directly in these
+data objects before running \code{philr}. Alternatively, you can always
+provide the abundance matrix and tree separately in their standard formats.
+
+If you have a
+\code{\link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment}}
+object, this can be converted into
+\code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{TreeSummarizedExperiment}}
+to incorporate tree information.
 }
 \examples{
 # Prepare example data
@@ -87,9 +102,7 @@ tr <- named_rtree(5)
 df <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65 # add a small pseudocount
 colnames(df) <- tr$tip.label
 philr(df, tr, part.weights='enorm.x.gm.counts',
-                  ilr.weights='blw.sqrt', return.all=FALSE)
-
-
+               ilr.weights='blw.sqrt', return.all=FALSE)
 
 # Running philr on a TreeSummarizedExperiment object
 
@@ -118,15 +131,15 @@ assays(tse)$counts.shifted <- assay(tse, "counts") + 1
 ## Run philr for TreeSummarizedExperiment object
 ## using the pseudocount data
 res.tse <- philr(tse, part.weights='enorm.x.gm.counts',
-                  ilr.weights='blw.sqrt', return.all=FALSE,
-                  abund_values="counts.shifted")
+               ilr.weights='blw.sqrt', return.all=FALSE,
+               abund_values="counts.shifted")
 
 
 # Running philr on a phyloseq object
 \dontrun{
   pseq <- makePhyloseqFromTreeSummarizedExperiment(tse)
   res.pseq <- philr(pseq, part.weights='enorm.x.gm.counts',
-                  ilr.weights='blw.sqrt', return.all=FALSE)
+               ilr.weights='blw.sqrt', return.all=FALSE)
 }
 
 }
