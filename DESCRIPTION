@@ -23,9 +23,7 @@ Imports:
     tidyr,
     ggplot2,
     ggtree,
-    methods,
-    SummarizedExperiment,
-    TreeSummarizedExperiment        
+    methods
 Depends:
     rmarkdown
 Suggests:
@@ -35,6 +33,8 @@ Suggests:
     rmarkdown,
     BiocStyle,
     phyloseq,
+    SummarizedExperiment,
+    TreeSummarizedExperiment,    
     glmnet,
     dplyr,
     mia
