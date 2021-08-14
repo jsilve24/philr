@@ -1,12 +1,13 @@
 Package: philr
 Type: Package
 Title: Phylogenetic partitioning based ILR transform for metagenomics data
-Version: 1.13.1
-Date: 2017-04-07
-Authors@R: c(person("Justin", "Silverman", role=c("aut", "cre"),
-                     email = "jsilve24@gmail.com"))
-Author: Justin Silverman
-Maintainer: Justin Silverman <jsilve24@gmail.com>
+Version: 1.19.1
+Date: 2021-08-11
+Authors@R:
+    c(person("Justin", "Silverman", role=c("aut", "cre"),
+                     email = "jsilve24@gmail.com"),
+      person(given = "Leo", family = "Lahti", role = c("ctb"),
+             comment = c(ORCID = "0000-0001-5537-637X")))
 Description: PhILR is short for Phylogenetic Isometric Log-Ratio Transform.
  This package provides functions for the analysis of compositional
  data (e.g., data representing proportions of different variables/parts).
@@ -15,11 +16,26 @@ Description: PhILR is short for Phylogenetic Isometric Log-Ratio Transform.
  data) and makes available the Isometric Log Ratio transform built from the
  phylogenetic tree and utilizing a weighted reference measure.
 License: GPL-3
-LazyData: TRUE
-RoxygenNote: 6.1.1
-Imports: ape, phangorn, tidyr, ggplot2, ggtree
-Depends:
-Suggests: testthat, knitr, rmarkdown, BiocStyle, phyloseq, glmnet, dplyr
+RoxygenNote: 7.1.1
+Imports:
+    ape,
+    phangorn,
+    tidyr,
+    ggplot2,
+    ggtree,
+    methods
+Suggests:
+    testthat,
+    knitr,
+    ecodist,
+    rmarkdown,
+    BiocStyle,
+    phyloseq,
+    SummarizedExperiment,
+    TreeSummarizedExperiment,    
+    glmnet,
+    dplyr,
+    mia
 VignetteBuilder: knitr
 biocViews: ImmunoOncology, Sequencing, Microbiome, Metagenomics, Software
 URL: https://github.com/jsilve24/philr 

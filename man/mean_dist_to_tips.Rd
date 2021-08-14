@@ -7,7 +7,8 @@
 mean_dist_to_tips(tree)
 }
 \arguments{
-\item{tree}{a \code{phylo} class tree object that is binary (see \code{\link[ape]{multi2di}})}
+\item{tree}{a \code{phylo} class tree object that is binary (see
+\code{\link[ape]{multi2di}})}
 }
 \value{
 vector (named if internal nodes are named)

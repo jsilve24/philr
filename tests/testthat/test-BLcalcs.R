@@ -10,7 +10,7 @@ test_that('mean_dist_to_tips gives correct results on fixed tree', {
   mdtt <- mean_dist_to_tips(tr.fixed)
 
   expect_equal(length(mdtt), 4)
-  expect_equal(mdtt[3], 1.018737, tolerance=3e-7, check.attributes=F)
+  expect_equal(mdtt[3], 1.018737, tolerance=3e-7, check.attributes=FALSE)
   expect_equivalent(mdtt[4], 0.5168615)
 })
 
