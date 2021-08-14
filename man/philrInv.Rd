@@ -4,13 +4,20 @@
 \alias{philrInv}
 \title{Inverse of PhILR Transform}
 \usage{
-philrInv(df.ilrp, tree = NULL, sbp = NULL, V = NULL,
-  part.weights = NULL, ilr.weights = NULL)
+philrInv(
+  x.ilrp,
+  tree = NULL,
+  sbp = NULL,
+  V = NULL,
+  part.weights = NULL,
+  ilr.weights = NULL
+)
 }
 \arguments{
-\item{df.ilrp}{transformed data to which the inverse transform will be applied}
+\item{x.ilrp}{transformed data to which the inverse transform will be applied}
 
-\item{tree}{(optional) to be used to build sbp and contrast matrix (see details)}
+\item{tree}{(optional) to be used to build sbp and contrast matrix
+(see details)}
 
 \item{sbp}{(optional) the sbp (sequential binary partition) used to build a
 contrast matrix (see details)}
@@ -18,10 +25,11 @@ contrast matrix (see details)}
 \item{V}{(optional) the contrast matrix (see details)}
 
 \item{part.weights}{weightings for parts, can be a named vector with names
-corresponding to \code{colnames(df)}. Defaults to 'uniform' (part.weights = 1,...,1)}
+corresponding to \code{colnames(x)}. Defaults to 'uniform'
+(part.weights = 1,...,1)}
 
-\item{ilr.weights}{weightings for the ILR coordiantes can be a named vector with names
-corresponding to names of internal nodes of \code{tree}.
+\item{ilr.weights}{weightings for the ILR coordiantes can be a named vector
+with names corresponding to names of internal nodes of \code{tree}.
 Defaults to 'uniform' (ilr.weights = 1,...,1)}
 }
 \value{
@@ -39,13 +47,13 @@ parameters must be specified (\code{tree}, \code{sbp}, or \code{V}).
 }
 \examples{
  tr <- named_rtree(5)
- df <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
- colnames(df) <- tr$tip.label
- d <- philr(df, tr, part.weights='enorm.x.gm.counts',
+ x <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65 # add small pseudocount
+ colnames(x) <- tr$tip.label
+ d <- philr(x, tr, part.weights='enorm.x.gm.counts',
                 ilr.weights='blw.sqrt', return.all=TRUE)
- d.inverted <- philrInv(d$df.ilrp, V=d$V, part.weights = d$p,
+ d.inverted <- philrInv(d$x.ilrp, V=d$V, part.weights = d$p,
                         ilr.weights = d$ilr.weights)
- all.equal(miniclo(df), d.inverted)
+ all.equal(miniclo(x), d.inverted)
 }
 \seealso{
 \code{\link{philr}}

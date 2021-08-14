@@ -6,16 +6,16 @@ test_that('check.zeroes throws proper waring',{
 
 test_that('shiftp function handles both matricies and vectors', {
   x1 <- c(1,2,3)
-  x2 <- matrix(c(1,2,3,1,2,3,1,2,3), nrow = 3, byrow=T)
+  x2 <- matrix(c(1,2,3,1,2,3,1,2,3), nrow = 3, byrow=TRUE)
   p <- c(1, .1, .5)
 
   expect_equal(shiftp(x1, p), matrix(c(1, 20, 6), nrow=1))
-  expect_equal(shiftp(x2, p), matrix(rep(c(1, 20, 6), 3), nrow=3, byrow=T))
+  expect_equal(shiftp(x2, p), matrix(rep(c(1, 20, 6), 3), nrow=3, byrow=TRUE))
 })
 
 test_that('shiftpInv function reverses Shiftp', {
   x1 <- matrix(c(1,2,3), nrow=1)
-  x2 <- matrix(c(1,2,3,1,2,3,1,2,3), nrow = 3, byrow=T)
+  x2 <- matrix(c(1,2,3,1,2,3,1,2,3), nrow = 3, byrow=TRUE)
   p <- c(1, .1, .5)
   y1 <- shiftp(x1, p)
   y2 <- shiftp(x2, p)
@@ -73,9 +73,9 @@ test_that('ilrpInv reverses effect of ilrp', {
   tr <- named_rtree(5)
   sbp <- phylo2sbp(tr)
   V <- buildilrBasep(sbp, p)
-  df <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
-  x <- miniclo(df)
-  y <- shiftp(miniclo(df), p)
+  x <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
+  x <- miniclo(x)
+  y <- shiftp(miniclo(x), p)
   y.star <- ilrp(y, p, V)
 
   y.inversed <- ilrpInv(y.star, V)

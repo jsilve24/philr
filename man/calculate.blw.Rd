@@ -8,13 +8,16 @@
 calculate.blw(tree, method = "sum.children")
 }
 \arguments{
-\item{tree}{a \code{phylo} class tree object that is binary (see \code{\link[ape]{multi2di}})}
+\item{tree}{a \code{phylo} class tree object that is binary (see
+\code{\link[ape]{multi2di}})}
 
-\item{method}{options include: (default) \code{'sum.children'} and \code{'mean.descendants'}
+\item{method}{options include: (default) \code{'sum.children'} and
+\code{'mean.descendants'}
 see details for more information.}
 }
 \value{
-vector of weightings for ILR coordinates produced via specified method.
+vector of weightings for ILR coordinates produced via specified
+method.
 }
 \description{
 Calculates the weightings for ILR coordinates based on branch lenghts of
@@ -26,13 +29,15 @@ can be imbued with branch length information. This function is helpful in
 calculating those weightings.\cr \cr
 There are a number of methods for calculating these weightings, the default
 \code{'sum.children'} calculates the weighting for a given balance as the sum
-of its two direct children's branch length. An alternative that has been as yet less
-studied is \code{'mean.descendants'} to calculate the weighting for a given balance
-as the sum of its two direct children's branch lengths PLUS for each child the average
-distance from it to its descendant tips. \cr \cr
-\emph{Note:} That some trees contain tips with branch lengths of zero length. This can result
-in that tip being unreasonably downweighted, as such this function automatically
-adds a small pseudocount to those tips with zero length (equal to the smallest non-zero)
+of its two direct children's branch length. An alternative that has been
+as yet less studied is \code{'mean.descendants'} to calculate the weighting
+for a given balance as the sum of its two direct children's branch lengths
+PLUS for each child the average distance from it to its descendant tips.
+\cr \cr
+\emph{Note:} That some trees contain tips with branch lengths of zero length.
+This can result in that tip being unreasonably downweighted, as such this
+function automatically adds a small pseudocount to those tips with zero
+length (equal to the smallest non-zero)
 branch length on the tree.
 }
 \examples{

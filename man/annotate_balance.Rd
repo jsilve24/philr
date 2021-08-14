@@ -4,9 +4,19 @@
 \alias{annotate_balance}
 \title{annotate_balance}
 \usage{
-annotate_balance(tr, coord, p = NULL, labels = c("+", "-"),
-  offset = 0, offset.text = 0.03, bar = TRUE, barsize = 0.01,
-  barfill = "darkgrey", geom = "text", ...)
+annotate_balance(
+  tr,
+  coord,
+  p = NULL,
+  labels = c("+", "-"),
+  offset = 0,
+  offset.text = 0.03,
+  bar = TRUE,
+  barsize = 0.01,
+  barfill = "darkgrey",
+  geom = "text",
+  ...
+)
 }
 \arguments{
 \item{tr}{phylo object}
@@ -16,7 +26,8 @@ annotate_balance(tr, coord, p = NULL, labels = c("+", "-"),
 \item{p}{ggtree plot (tree layer), if \code{NULL} then a new plot will be
 created.}
 
-\item{labels}{label for the numerator and denominator of the balance respectively}
+\item{labels}{label for the numerator and denominator of the balance
+respectively}
 
 \item{offset}{offset for bar (if \code{bar=TRUE}) from tips}
 
@@ -31,7 +42,8 @@ created.}
 
 \item{geom}{geom used to draw label (e.g., \code{'text'} or \code{'label'})}
 
-\item{...}{additional parameters passed to \code{geom_rect} and specified \code{geom}}
+\item{...}{additional parameters passed to \code{geom_rect} and
+specified \code{geom}}
 }
 \value{
 ggplot object
@@ -45,16 +57,19 @@ denominator (\code{down}).
 tr <- named_rtree(10)
 
 annotate_balance(tr, 'n4', size=7)
-annotate_balance(tr, 'n4', size=7, barsize=0.04, barfill='darkgreen', offset.text=0.05, color='red')
+annotate_balance(tr, 'n4', size=7, barsize=0.04, barfill='darkgreen',
+    offset.text=0.05, color='red')
 annotate_balance(tr, 'n4', bar=FALSE, size=7)
-annotate_balance(tr, 'n4', bar=TRUE, size=7, labels=c('Num', 'Denom'), offset.text=.3)
+annotate_balance(tr, 'n4', bar=TRUE, size=7, labels=c('Num', 'Denom'),
+    offset.text=.3)
 annotate_balance(tr, 'n4', bar=TRUE, geom='label', size=8, offset.text=0.1)
 }
 \references{
-Guangchuang Yu, David Smith, Huachen Zhu, Yi Guan, Tommy Tsan-Yuk Lam.
-\emph{ggtree: an R package for visualization and annotation of phylogenetic trees with 
-their covariates and other associated data.}
-Methods in Ecology and Evolution 2016, doi:10.1111/2041-210X.12628
+Guangchuang Yu, David Smith, Huachen Zhu, Yi Guan,
+Tommy Tsan-Yuk Lam.
+\emph{ggtree: an R package for visualization and annotation of
+phylogenetic trees with their covariates and other associated data.}
+Methods in Ecology and Evolution 2016, \url{doi:10.1111/2041-210X.12628}
 }
 \author{
 Justin Silverman
