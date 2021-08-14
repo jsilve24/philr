@@ -1,22 +1,21 @@
-
 # Generally Helpful for Validation ----------------------------------------
 
 # check for zeros and throw error if present
 # target is just a name for the warning message
 check.zeroes <- function(x, target){
-  if (any(x==0)){
-    warning(paste(target, "should not contain zeroes"))
-  }
+    if (any(x==0)){
+        warning(paste(target, "should not contain zeroes"))
+    }
 }
 
 # convert vector to row vector.
 vec_to_mat <- function(x){
-  if (is.vector(x)) {
-    n <- names(x)
-    x <- matrix(x, nrow = 1)
-    colnames(x) <- n
-  }
-  x
+    if (is.vector(x)) {
+        n <- names(x)
+        x <- matrix(x, nrow = 1)
+        colnames(x) <- n
+    }
+    x
 }
 
 # ACCESSOR FUNCTIONS FROM NAMES TO NUMBERS --------------------------------
@@ -41,17 +40,17 @@ NULL
 #' @rdname name_nodenumber_conversion
 #' @export
 nn.to.name <- function(tr, x){
-  if(!is.numeric(x)) stop('node numbers must be numeric')
-  labels <- c(tr$tip.label, tr$node.label)
-  labels[x]
+    if(!is.numeric(x)) stop('node numbers must be numeric')
+    labels <- c(tr$tip.label, tr$node.label)
+    labels[x]
 }
 
 #' @rdname name_nodenumber_conversion
 #' @export
 name.to.nn <- function(tr, x){
-  if(!is.character(x)) stop('node/tip names (x) should be a character vector')
-  labels <- c(tr$tip.label, tr$node.label)
-  match(x, labels)
+    if(!is.character(x)) stop('node/tip names (x) should be a character vector')
+    labels <- c(tr$tip.label, tr$node.label)
+    match(x, labels)
 }
 
 
@@ -59,11 +58,14 @@ name.to.nn <- function(tr, x){
 
 #' Converts wide format ILR transformed data to long format
 #'
-#' Converts wide format ILR transformed data (see \code{\link{philr}}) to long format
-#' useful in various plotting functions where long format data is required.
+#' Converts wide format ILR transformed data (see \code{\link{philr}}) to
+#' long format useful in various plotting functions where long format data is
+#' required.
 #'
-#' @param x PhILR transformed data in wide format (samples by balances) (see \code{\link{philr}})
-#' @param labels vector (of length \code{nrow(x)}) with labels to group samples by
+#' @param x PhILR transformed data in wide format (samples by balances)
+#' (see \code{\link{philr}})
+#' @param labels vector (of length \code{nrow(x)}) with labels to group
+#' samples by
 #' @return \code{x} in long format with columns
 #' \itemize{
 #' \item sample
@@ -75,20 +77,20 @@ name.to.nn <- function(tr, x){
 #' @importFrom tidyr gather_
 #' @examples
 #' tr <- named_rtree(5)
-#' x <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
+#' x <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65 # add small pseudocount
 #' colnames(x) <- tr$tip.label
 #'
-#' x.philr <- philr(x, tree=tr, part.weights='uniform',
-#'       ilr.weights='uniform', return.all=FALSE)
-#' convert_to_long(x.philr, rep(c('a','b'), 5))
+#' x.philr <- philr(x, tree=tr, part.weights='enorm.x.gm.counts',
+#'    ilr.weights='blw.sqrt', return.all=FALSE)
+#'    convert_to_long(x.philr, rep(c('a','b'), 5))
 convert_to_long <- function(x, labels){
-  coord.names <- colnames(x)
-  x.long <- as.data.frame(x)
-  x.long$sample <- rownames(x.long)
-  x.long$labels <- labels
-  x.long <- gather_(x.long, "coord", "value",
-                     setdiff(names(x.long), c("labels", "sample")))
-  return(x.long)
+    coord.names <- colnames(x)
+    x.long <- as.data.frame(x)
+    x.long$sample <- rownames(x.long)
+    x.long$labels <- labels
+    x.long <- gather_(x.long, "coord", "value",
+                    setdiff(names(x.long), c("labels", "sample")))
+    return(x.long)
 }
 
 
@@ -107,6 +109,6 @@ convert_to_long <- function(x, labels){
 #' @examples
 #' named_rtree(5)
 named_rtree <- function(n){
-  tr <- rtree(n)
-  makeNodeLabel(tr, 'number', 'n')
+    tr <- rtree(n)
+    makeNodeLabel(tr, 'number', 'n')
 }

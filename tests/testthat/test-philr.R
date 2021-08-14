@@ -17,7 +17,7 @@ test_that("philr and philrInv handles vectors and default uniform arguments", {
   x <- c(1,4,1,22,2)
   names(x) <- tr$tip.label
 
-  x.ilr <- philr(x, tree=tr, return.all=F)
+  x.ilr <- philr(x, tree=tr, return.all=FALSE)
 
   expect_equivalent(philrInv(x.ilr, tr),
                miniclo(x))
@@ -45,5 +45,5 @@ test_that("philr handles data.frame input with warning", {
   names(x) <- tr$tip.label
   xxxx <- as.data.frame(t(as.data.frame(x)))
 
-  expect_warning(philr(xxxx, tree=tr, return.all=F), "xxxx")
+  expect_warning(philr(xxxx, tree=tr, return.all=FALSE), "xxxx")
 })

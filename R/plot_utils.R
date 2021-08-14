@@ -8,7 +8,8 @@
 #' @param coord named internal node/balance to annotate
 #' @param p ggtree plot (tree layer), if \code{NULL} then a new plot will be
 #' created.
-#' @param labels label for the numerator and denominator of the balance respectively
+#' @param labels label for the numerator and denominator of the balance
+#' respectively
 #' @param offset offset for bar (if \code{bar=TRUE}) from tips
 #' @param offset.text offset of text from bar (if \code{bar=TRUE}) or from tips
 #' (if \code{bar=FALSE})
@@ -16,7 +17,8 @@
 #' @param barsize width of bar (if \code{bar=TRUE})
 #' @param barfill fill of bar
 #' @param geom geom used to draw label (e.g., \code{'text'} or \code{'label'})
-#' @param ... additional parameters passed to \code{geom_rect} and specified \code{geom}
+#' @param ... additional parameters passed to \code{geom_rect} and
+#' specified \code{geom}
 #'
 #' @return ggplot object
 #' @importFrom ggplot2 annotate
@@ -24,18 +26,21 @@
 #'
 #' @export
 #' @author Justin Silverman
-#' @references Guangchuang Yu, David Smith, Huachen Zhu, Yi Guan, Tommy Tsan-Yuk Lam.
-#' \emph{ggtree: an R package for visualization and annotation of phylogenetic trees with 
-#' their covariates and other associated data.}
-#' Methods in Ecology and Evolution 2016, doi:10.1111/2041-210X.12628
+#' @references Guangchuang Yu, David Smith, Huachen Zhu, Yi Guan,
+#' Tommy Tsan-Yuk Lam.
+#' \emph{ggtree: an R package for visualization and annotation of
+#' phylogenetic trees with their covariates and other associated data.}
+#' Methods in Ecology and Evolution 2016, \url{doi:10.1111/2041-210X.12628}
 #'
 #' @examples
 #' tr <- named_rtree(10)
 #'
 #' annotate_balance(tr, 'n4', size=7)
-#' annotate_balance(tr, 'n4', size=7, barsize=0.04, barfill='darkgreen', offset.text=0.05, color='red')
+#' annotate_balance(tr, 'n4', size=7, barsize=0.04, barfill='darkgreen',
+#'     offset.text=0.05, color='red')
 #' annotate_balance(tr, 'n4', bar=FALSE, size=7)
-#' annotate_balance(tr, 'n4', bar=TRUE, size=7, labels=c('Num', 'Denom'), offset.text=.3)
+#' annotate_balance(tr, 'n4', bar=TRUE, size=7, labels=c('Num', 'Denom'),
+#'     offset.text=.3)
 #' annotate_balance(tr, 'n4', bar=TRUE, geom='label', size=8, offset.text=0.1)
 annotate_balance <- function(tr, coord, p=NULL, labels=c('+','-'), offset=0,
                              offset.text=0.03, bar=TRUE, barsize=0.01,
@@ -46,7 +51,8 @@ annotate_balance <- function(tr, coord, p=NULL, labels=c('+','-'), offset=0,
   names(labels) <- c('up', 'down')
 
   # get node numbers of children
-  ch.coord <- unlist(get.ud.nodes(tr, coord))   # get ud.nodes (to orient) - tests if coord is a tip
+  # get ud.nodes (to orient) - tests if coord is a tip  
+  ch.coord <- unlist(get.ud.nodes(tr, coord)) 
   ch.nn <- name.to.nn(tr, ch.coord)   # Convert to node numbers
   names(ch.nn) <- names(ch.coord)
 

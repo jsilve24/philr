@@ -7,9 +7,11 @@
 convert_to_long(x, labels)
 }
 \arguments{
-\item{x}{PhILR transformed data in wide format (samples by balances) (see \code{\link{philr}})}
+\item{x}{PhILR transformed data in wide format (samples by balances)
+(see \code{\link{philr}})}
 
-\item{labels}{vector (of length \code{nrow(x)}) with labels to group samples by}
+\item{labels}{vector (of length \code{nrow(x)}) with labels to group
+samples by}
 }
 \value{
 \code{x} in long format with columns
@@ -21,15 +23,16 @@ convert_to_long(x, labels)
 }
 }
 \description{
-Converts wide format ILR transformed data (see \code{\link{philr}}) to long format
-useful in various plotting functions where long format data is required.
+Converts wide format ILR transformed data (see \code{\link{philr}}) to
+long format useful in various plotting functions where long format data is
+required.
 }
 \examples{
 tr <- named_rtree(5)
-x <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
+x <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65 # add small pseudocount
 colnames(x) <- tr$tip.label
 
-x.philr <- philr(x, tree=tr, part.weights='uniform',
-      ilr.weights='uniform', return.all=FALSE)
-convert_to_long(x.philr, rep(c('a','b'), 5))
+x.philr <- philr(x, tree=tr, part.weights='enorm.x.gm.counts',
+   ilr.weights='blw.sqrt', return.all=FALSE)
+   convert_to_long(x.philr, rep(c('a','b'), 5))
 }

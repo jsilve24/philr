@@ -1,41 +1,51 @@
 #' Data transformation and driver of PhILR.
 #'
-#' This is the main function for building the phylogenetic ILR basis, calculating the
-#' weightings (of the parts and the ILR coordinates) and then transforming the data.
+#' This is the main function for building the phylogenetic ILR basis,
+#' calculating the weightings (of the parts and the ILR coordinates) and then
+#' transforming the data.
+#' 
 #' @aliases  build.phylo.ilr
 #' @param x \strong{matrix} of data to be transformed (samples are rows,
-#' compositional parts are columns) - zero must be dealt with either with pseudocount,
-#' multiplicative replacement, or another method.
+#' compositional parts are columns) - zero must be dealt with either with
+#' pseudocount, multiplicative replacement, or another method.
 #' @param sbp (Optional) give a precomputed sbp matrix \code{\link{phylo2sbp}}
-#' if you are going to build multiple ILR bases (e.g., with different weightings).
+#' if you are going to build multiple ILR bases (e.g., with different
+#' weightings).
 #' @param part.weights weightings for parts, can be a named vector with names
-#' corresponding to \code{colnames(x)} otherwise can be a string, options include:
+#' corresponding to \code{colnames(x)} otherwise can be a string, options
+#' include:
 #' \describe{
 #' \item{\code{'uniform'}}{(default) uses the uniform reference measure}
 #' \item{\code{'gm.counts'}}{geometric mean of parts of x}
 #' \item{\code{'anorm'}}{aitchison norm of parts of x (after closure)}
 #' \item{\code{'anorm.x.gm.counts'}}{\code{'anorm'} times \code{'gm.counts'}}
 #' \item{\code{'enorm'}}{euclidean norm of parts of x (after closure)}
-#' \item{\code{'enorm.x.gm.counts'}}{\code{'enorm'} times \code{'gm.counts'}, often gives good results}
+#' \item{\code{'enorm.x.gm.counts'}}{\code{'enorm'} times \code{'gm.counts'},
+#'     often gives good results}
 #' }
-#' @param ilr.weights weightings for the ILR coordiantes can be a named vector with names
-#' corresponding to names of internal nodes of \code{tree} otherwise can be a string,
+#' @param ilr.weights weightings for the ILR coordiantes can be a named vector
+#' with names corresponding to names of internal nodes of \code{tree}
+#' otherwise can be a string,
 #' options include:
 #' \describe{
 #' \item{\code{'uniform'}}{(default) no weighting of the ILR basis}
 #' \item{\code{'blw'}}{sum of children's branch lengths}
 #' \item{\code{'blw.sqrt'}}{square root of \code{'blw'} option}
-#' \item{\code{'mean.descendants'}}{sum of children's branch lengths PLUS the sum of
-#' each child's mean distance to its descendent tips}
+#' \item{\code{'mean.descendants'}}{sum of children's branch lengths PLUS the
+#'     sum of each child's mean distance to its descendent tips}
 #' }
-#' @param return.all return all computed parts (e.g., computed sign matrix(\code{sbp}),
-#' part weightings (code{p}), ilr weightings (code{ilr.weights}), contrast matrix (\code{V}))
-#' as a list (default=\code{FALSE}) in addition to in addition to returning the transformed data (\code{.ilrp}).
-#' If \code{return.all==FALSE} then only returns the transformed data (not in list format)
+#' @param return.all return all computed parts (e.g., computed sign
+#'     matrix(\code{sbp}), part weightings (code{p}), ilr weightings
+#'     (code{ilr.weights}), contrast matrix (\code{V})) as a list
+#'     (default=\code{FALSE}) in addition to in addition to returning the
+#'     transformed data (\code{.ilrp}).
+#' If \code{return.all==FALSE} then only returns the transformed data
+#' (not in list format)
 #' If \code{FALSE} then just returns list containing \code{x.ilrp}.
 #' @param abund_values A single character value for selecting the
-#'   \code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{assay}} to be
-#'   used. Only used when \code{x} is object from this class. Default: "counts".
+#'   \code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{assay}}
+#' to be used. Only used when \code{x} is object from this class.
+#' Default: "counts".
 #' @inheritParams calculate.blw
 #' @details
 #' This is a utility function that pulls together a number of other functions
@@ -43,34 +53,38 @@
 #' \enumerate{
 #' \item Create sbp (sign matrix) if not given
 #' \item Create parts weightings if not given
-#' \item Shift the dataset with respect to the new reference measure (e.g., part weightings)
-#' \item Create the basis contrast matrix from the sign matrix and the reference measure
-#' \item Transform the data based on the contrast matrix and the reference measure
-#' \item Calculate the specified ILR weightings and multiply each balance by the corresponding weighting
+#' \item Shift the dataset with respect to the new reference measure
+#'     (e.g., part weightings)
+#' \item Create the basis contrast matrix from the sign matrix and the
+#'     reference measure
+#' \item Transform the data based on the contrast matrix and the reference
+#'     measure
+#' \item Calculate the specified ILR weightings and multiply each balance by
+#'     the corresponding weighting
 #' }
-#' Note for both the reference measure (part weightings) and the ILR weightings, specifying \code{'uniform'} will
-#' give the same results as not weighting at all. \cr \cr
+#' Note for both the reference measure (part weightings) and the ILR weightings,
+#' specifying \code{'uniform'} will give the same results as not weighting at
+#' all. \cr \cr
 #' Note that some of the prespecified part.weights assume \code{x} is given as
 #' counts and not as relative abundances. Except in this case counts or relative
 #' abundances can be given.
 #'
 #' The tree argument is ignored if the \code{x} argument is
-#' \code{\link[phyloseq:phyloseq-class]{phyloseq}} or
-#' \code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{TreeSummarizedExperiment}} object.
-#' 
+#' \code{\link[phyloseq:phyloseq-class]{assay}} or
+#' \code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{assay}}
 #' These objects can include a phylogenetic tree. If the phylogenetic tree
 #' is missing from these objects, it should be integrated directly in these
 #' data objects before running \code{philr}. Alternatively, you can always
 #' provide the abundance matrix and tree separately in their standard formats.
 #'
-#' If you have a
-#' \code{\link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment}}
-#' object, this can be converted into
-#' \code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{TreeSummarizedExperiment}}
+#' If you have a 
+#' \code{\link[SummarizedExperiment:SummarizedExperiment-class]{assay}},
+#' this can be converted into
+#' \code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{assay}},
 #' to incorporate tree information.
 #'
-#'
-#' @return matrix if \code{return.all=FALSE}, if \code{return.all=TRUE} then a list is returned (see above).
+#' @return matrix if \code{return.all=FALSE}, if \code{return.all=TRUE} then
+#' a list is returned (see above).
 #' @author Justin Silverman; S3 methods by Leo Lahti
 #' @export 
 #' @seealso \code{\link{phylo2sbp}} \code{\link{calculate.blw}}
@@ -79,8 +93,8 @@
 #' tr <- named_rtree(5)
 #' x <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65 # add a small pseudocount
 #' colnames(x) <- tr$tip.label
-#' philr(x, tr, part.weights='uniform',
-#'                ilr.weights='uniform', return.all=FALSE)
+#' philr(x, tr, part.weights='enorm.x.gm.counts',
+#'                ilr.weights='blw.sqrt', return.all=FALSE)
 #'
 #' # Running philr on a TreeSummarizedExperiment object
 #'
@@ -108,16 +122,15 @@
 #' 
 #' ## Run philr for TreeSummarizedExperiment object
 #' ## using the pseudocount data
-#' res.tse <- philr(tse, part.weights='uniform',
-#'                ilr.weights='uniform', return.all=FALSE,
+#' res.tse <- philr(tse, part.weights='enorm.x.gm.counts',
+#'                ilr.weights='blw.sqrt', return.all=FALSE,
 #'                abund_values="counts.shifted")
 #'
-#'
 #' # Running philr on a phyloseq object
-#' \dontrun{
+#' \donttest{
 #'   pseq <- makePhyloseqFromTreeSummarizedExperiment(tse)
-#'   res.pseq <- philr(pseq, part.weights='uniform',
-#'                ilr.weights='uniform', return.all=FALSE)
+#'   res.pseq <- philr(pseq, part.weights='enorm.x.gm.counts',
+#'                ilr.weights='blw.sqrt', return.all=FALSE)
 #' }
 #'
 philr <- function(x, tree=NULL, sbp=NULL, part.weights='uniform', ilr.weights='uniform', return.all=FALSE, abund_values="counts") { UseMethod("philr") }
@@ -169,8 +182,7 @@ philr.array <- function(x, tree, ...){
 #' @export 
 philr.data.frame <- function(x, tree, sbp=NULL,
                             part.weights='uniform', ilr.weights='uniform',
-                            return.all=FALSE, abund_values=NULL, ...){
-  
+                            return.all=FALSE, abund_values=NULL, ...){  
     # Convert x to mat with warning
     x.name <- deparse(substitute(x))
     if (is.data.frame(x)) {
@@ -201,8 +213,7 @@ philr.data.frame <- function(x, tree, sbp=NULL,
         }
     }
     if (is.null(colnames(x))) {
-        stop("Input data must have column names that align with phylogenetic tree to 
-            prevent logical errors.")
+        stop("Input data must have column names that align with phylogenetic tree to prevent logical errors.")
     }
     sbp <- sbp[colnames(x), ] #Very Important line to avoid logical errors
 
@@ -295,14 +306,16 @@ philr.data.frame <- function(x, tree, sbp=NULL,
 #' Inverse of PhILR Transform
 #'
 #' @param x.ilrp transformed data to which the inverse transform will be applied
-#' @param tree (optional) to be used to build sbp and contrast matrix (see details)
+#' @param tree (optional) to be used to build sbp and contrast matrix
+#' (see details)
 #' @param sbp (optional) the sbp (sequential binary partition) used to build a
 #' contrast matrix (see details)
 #' @param V (optional) the contrast matrix (see details)
 #' @param part.weights weightings for parts, can be a named vector with names
-#' corresponding to \code{colnames(x)}. Defaults to 'uniform' (part.weights = 1,...,1)
-#' @param ilr.weights weightings for the ILR coordiantes can be a named vector with names
-#' corresponding to names of internal nodes of \code{tree}.
+#' corresponding to \code{colnames(x)}. Defaults to 'uniform'
+#' (part.weights = 1,...,1)
+#' @param ilr.weights weightings for the ILR coordiantes can be a named vector
+#' with names corresponding to names of internal nodes of \code{tree}.
 #' Defaults to 'uniform' (ilr.weights = 1,...,1)
 #'
 #' @details This is a utility function for calculating the inverse of the
@@ -318,10 +331,10 @@ philr.data.frame <- function(x, tree, sbp=NULL,
 #'
 #' @examples
 #'  tr <- named_rtree(5)
-#'  x <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65   # add a small pseudocount
+#'  x <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2))) + 0.65 # add small pseudocount
 #'  colnames(x) <- tr$tip.label
-#'  d <- philr(x, tr, part.weights='uniform',
-#'                 ilr.weights='uniform', return.all=TRUE)
+#'  d <- philr(x, tr, part.weights='enorm.x.gm.counts',
+#'                 ilr.weights='blw.sqrt', return.all=TRUE)
 #'  d.inverted <- philrInv(d$x.ilrp, V=d$V, part.weights = d$p,
 #'                         ilr.weights = d$ilr.weights)
 #'  all.equal(miniclo(x), d.inverted)

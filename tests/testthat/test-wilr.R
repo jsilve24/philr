@@ -6,16 +6,16 @@ test_that('check.zeroes throws proper waring',{
 
 test_that('shiftp function handles both matricies and vectors', {
   x1 <- c(1,2,3)
-  x2 <- matrix(c(1,2,3,1,2,3,1,2,3), nrow = 3, byrow=T)
+  x2 <- matrix(c(1,2,3,1,2,3,1,2,3), nrow = 3, byrow=TRUE)
   p <- c(1, .1, .5)
 
   expect_equal(shiftp(x1, p), matrix(c(1, 20, 6), nrow=1))
-  expect_equal(shiftp(x2, p), matrix(rep(c(1, 20, 6), 3), nrow=3, byrow=T))
+  expect_equal(shiftp(x2, p), matrix(rep(c(1, 20, 6), 3), nrow=3, byrow=TRUE))
 })
 
 test_that('shiftpInv function reverses Shiftp', {
   x1 <- matrix(c(1,2,3), nrow=1)
-  x2 <- matrix(c(1,2,3,1,2,3,1,2,3), nrow = 3, byrow=T)
+  x2 <- matrix(c(1,2,3,1,2,3,1,2,3), nrow = 3, byrow=TRUE)
   p <- c(1, .1, .5)
   y1 <- shiftp(x1, p)
   y2 <- shiftp(x2, p)
