@@ -112,7 +112,7 @@
 #'                ilr.weights='blw.sqrt', return.all=FALSE)
 #' }
 #'
-philr <- function(x, tree=NULL, sbp=NULL, part.weights='uniform', ilr.weights='uniform', return.all=FALSE, abund_values="counts") { UseMethod("philr") }
+philr <- function(x, tree=NULL, sbp=NULL, part.weights='uniform', ilr.weights='uniform', return.all=FALSE, abund_values="counts", pseudocount=0) { UseMethod("philr") }
 
 
 #' @export 
