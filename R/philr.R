@@ -96,20 +96,17 @@
 #' tree <- ape::keep.tip(phy = rowTree(tse), tip = rowLinks(tse)$nodeNum)
 #' rowTree(tse) <- tree
 #'
-#' ## Add a new assay with a pseudocount 
-#' assays(tse)$counts.shifted <- assay(tse, "counts") + 1
-#' 
 #' ## Run philr for TreeSummarizedExperiment object
 #' ## using the pseudocount data
 #' res.tse <- philr(tse, part.weights='enorm.x.gm.counts',
-#'                ilr.weights='blw.sqrt', return.all=FALSE,
-#'                abund_values="counts.shifted")
+#'                  ilr.weights='blw.sqrt', return.all=FALSE,
+#'                  abund_values="counts", pseudocount=1)
 #'
 #' # Running philr on a phyloseq object
 #' \donttest{
-#'   pseq <- makePhyloseqFromTreeSummarizedExperiment(tse)
-#'   res.pseq <- philr(pseq, part.weights='enorm.x.gm.counts',
-#'                ilr.weights='blw.sqrt', return.all=FALSE)
+#'     pseq <- makePhyloseqFromTreeSummarizedExperiment(tse, abund_values="counts")
+#'     res.pseq <- philr(pseq, part.weights='enorm.x.gm.counts',
+#'                       ilr.weights='blw.sqrt', return.all=FALSE, pseudocount=1)
 #' }
 #'
 philr <- function(x, tree=NULL, sbp=NULL, part.weights='uniform', ilr.weights='uniform', return.all=FALSE, abund_values="counts", pseudocount=0) { UseMethod("philr") }
