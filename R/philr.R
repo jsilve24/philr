@@ -5,9 +5,10 @@
 #' transforming the data.
 #' 
 #' @aliases build.phylo.ilr
-#' @param x \strong{matrix}, \code{\link[TreeSummarizedExperiment:SummarizedExperiment-class]{TreeSummarizedExperiment}}, or \code{\link[phyloseq:phyloseq-class]{phyloseq}} object of data to be transformed (samples are rows, compositional parts are
+#' @param x \strong{matrix}, \linkS4class{TreeSummarizedExperiment}, or \linkS4class{phyloseq} object of
+#'   data to be transformed (samples are rows, compositional parts are
 #'   columns) - zero must be dealt with either with pseudocount, multiplicative replacement, or
-#'   another method.
+#'   another method. 
 #' @param sbp (Optional) give a precomputed sbp matrix \code{\link{phylo2sbp}} if you are going to
 #'   build multiple ILR bases (e.g., with different weightings).
 #' @param part.weights weightings for parts, can be a named vector with names corresponding to
