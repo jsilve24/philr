@@ -45,7 +45,7 @@
 #' @param pseudocount optional pseudocount added to observation matrix (`x`) to avoid
 #'   numerical issues from zero values. Default value is 0 which has no effect
 #'   (allowing the user to handle zeros in their own preffered way before calling philr).
-#'   Values < 0 given an error. 
+#'   Negative values (less than 0) give an error. 
 #' @inheritParams calculate.blw
 
 #' @details This is a utility function that pulls together a number of

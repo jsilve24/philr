@@ -66,7 +66,7 @@ to be used. Only used when \code{x} is object from this class. Default: "counts"
 \item{pseudocount}{optional pseudocount added to observation matrix (`x`) to avoid
 numerical issues from zero values. Default value is 0 which has no effect
 (allowing the user to handle zeros in their own preffered way before calling philr).
-Values < 0 given an error.}
+Negative values (less than 0) give an error.}
 }
 \value{
 matrix if \code{return.all=FALSE}, if \code{return.all=TRUE} then

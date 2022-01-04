@@ -84,15 +84,15 @@ data(GlobalPatterns, package = "mia")
 ## Filter Extremely Low-Abundance OTUs
 
 Taxa that were not seen with more than 3 counts in at least 20% of
-samples are filtered.  Subsequently, those with a coefficient of
-variation ≤ 3 are filtered. Finally we add a pseudocount of 1 to the
-remaining OTUs to avoid calculating log-ratios involving
-zeros. Alternatively other replacement methods (multiplicative
-replacement etc...) may be used instead if desired, by directly
-manipulating the abundance table before calling `philr` (and setting
-the pseudocount to its default value 0); the subsequent taxa weighting
-procedure we will describe complements a variety of zero replacement
-methods.
+samples are filtered. Subsequently, those with a coefficient of
+variation less or equal to 3 are filtered. Finally we add a
+pseudocount of 1 to the remaining OTUs to avoid calculating log-ratios
+involving zeros. Alternatively other replacement methods
+(multiplicative replacement etc...) may be used instead if desired, by
+directly manipulating the abundance table before calling `philr` (and
+setting the pseudocount to its default value 0); the subsequent taxa
+weighting procedure we will describe complements a variety of zero
+replacement methods.
 
 ```{r, message=FALSE, warning=FALSE}
 ## Select prevalent taxa 
@@ -323,10 +323,10 @@ voting scheme to name the two descendent clades of a given balance
 separately. For a given clade, the taxonomy table is subset to only
 contain taxa from that clade. Starting at the finest taxonomic rank
 (e.g., species) the subset taxonomy table is checked to see if any
-label (e.g., species name) represents ≥ threshold (default 95%) of the
-table entries at that taxonomic rank. If no consensus identifier is
-found, the table is checked at the next-most specific taxonomic rank
-(etc...).
+label (e.g., species name) represents a threshold (greater or equal
+to; default 95%) of the table entries at that taxonomic rank. If no
+consensus identifier is found, the table is checked at the next-most
+specific taxonomic rank (etc...).
 
 ```{r}
 tc.names <- sapply(top.coords, function(x) name.balance(tree, tax, x))
