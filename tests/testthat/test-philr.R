@@ -47,3 +47,26 @@ test_that("philr handles data.frame input with warning", {
 
   expect_warning(philr(xxxx, tree=tr, return.all=FALSE), "xxxx")
 })
+
+
+test_that("pseudocount works as expected", {
+
+  tr <- named_rtree(5)
+  pseudo <- 0.65
+  x <- t(rmultinom(10,100,c(.1,.6,.2,.3,.2)))
+  colnames(x) <- tr$tip.label  
+  x.pseudo <- x + 0.65   # add a small pseudocount
+  
+  d1 <- philr(x.pseudo, tree=tr, part.weights='enorm.x.gm.counts',
+             ilr.weights='blw.sqrt', return.all=TRUE)
+
+  d2 <- philr(x, tree=tr, part.weights='enorm.x.gm.counts',
+             ilr.weights='blw.sqrt', return.all=TRUE, pseudocount=pseudo)
+
+  d3 <- philr(x.pseudo+5, tree=tr, part.weights='enorm.x.gm.counts',
+             ilr.weights='blw.sqrt', return.all=TRUE)
+	     
+  expect_equal(d1, d2)
+  expect_false(identical(d1,d3))
+
+})
