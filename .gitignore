@@ -6,3 +6,5 @@
 inst/doc
 /vignettes/philr-intro.R
 /vignettes/philr-intro.html
+/.DS_Store
+*.tar.gz
