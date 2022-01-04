@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_utils.R
 \name{annotate_balance}
 \alias{annotate_balance}
-\title{annotate_balance}
+\title{Annotate balance}
 \usage{
 annotate_balance(
   tr,

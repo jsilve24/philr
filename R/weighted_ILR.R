@@ -15,9 +15,9 @@
 #' miniclo(c)
 #' miniclo(c, k=2)
 miniclo <- function(c,k=1){
-  check.zeroes(k, 'closure constant(k)')
-  if(is.vector(c)) c <- matrix(c, nrow=1)
-  (c/rowSums(c))*k
+    check.zeroes(k, 'closure constant(k)')
+    if(is.vector(c)) c <- matrix(c, nrow=1)
+    (c/rowSums(c))*k
 }
 
 
@@ -45,19 +45,19 @@ NULL
 #' @rdname shift
 #' @export
 shiftp <- function(x, p){
-  check.zeroes(p, "weights (p)")
-  if(is.vector(x)) x <- matrix(x, nrow=1)
-  y <- x / outer(rep(1,nrow(x)), p)
-  y
+    check.zeroes(p, "weights (p)")
+    if(is.vector(x)) x <- matrix(x, nrow=1)
+    y <- x / outer(rep(1,nrow(x)), p)
+    y
 }
 
 #' @rdname shift
 #' @export
 shiftpInv <- function(y, p){
-  check.zeroes(p, "weights (p)")
-  if(is.vector(y)) y <- matrix(y, nrow=1)
-  x <- y * outer(rep(1, nrow(y)), p)
-  x
+    check.zeroes(p, "weights (p)")
+    if(is.vector(y)) y <- matrix(y, nrow=1)
+    x <- y * outer(rep(1, nrow(y)), p)
+    x
 }
 
 
@@ -84,8 +84,8 @@ shiftpInv <- function(y, p){
 #' y <- shiftp(x, p)
 #' philr:::g.rowMeans(y, p)
 g.rowMeans <- function(y, p=rep(1, nrow(y))){
-  sp <- sum(p) # as given in text on page 4
-  exp(1/sp*rowSums(log(y)%*%diag(p)))
+    sp <- sum(p) # as given in text on page 4
+    exp(1/sp*rowSums(log(y)%*%diag(p)))
 }
 
 
@@ -102,18 +102,18 @@ g.rowMeans <- function(y, p=rep(1, nrow(y))){
 #' @examples
 #' philr:::g.colMeans(rbind(c(2,4,4), c(2,4,4)))
 g.colMeans <- function(x){
-  if(is.vector(x)) x <- matrix(x, nrow=1)
-  exp(colMeans(log(x)))
+    if(is.vector(x)) x <- matrix(x, nrow=1)
+    exp(colMeans(log(x)))
 }
 
 
 #equation 7
 inner.prodp <- function(y1,y2,p){
-  sum(p*clrp(y1,p)*clrp(y2,p))
+    sum(p*clrp(y1,p)*clrp(y2,p))
 }
 
 normp <- function(y,p){
-  sqrt(inner.prodp(y,y,p))
+    sqrt(inner.prodp(y,y,p))
 }
 
 #' Weighted CLR Transform
@@ -144,19 +144,19 @@ normp <- function(y,p){
 #' y.closed <- clrpInv(y.star)
 #' all.equal(miniclo(shiftpInv(y.closed, p)), x)
 clrp <- function(y, p){
-  check.zeroes(y, 'dataset')
-  check.zeroes(p, 'weights(p)')
+    check.zeroes(y, 'dataset')
+    check.zeroes(p, 'weights(p)')
 
-  if(is.vector(y)) y <- matrix(y, nrow=1)
-  y <- miniclo(y)
-  log(y/g.rowMeans(y,p))
+    if(is.vector(y)) y <- matrix(y, nrow=1)
+    y <- miniclo(y)
+    log(y/g.rowMeans(y,p))
 }
 
 #' @rdname weighted_clr
 #' @export
 clrpInv <- function(y.star){
-  if(is.vector(y.star)) y.star <- matrix(y.star, nrow=1)
-  miniclo(exp(y.star))
+    if(is.vector(y.star)) y.star <- matrix(y.star, nrow=1)
+    miniclo(exp(y.star))
 }
 
 
@@ -199,18 +199,18 @@ clrpInv <- function(y.star){
 #' y.closed <- ilrpInv(y.star, V)
 #' all.equal(miniclo(shiftpInv(y.closed, p)), x, check.attributes=FALSE)
 ilrp <- function(y,p,V){
-  check.zeroes(p, 'weights(p)')
-  check.zeroes(y, 'dataset')
+    check.zeroes(p, 'weights(p)')
+    check.zeroes(y, 'dataset')
 
-  # if(is.vector(y)) y <- matrix(y, nrow=1) # run in clrp anyways
-  clrp(y,p)%*%diag(p)%*%V
+    # if(is.vector(y)) y <- matrix(y, nrow=1) # run in clrp anyways
+    clrp(y,p)%*%diag(p)%*%V
 }
 
 #' @rdname weighted_ilr
 #' @export
 ilrpInv <- function(y.star, V){
-  if(is.vector(y.star)) y.star <- matrix(y.star, nrow=1)
-  miniclo(exp(y.star%*%t(V)))
+    if(is.vector(y.star)) y.star <- matrix(y.star, nrow=1)
+    miniclo(exp(y.star%*%t(V)))
 }
 
 

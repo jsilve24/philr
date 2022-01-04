@@ -119,12 +119,12 @@ mean_dist_to_tips <- function(tree){
                 "tips")
 
     # Turn dist into a nodes (rows) x tips (columns) matrix
-    dist <- dist[node.numbers, 1:nTips]
-    rownames(dist) <- 1:tree$Nnode
+    dist <- dist[node.numbers, seq_len(nTips)]
+    rownames(dist) <- seq_len(tree$Nnode)
 
     # Calculate the average distance of a node to its tips
     fun <- function(n, d, c)mean(d[n,c[[n]]])
-    res <- sapply(1:tree$Nnode, fun, dist, chld.tips)
+    res <- sapply(seq_len(tree$Nnode), fun, dist, chld.tips)
     if(!is.null(tree$node.label)) names(res) <- tree$node.label
     return(res)
 }

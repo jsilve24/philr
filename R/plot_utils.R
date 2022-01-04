@@ -1,4 +1,4 @@
-#' annotate_balance
+#' Annotate balance
 #'
 #' annotate a balance oriented with respect to the PhILR transform.
 #' That is, you can specify labels for the numerator (\code{up}) and
@@ -42,59 +42,57 @@
 #' annotate_balance(tr, 'n4', bar=TRUE, size=7, labels=c('Num', 'Denom'),
 #'     offset.text=.3)
 #' annotate_balance(tr, 'n4', bar=TRUE, geom='label', size=8, offset.text=0.1)
-annotate_balance <- function(tr, coord, p=NULL, labels=c('+','-'), offset=0,
-                             offset.text=0.03, bar=TRUE, barsize=0.01,
-                             barfill='darkgrey', geom='text', ...){
+annotate_balance <- function(tr, coord, p=NULL, labels=c('+','-'), offset=0, offset.text=0.03, bar=TRUE, barsize=0.01, barfill='darkgrey', geom='text', ...){
 
-  # Check two labels were given
-  if (length(labels) !=2) stop("two labels must be specified")
-  names(labels) <- c('up', 'down')
+    # Check two labels were given
+    if (length(labels) !=2) stop("two labels must be specified")
+    names(labels) <- c('up', 'down')
 
-  # get node numbers of children
-  # get ud.nodes (to orient) - tests if coord is a tip  
-  ch.coord <- unlist(get.ud.nodes(tr, coord)) 
-  ch.nn <- name.to.nn(tr, ch.coord)   # Convert to node numbers
-  names(ch.nn) <- names(ch.coord)
+    # get node numbers of children
+    # get ud.nodes (to orient) - tests if coord is a tip  
+    ch.coord <- unlist(get.ud.nodes(tr, coord)) 
+    ch.nn <- name.to.nn(tr, ch.coord)   # Convert to node numbers
+    names(ch.nn) <- names(ch.coord)
 
-  if (is.null(p)){
-    p <- ggtree::ggtree(tr)
-  }
+    if (is.null(p)){
+        p <- ggtree::ggtree(tr)
+    }
 
-  # Create Dataframe that contains location and dimentions of bar
-  xmax <- get_clade_position(p, node=name.to.nn(tr, coord))[,'xmax']
-  x.up <- get_clade_position(p, node=ch.nn['up'])
-  x.down <- get_clade_position(p, node=ch.nn['down'])
-  x <- rbind(x.up, x.down)
-  rownames(x) <- c('up','down')
-  x[,'xmin'] <- xmax + offset
-  x[, 'xmax'] <- x[,'xmin'] + barsize
-  x[,'ymin'] <- x[,'ymin'] + 0.2
-  x[,'ymax'] <- x[,'ymax'] - 0.2
+    # Create Dataframe that contains location and dimentions of bar
+    xmax <- get_clade_position(p, node=name.to.nn(tr, coord))[,'xmax']
+    x.up <- get_clade_position(p, node=ch.nn['up'])
+    x.down <- get_clade_position(p, node=ch.nn['down'])
+    x <- rbind(x.up, x.down)
+    rownames(x) <- c('up','down')
+    x[,'xmin'] <- xmax + offset
+    x[, 'xmax'] <- x[,'xmin'] + barsize
+    x[,'ymin'] <- x[,'ymin'] + 0.2
+    x[,'ymax'] <- x[,'ymax'] - 0.2
 
-  if (bar){
-    p <- p +
-      annotate(geom = geom,
-               x=x['up',]$xmax+offset.text,
-               y=(x['up',]$ymax + x['up',]$ymin)/2,
-               label=labels['up'], ...) +
-      annotate(geom = geom,
-               x=x['down',]$xmax+offset.text,
-               y=(x['down',]$ymax + x['down',]$ymin)/2,
-               label=labels['down'], ...) +
-      annotate('rect', xmin=x['up',]$xmin, xmax=x['up',]$xmax,
-               ymin=x['up',]$ymin, ymax=x['up',]$ymax, fill=barfill) +
-      annotate('rect', xmin=x['down',]$xmin, xmax=x['down',]$xmax,
-               ymin=x['down',]$ymin, ymax=x['down',]$ymax, fill=barfill)
-  } else {
-    p <- p +
-      annotate(geom = geom,
-               x=xmax+offset.text,
-               y=(x['up',]$ymax + x['up',]$ymin)/2,
-               label=labels['up'], ...) +
-      annotate(geom = geom,
-               x=xmax+offset.text,
-               y=(x['down',]$ymax + x['down',]$ymin)/2,
-               label=labels['down'], ...)
-  }
-  p
+    if (bar){
+        p <- p +
+        annotate(geom = geom,
+            x=x['up',]$xmax+offset.text,
+            y=(x['up',]$ymax + x['up',]$ymin)/2,
+            label=labels['up'], ...) +
+        annotate(geom = geom,
+            x=x['down',]$xmax+offset.text,
+            y=(x['down',]$ymax + x['down',]$ymin)/2,
+            label=labels['down'], ...) +
+        annotate('rect', xmin=x['up',]$xmin, xmax=x['up',]$xmax,
+            ymin=x['up',]$ymin, ymax=x['up',]$ymax, fill=barfill) +
+        annotate('rect', xmin=x['down',]$xmin, xmax=x['down',]$xmax,
+            ymin=x['down',]$ymin, ymax=x['down',]$ymax, fill=barfill)
+    } else {
+        p <- p +
+        annotate(geom = geom,
+            x=xmax+offset.text,
+            y=(x['up',]$ymax + x['up',]$ymin)/2,
+            label=labels['up'], ...) +
+        annotate(geom = geom,
+            x=xmax+offset.text,
+            y=(x['down',]$ymax + x['down',]$ymin)/2,
+            label=labels['down'], ...)
+    }
+    p
 }
