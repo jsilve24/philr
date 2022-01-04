@@ -5,3 +5,5 @@ TODO.txt
 ^.*\.DS_Store
 docs
 inst/extras
+^doc$
+^Meta$

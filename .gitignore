@@ -8,3 +8,5 @@ inst/doc
 /vignettes/philr-intro.html
 /.DS_Store
 *.tar.gz
+/doc/
+/Meta/

@@ -12,59 +12,50 @@ philr(
   part.weights = "uniform",
   ilr.weights = "uniform",
   return.all = FALSE,
-  abund_values = "counts"
+  abund_values = "counts",
+  pseudocount = 0
 )
 }
 \arguments{
-\item{x}{\strong{matrix} of data to be transformed (samples are rows,
-compositional parts are columns) - zero must be dealt with either with
-pseudocount, multiplicative replacement, or another method.}
+\item{x}{\strong{matrix}, \code{\link[TreeSummarizedExperiment:SummarizedExperiment-class]{TreeSummarizedExperiment}}, or \code{\link[phyloseq:phyloseq-class]{phyloseq}} object of data to be transformed (samples are rows, compositional parts are
+columns) - zero must be dealt with either with pseudocount, multiplicative replacement, or
+another method.}
 
 \item{tree}{a \code{phylo} class tree object that is binary (see
 \code{\link[ape]{multi2di}})}
 
-\item{sbp}{(Optional) give a precomputed sbp matrix \code{\link{phylo2sbp}}
-if you are going to build multiple ILR bases (e.g., with different
-weightings).}
+\item{sbp}{(Optional) give a precomputed sbp matrix \code{\link{phylo2sbp}} if you are going to
+build multiple ILR bases (e.g., with different weightings).}
 
-\item{part.weights}{weightings for parts, can be a named vector with names
-corresponding to \code{colnames(x)} otherwise can be a string, options
-include:
-\describe{
+\item{part.weights}{weightings for parts, can be a named vector with names corresponding to
+\code{colnames(x)} otherwise can be a string, options include: \describe{
 \item{\code{'uniform'}}{(default) uses the uniform reference measure}
-\item{\code{'gm.counts'}}{geometric mean of parts of x}
-\item{\code{'anorm'}}{aitchison norm of parts of x (after closure)}
-\item{\code{'anorm.x.gm.counts'}}{\code{'anorm'} times \code{'gm.counts'}}
-\item{\code{'enorm'}}{euclidean norm of parts of x (after closure)}
-\item{\code{'enorm.x.gm.counts'}}{\code{'enorm'} times \code{'gm.counts'},
-    often gives good results}
-}}
+\item{\code{'gm.counts'}}{geometric mean of parts of x} \item{\code{'anorm'}}{aitchison norm of
+parts of x (after closure)} \item{\code{'anorm.x.gm.counts'}}{\code{'anorm'} times
+\code{'gm.counts'}} \item{\code{'enorm'}}{euclidean norm of parts of x (after closure)}
+\item{\code{'enorm.x.gm.counts'}}{\code{'enorm'} times \code{'gm.counts'}, often gives good
+results} }}
 
-\item{ilr.weights}{weightings for the ILR coordiantes can be a named vector
-with names corresponding to names of internal nodes of \code{tree}
-otherwise can be a string,
-options include:
-\describe{
-\item{\code{'uniform'}}{(default) no weighting of the ILR basis}
-\item{\code{'blw'}}{sum of children's branch lengths}
-\item{\code{'blw.sqrt'}}{square root of \code{'blw'} option}
-\item{\code{'mean.descendants'}}{sum of children's branch lengths PLUS the
-    sum of each child's mean distance to its descendent tips}
-}}
+\item{ilr.weights}{weightings for the ILR coordiantes can be a named vector with names
+corresponding to names of internal nodes of \code{tree} otherwise can be a string, options
+include: \describe{ \item{\code{'uniform'}}{(default) no weighting of the ILR basis}
+\item{\code{'blw'}}{sum of children's branch lengths} \item{\code{'blw.sqrt'}}{square root of
+\code{'blw'} option} \item{\code{'mean.descendants'}}{sum of children's branch lengths PLUS the
+sum of each child's mean distance to its descendent tips} }}
 
-\item{return.all}{return all computed parts (e.g., computed sign
-    matrix(\code{sbp}), part weightings (code{p}), ilr weightings
-    (code{ilr.weights}), contrast matrix (\code{V})) as a list
-    (default=\code{FALSE}) in addition to in addition to returning the
-    transformed data (\code{.ilrp}).
-If \code{return.all==FALSE} then only returns the transformed data
-(not in list format)
-If \code{FALSE} then just returns list containing \code{x.ilrp}.}
+\item{return.all}{return all computed parts (e.g., computed sign matrix(\code{sbp}), part
+weightings (code{p}), ilr weightings (code{ilr.weights}), contrast matrix (\code{V})) as a list
+(default=\code{FALSE}) in addition to in addition to returning the transformed data
+(\code{.ilrp}). If \code{return.all==FALSE} then only returns the transformed data (not in list
+format) If \code{FALSE} then just returns list containing \code{x.ilrp}.}
 
 \item{abund_values}{A single character value for selecting the
-  \code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{assay}}
-to be used. Only used when \code{x} is object from this class.
-Default: "counts".}
+\code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{assay}} to be used. Only
+used when \code{x} is object from this class. Default: "counts".}
+
+\item{pseudocount}{optional pseudocount added to observation matrix (`x`) to avoid numerical
+issues from zero values. Default value is 0 which has no effect (allowing the user to handle
+zeros in their own preffered way before calling philr). Values < 0 given an error.}
 }
 \value{
 matrix if \code{return.all=FALSE}, if \code{return.all=TRUE} then
@@ -76,26 +67,17 @@ calculating the weightings (of the parts and the ILR coordinates) and then
 transforming the data.
 }
 \details{
-This is a utility function that pulls together a number of other functions
-in \code{philr}. The steps that are executed are as follows:
-\enumerate{
-\item Create sbp (sign matrix) if not given
-\item Create parts weightings if not given
-\item Shift the dataset with respect to the new reference measure
-    (e.g., part weightings)
-\item Create the basis contrast matrix from the sign matrix and the
-    reference measure
-\item Transform the data based on the contrast matrix and the reference
-    measure
-\item Calculate the specified ILR weightings and multiply each balance by
-    the corresponding weighting
-}
-Note for both the reference measure (part weightings) and the ILR weightings,
-specifying \code{'uniform'} will give the same results as not weighting at
-all. \cr \cr
-Note that some of the prespecified part.weights assume \code{x} is given as
-counts and not as relative abundances. Except in this case counts or relative
-abundances can be given.
+This is a utility function that pulls together a number of other functions in
+  \code{philr}. The steps that are executed are as follows: \enumerate{ \item Create sbp (sign
+  matrix) if not given \item Create parts weightings if not given \item Shift the dataset with
+  respect to the new reference measure (e.g., part weightings) \item Create the basis contrast
+  matrix from the sign matrix and the reference measure \item Transform the data based on the
+  contrast matrix and the reference measure \item Calculate the specified ILR weightings and
+  multiply each balance by the corresponding weighting } Note for both the reference measure
+  (part weightings) and the ILR weightings, specifying \code{'uniform'} will give the same
+  results as not weighting at all. \cr \cr Note that some of the prespecified part.weights assume
+  \code{x} is given as counts and not as relative abundances. Except in this case counts or
+  relative abundances can be given.
 
 The tree argument is ignored if the \code{x} argument is
 \code{\link[phyloseq:phyloseq-class]{assay}} or
@@ -140,20 +122,17 @@ tse <- tse[variable.taxa,]
 tree <- ape::keep.tip(phy = rowTree(tse), tip = rowLinks(tse)$nodeNum)
 rowTree(tse) <- tree
 
-## Add a new assay with a pseudocount 
-assays(tse)$counts.shifted <- assay(tse, "counts") + 1
-
 ## Run philr for TreeSummarizedExperiment object
 ## using the pseudocount data
 res.tse <- philr(tse, part.weights='enorm.x.gm.counts',
-               ilr.weights='blw.sqrt', return.all=FALSE,
-               abund_values="counts.shifted")
+                 ilr.weights='blw.sqrt', return.all=FALSE,
+                 abund_values="counts", pseudocount=1)
 
 # Running philr on a phyloseq object
 \donttest{
-  pseq <- makePhyloseqFromTreeSummarizedExperiment(tse)
-  res.pseq <- philr(pseq, part.weights='enorm.x.gm.counts',
-               ilr.weights='blw.sqrt', return.all=FALSE)
+    pseq <- makePhyloseqFromTreeSummarizedExperiment(tse, abund_values="counts")
+    res.pseq <- philr(pseq, part.weights='enorm.x.gm.counts',
+                      ilr.weights='blw.sqrt', return.all=FALSE, pseudocount=1)
 }
 
 }
