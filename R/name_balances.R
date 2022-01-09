@@ -96,10 +96,10 @@ name.balance <- function(tr, tax, coord, method="voting", thresh=0.95, return.vo
         if ('self' %in% return.votes){
             res[['self.votes']] <- tally.votes(tax, unlist(l.tips))
         }
-    return(res)
-  }
-  # In the future can extend to other methods of annotation/naming
-  # (other than just voting)
+        return(res)
+    }
+    # In the future can extend to other methods of annotation/naming
+    # (other than just voting)
 }
 
 

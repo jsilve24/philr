@@ -84,13 +84,15 @@ data(GlobalPatterns, package = "mia")
 ## Filter Extremely Low-Abundance OTUs
 
 Taxa that were not seen with more than 3 counts in at least 20% of
-samples are filtered.  Subsequently, those with a coefficient of
-variation ≤ 3 are filtered. Finally we add a pseudocount of 1 to the
-remaining OTUs to avoid calculating log-ratios involving
-zeros. Alternatively other replacement methods (multiplicative
-replacement etc...) may be used instead if desired; the subsequent
-taxa weighting procedure we will describe complements a variety of
-zero replacement methods.
+samples are filtered. Subsequently, those with a coefficient of
+variation less or equal to 3 are filtered. Finally we add a
+pseudocount of 1 to the remaining OTUs to avoid calculating log-ratios
+involving zeros. Alternatively other replacement methods
+(multiplicative replacement etc...) may be used instead if desired, by
+directly manipulating the abundance table before calling `philr` (and
+setting the pseudocount to its default value 0); the subsequent taxa
+weighting procedure we will describe complements a variety of zero
+replacement methods.
 
 ```{r, message=FALSE, warning=FALSE}
 ## Select prevalent taxa 
@@ -107,9 +109,6 @@ tse <- tse[variable.taxa,]
 # (including those that were filtered out from rowData)
 tree <- ape::keep.tip(phy = rowTree(tse), tip = rowLinks(tse)$nodeNum)
 rowTree(tse) <- tree
-
-## Add a new assay with a pseudocount 
-assays(tse)$counts.shifted <- assays(tse)$counts + 1 
 ```
 
 We have now removed the filtered taxa from the OTU table, 
@@ -173,7 +172,7 @@ are columns, samples are rows). Then we will take a look at part of
 the dataset in more detail.
 
 ```{r}
-otu.table <- t(as(assays(tse)$counts.shifted, "matrix"))
+otu.table <- t(as(assays(tse)$counts, "matrix"))
 tree <- rowTree(tse)
 metadata <- colData(tse)
 tax <- rowData(tse)[,taxonomyRanks(tse)]
@@ -222,7 +221,7 @@ You can run `philr` with the abundance table and phylogenetic tree.
 ```{r, message=FALSE}
 gp.philr <- philr(otu.table, tree, 
                   part.weights='enorm.x.gm.counts', 
-                  ilr.weights='blw.sqrt')
+                  ilr.weights='blw.sqrt', pseudocount=1)
 gp.philr[1:5,1:5]
 ```
 
@@ -230,9 +229,9 @@ gp.philr[1:5,1:5]
 Alternatively, you can provide the data directly in `TreeSE` format.
 
 ```{r, message=FALSE}
-gp.philr <- philr(tse, abund_values = "counts.shifted",
+gp.philr <- philr(tse, abund_values = "counts",
                   part.weights='enorm.x.gm.counts', 
-                  ilr.weights='blw.sqrt')
+                  ilr.weights='blw.sqrt', pseudocount=1)
 ```
 
 Alternatively, you can provide the data in `phyloseq` format. For
@@ -240,10 +239,10 @@ simplicity, let us just convert the `TreeSE` object to `phyloseq`
 object to give a brief example.
 
 ```{r, message=FALSE}
-pseq <- makePhyloseqFromTreeSummarizedExperiment(tse, abund_values="counts.shifted")
+pseq <- makePhyloseqFromTreeSummarizedExperiment(tse, abund_values="counts")
 gp.philr <- philr(pseq, 
                   part.weights='enorm.x.gm.counts', 
-                  ilr.weights='blw.sqrt')
+                  ilr.weights='blw.sqrt', pseudocount=1)
 
 ```
 
@@ -324,10 +323,10 @@ voting scheme to name the two descendent clades of a given balance
 separately. For a given clade, the taxonomy table is subset to only
 contain taxa from that clade. Starting at the finest taxonomic rank
 (e.g., species) the subset taxonomy table is checked to see if any
-label (e.g., species name) represents ≥ threshold (default 95%) of the
-table entries at that taxonomic rank. If no consensus identifier is
-found, the table is checked at the next-most specific taxonomic rank
-(etc...).
+label (e.g., species name) represents a threshold (greater or equal
+to; default 95%) of the table entries at that taxonomic rank. If no
+consensus identifier is found, the table is checked at the next-most
+specific taxonomic rank (etc...).
 
 ```{r}
 tc.names <- sapply(top.coords, function(x) name.balance(tree, tax, x))
