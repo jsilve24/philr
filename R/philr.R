@@ -115,7 +115,7 @@
 #' }
 #'
 philr <- function(x, tree=NULL, sbp=NULL, part.weights='uniform', ilr.weights='uniform',
-                  return.all=FALSE, abund_values="counts", ...) {
+                  return.all=FALSE, pseudocount=0, abund_values="counts", ...) {
   UseMethod("philr")
 }
 
@@ -146,11 +146,14 @@ philr.phyloseq <- function(x, ...){
 #' @export
 philr.TreeSummarizedExperiment <- function(x, tree=NULL, sbp=NULL,
                             part.weights='uniform', ilr.weights='uniform',
-                            return.all=FALSE, abund_values="counts", ...){
+                            return.all=FALSE, pseudocount=0,
+                            abund_values="counts", ...){
 
     tree <- TreeSummarizedExperiment::rowTree(x)
     otu.table <- t(SummarizedExperiment::assays(x)[[abund_values]])
-    philr.data.frame(otu.table, tree=tree, ...)
+  philr.data.frame(otu.table, tree=tree, sbp=sbp, part.weights=part.weights,
+                   ilr.weights=ilr.weights, return.all=return.all,
+                   pseudocount=pseudocount, ...)
 }
 
 #' @export 
@@ -166,7 +169,7 @@ philr.array <- function(x, tree, ...){
 #' @export 
 philr.data.frame <- function(x, tree, sbp=NULL,
                             part.weights='uniform', ilr.weights='uniform',
-                            return.all=FALSE, abund_values=NULL, pseudocount=0, ...){  
+                            return.all=FALSE, pseudocount=0, ...){  
     if (pseudocount < 0) stop("pseudocount must be >= 0")
     if (!is.numeric(pseudocount)) stop("pseudocount must be numeric")
     if (length(pseudocount) != 1) stop("pseudocount must be a single number")

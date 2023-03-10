@@ -12,6 +12,7 @@ philr(
   part.weights = "uniform",
   ilr.weights = "uniform",
   return.all = FALSE,
+  pseudocount = 0,
   abund_values = "counts",
   ...
 )
@@ -49,15 +50,15 @@ weightings (code{p}), ilr weightings (code{ilr.weights}), contrast matrix (\code
 (\code{.ilrp}). If \code{return.all==FALSE} then only returns the transformed data (not in list
 format) If \code{FALSE} then just returns list containing \code{x.ilrp}.}
 
+\item{pseudocount}{optional pseudocount added to observation matrix (`x`) to avoid numerical
+issues from zero values. Default value is 0 which has no effect (allowing the user to handle
+zeros in their own preffered way before calling philr). Values < 0 given an error.}
+
 \item{abund_values}{A single character value for selecting the
 \code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{assay}} to be used. Only
 used when \code{x} is object from this class. Default: "counts".}
 
 \item{...}{other parameters passed to philr.data.frame or philr.TreeSummarizedExperiment}
-
-\item{pseudocount}{optional pseudocount added to observation matrix (`x`) to avoid numerical
-issues from zero values. Default value is 0 which has no effect (allowing the user to handle
-zeros in their own preffered way before calling philr). Values < 0 given an error.}
 }
 \value{
 matrix if \code{return.all=FALSE}, if \code{return.all=TRUE} then
