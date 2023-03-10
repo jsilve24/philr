@@ -34,7 +34,8 @@
 #'   used when \code{x} is object from this class. Default: "counts".
 #' @param pseudocount optional pseudocount added to observation matrix (`x`) to avoid numerical
 #'   issues from zero values. Default value is 0 which has no effect (allowing the user to handle
-#'   zeros in their own preffered way before calling philr). Values < 0 given an error. 
+#'   zeros in their own preffered way before calling philr). Values < 0 given an error.
+#' @param ... other parameters passed to philr.data.frame or philr.TreeSummarizedExperiment
 #' @inheritParams calculate.blw
 #' @details This is a utility function that pulls together a number of other functions in
 #'   \code{philr}. The steps that are executed are as follows: \enumerate{ \item Create sbp (sign
@@ -106,14 +107,15 @@
 #'                abund_values="counts.shifted")
 #'
 #' # Running philr on a phyloseq object
-#' \donttest{
+#' \dontrun{
 #'   pseq <- makePhyloseqFromTreeSummarizedExperiment(tse)
 #'   res.pseq <- philr(pseq, part.weights='enorm.x.gm.counts',
-#'                ilr.weights='blw.sqrt', return.all=FALSE)
+#'                ilr.weights='blw.sqrt', return.all=FALSE,
+#'                pseudocount=0.5)
 #' }
 #'
 philr <- function(x, tree=NULL, sbp=NULL, part.weights='uniform', ilr.weights='uniform',
-                  return.all=FALSE, abund_values="counts") {
+                  return.all=FALSE, abund_values="counts", ...) {
   UseMethod("philr")
 }
 
