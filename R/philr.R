@@ -112,7 +112,10 @@
 #'                ilr.weights='blw.sqrt', return.all=FALSE)
 #' }
 #'
-philr <- function(x, tree=NULL, sbp=NULL, part.weights='uniform', ilr.weights='uniform', return.all=FALSE, abund_values="counts") { UseMethod("philr") }
+philr <- function(x, tree=NULL, sbp=NULL, part.weights='uniform', ilr.weights='uniform',
+                  return.all=FALSE, abund_values="counts") {
+  UseMethod("philr")
+}
 
 
 #' @export 
@@ -211,21 +214,21 @@ philr.data.frame <- function(x, tree, sbp=NULL,
         p <- g.colMeans(x)
         p <- p[rownames(sbp)]
     } else if (part.weights=='anorm'){
-        p <- apply(miniclo(t(x)), 1, function(x) normp(x, rep(1, nrow(x))))
+        p <- apply(miniclo(t(x)), 1, function(xx) normp(xx, rep(1, nrow(x))))
     } else if (part.weights=='anorm.x.gm.counts'){
         gm.counts <- g.colMeans(x)
         gm.counts <- gm.counts[rownames(sbp)]
-        anorm <- apply(miniclo(t(x)), 1, function(x) normp(x, rep(1, nrow(x))))
+        anorm <- apply(miniclo(t(x)), 1, function(xx) normp(xx, rep(1, nrow(x))))
         anorm <- anorm[rownames(sbp)]
         p <- gm.counts*anorm
     } else if (part.weights=='enorm') {
-        enorm <- apply(miniclo(t(x)), 1, function(x) sqrt(sum(x^2)))
+        enorm <- apply(miniclo(t(x)), 1, function(xx) sqrt(sum(xx^2)))
         enorm <- enorm[rownames(sbp)]
         p <- enorm
     } else if (part.weights=='enorm.x.gm.counts'){
         gm.counts <- g.colMeans(x)
         gm.counts <- gm.counts[rownames(sbp)]
-        enorm <- apply(miniclo(t(x)), 1, function(x) sqrt(sum(x^2)))
+        enorm <- apply(miniclo(t(x)), 1, function(xx) sqrt(sum(xx^2)))
         enorm <- enorm[rownames(sbp)]
         p <- gm.counts*enorm
     }
