@@ -1,8 +1,8 @@
 Package: philr
 Type: Package
 Title: Phylogenetic partitioning based ILR transform for metagenomics data
-Version: 1.25.1
-Date: 2021-08-11
+Version: 1.25.2
+Date: 2023-03-27
 Authors@R:
     c(person("Justin", "Silverman", role=c("aut", "cre"),
                      email = "jsilve24@gmail.com"),
