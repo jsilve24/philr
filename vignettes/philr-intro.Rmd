@@ -240,7 +240,7 @@ simplicity, let us just convert the `TreeSE` object to `phyloseq`
 object to give a brief example.
 
 ```{r, message=FALSE}
-pseq <- makePhyloseqFromTreeSummarizedExperiment(tse, assay.type="counts.shifted")
+pseq <- convertToPhyloseq(tse, assay.type="counts.shifted")
 gp.philr <- philr(pseq, 
                   part.weights='enorm.x.gm.counts', 
                   ilr.weights='blw.sqrt')

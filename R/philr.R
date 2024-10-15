@@ -108,7 +108,7 @@
 #'
 #' # Running philr on a phyloseq object
 #' \dontrun{
-#'   pseq <- makePhyloseqFromTreeSummarizedExperiment(tse)
+#'   pseq <- convertToPhyloseq(tse)
 #'   res.pseq <- philr(pseq, part.weights='enorm.x.gm.counts',
 #'                ilr.weights='blw.sqrt', return.all=FALSE,
 #'                pseudocount=0.5)
