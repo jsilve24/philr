@@ -1,8 +1,8 @@
 Package: philr
 Type: Package
 Title: Phylogenetic partitioning based ILR transform for metagenomics data
-Version: 1.37.0
-Date: 2024-10-15
+Version: 1.37.1
+Date: 2026-04-01
 Authors@R:
     c(person("Justin", "Silverman", role=c("aut", "cre"),
                      email = "jsilve24@gmail.com"),
@@ -16,7 +16,7 @@ Description: PhILR is short for Phylogenetic Isometric Log-Ratio Transform.
  data) and makes available the Isometric Log Ratio transform built from the
  phylogenetic tree and utilizing a weighted reference measure.
 License: GPL-3
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Imports:
     ape,
     phangorn,
@@ -40,3 +40,5 @@ VignetteBuilder: knitr
 biocViews: ImmunoOncology, Sequencing, Microbiome, Metagenomics, Software
 URL: https://github.com/jsilve24/philr 
 BugReports: https://github.com/jsilve24/philr/issues
+Encoding: UTF-8
+

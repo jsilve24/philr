@@ -5,63 +5,84 @@
 #' transforming the data.
 #' 
 #' @aliases build.phylo.ilr
-#' @param x \strong{matrix} of data to be transformed (samples are rows, compositional parts are
-#'   columns) - zero must be dealt with either with pseudocount, multiplicative replacement, or
-#'   another method.
-#' @param sbp (Optional) give a precomputed sbp matrix \code{\link{phylo2sbp}} if you are going to
-#'   build multiple ILR bases (e.g., with different weightings).
-#' @param part.weights weightings for parts, can be a named vector with names corresponding to
-#'   \code{colnames(x)} otherwise can be a string, options include: \describe{
-#'   \item{\code{'uniform'}}{(default) uses the uniform reference measure}
-#'   \item{\code{'gm.counts'}}{geometric mean of parts of x} \item{\code{'anorm'}}{aitchison norm of
-#'   parts of x (after closure)} \item{\code{'anorm.x.gm.counts'}}{\code{'anorm'} times
-#'   \code{'gm.counts'}} \item{\code{'enorm'}}{euclidean norm of parts of x (after closure)}
-#'   \item{\code{'enorm.x.gm.counts'}}{\code{'enorm'} times \code{'gm.counts'}, often gives good
-#'   results} }
-#' @param ilr.weights weightings for the ILR coordiantes can be a named vector with names
-#'   corresponding to names of internal nodes of \code{tree} otherwise can be a string, options
-#'   include: \describe{ \item{\code{'uniform'}}{(default) no weighting of the ILR basis}
-#'   \item{\code{'blw'}}{sum of children's branch lengths} \item{\code{'blw.sqrt'}}{square root of
-#'   \code{'blw'} option} \item{\code{'mean.descendants'}}{sum of children's branch lengths PLUS the
+#' @param x \strong{matrix} of data to be transformed (samples are rows,
+#'   compositional parts are columns). Should be provided as \strong{raw counts}
+#'   -- do not pre-normalize to relative abundances (see Details). Zeros must
+#'   be handled prior to calling \code{philr} via pseudocount, multiplicative
+#'   replacement, or another method (see also the \code{pseudocount} argument).
+#' @param sbp (Optional) give a precomputed sbp matrix \code{\link{phylo2sbp}}
+#'   if you are going to build multiple ILR bases (e.g., with different
+#'   weightings).
+#' @param part.weights weightings for parts, can be a named vector with names
+#'   corresponding to \code{colnames(x)} otherwise can be a string, options
+#'   include: \describe{ \item{\code{'uniform'}}{(default) uses the uniform
+#'   reference measure} \item{\code{'gm.counts'}}{geometric mean of parts of x}
+#'   \item{\code{'anorm'}}{aitchison norm of parts of x (after closure)}
+#'   \item{\code{'anorm.x.gm.counts'}}{\code{'anorm'} times \code{'gm.counts'}}
+#'   \item{\code{'enorm'}}{euclidean norm of parts of x (after closure)}
+#'   \item{\code{'enorm.x.gm.counts'}}{\code{'enorm'} times \code{'gm.counts'},
+#'   often gives good results} }
+#' @param ilr.weights weightings for the ILR coordiantes can be a named vector
+#'   with names corresponding to names of internal nodes of \code{tree}
+#'   otherwise can be a string, options include: \describe{
+#'   \item{\code{'uniform'}}{(default) no weighting of the ILR basis}
+#'   \item{\code{'blw'}}{sum of children's branch lengths}
+#'   \item{\code{'blw.sqrt'}}{square root of \code{'blw'} option}
+#'   \item{\code{'mean.descendants'}}{sum of children's branch lengths PLUS the
 #'   sum of each child's mean distance to its descendent tips} }
-#' @param return.all return all computed parts (e.g., computed sign matrix(\code{sbp}), part
-#'   weightings (code{p}), ilr weightings (code{ilr.weights}), contrast matrix (\code{V})) as a list
-#'   (default=\code{FALSE}) in addition to in addition to returning the transformed data
-#'   (\code{.ilrp}). If \code{return.all==FALSE} then only returns the transformed data (not in list
-#'   format) If \code{FALSE} then just returns list containing \code{x.ilrp}.
+#' @param return.all return all computed parts (e.g., computed sign
+#'   matrix(\code{sbp}), part weightings (\code{p}), ilr weightings
+#'   (\code{ilr.weights}), contrast matrix (\code{V})) as a list
+#'   (default=\code{FALSE}) in addition to in addition to returning the
+#'   transformed data (\code{.ilrp}). If \code{return.all==FALSE} then only
+#'   returns the transformed data (not in list format) If \code{FALSE} then just
+#'   returns list containing \code{x.ilrp}.
 #' @param abund_values A single character value for selecting the
-#'   \code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{assay}} to be used. Only
-#'   used when \code{x} is object from this class. Default: "counts".
-#' @param pseudocount optional pseudocount added to observation matrix (`x`) to avoid numerical
-#'   issues from zero values. Default value is 0 which has no effect (allowing the user to handle
-#'   zeros in their own preffered way before calling philr). Values < 0 given an error.
-#' @param ... other parameters passed to philr.data.frame or philr.TreeSummarizedExperiment
+#'   \code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{assay}}
+#'   to be used. Only used when \code{x} is object from this class. Default:
+#'   "counts".
+#' @param pseudocount optional pseudocount added to observation matrix (`x`) to
+#'   avoid numerical issues from zero values. Default value is 0 which has no
+#'   effect (allowing the user to handle zeros in their own preffered way before
+#'   calling philr). Values < 0 given an error.
+#' @param ... other parameters passed to philr.data.frame or
+#'   philr.TreeSummarizedExperiment
 #' @inheritParams calculate.blw
-#' @details This is a utility function that pulls together a number of other functions in
-#'   \code{philr}. The steps that are executed are as follows: \enumerate{ \item Create sbp (sign
-#'   matrix) if not given \item Create parts weightings if not given \item Shift the dataset with
-#'   respect to the new reference measure (e.g., part weightings) \item Create the basis contrast
-#'   matrix from the sign matrix and the reference measure \item Transform the data based on the
-#'   contrast matrix and the reference measure \item Calculate the specified ILR weightings and
-#'   multiply each balance by the corresponding weighting } Note for both the reference measure
-#'   (part weightings) and the ILR weightings, specifying \code{'uniform'} will give the same
-#'   results as not weighting at all. \cr \cr Note that some of the prespecified part.weights assume
-#'   \code{x} is given as counts and not as relative abundances. Except in this case counts or
-#'   relative abundances can be given.
+#' @details This is a utility function that pulls together a number of other
+#'  functions in \code{philr}. The steps that are executed are as follows:
+#'  \enumerate{ \item Create sbp (sign matrix) if not given \item Create parts
+#'  weightings if not given \item Shift the dataset with respect to the new
+#'  reference measure (e.g., part weightings) \item Create the basis contrast
+#'  matrix from the sign matrix and the reference measure \item Transform the
+#'  data based on the contrast matrix and the reference measure \item Calculate
+#'  the specified ILR weightings and multiply each balance by the corresponding
+#'  weighting } Note for both the reference measure (part weightings) and the
+#'  ILR weightings, specifying \code{'uniform'} will give the same results as
+#'  not weighting at all. \cr \cr \strong{Input format:} \code{x} should be
+#'  provided as raw counts (after zero handling via pseudocount or
+#'  multiplicative replacement) and \emph{not} pre-normalized to relative
+#'  abundances. Closure is applied internally. This matters because several
+#'  \code{part.weights} options (\code{'gm.counts'},
+#'  \code{'anorm.x.gm.counts'}, \code{'enorm.x.gm.counts'}) are computed from
+#'  \code{x} prior to closure and use count magnitudes to weight parts;
+#'  pre-normalizing to relative abundances removes this information and alters
+#'  the intended weighting. When \code{part.weights='uniform'} (the default),
+#'  the ILR is scale-invariant and counts or relative abundances yield
+#'  identical results, but passing counts is still recommended for consistency.
+#' 
+#'  The tree argument is ignored if the \code{x} argument is
+#'  \code{\link[phyloseq:phyloseq-class]{assay}} or
+#'  \code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{assay}}
+#'  These objects can include a phylogenetic tree. If the phylogenetic tree is
+#'  missing from these objects, it should be integrated directly in these data
+#'  objects before running \code{philr}. Alternatively, you can always provide
+#'  the abundance matrix and tree separately in their standard formats.
 #'
-#' The tree argument is ignored if the \code{x} argument is
-#' \code{\link[phyloseq:phyloseq-class]{assay}} or
-#' \code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{assay}}
-#' These objects can include a phylogenetic tree. If the phylogenetic tree
-#' is missing from these objects, it should be integrated directly in these
-#' data objects before running \code{philr}. Alternatively, you can always
-#' provide the abundance matrix and tree separately in their standard formats.
-#'
-#' If you have a 
-#' \code{\link[SummarizedExperiment:SummarizedExperiment-class]{assay}},
-#' this can be converted into
-#' \code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{assay}},
-#' to incorporate tree information.
+#'  If you have a 
+#'  \code{\link[SummarizedExperiment:SummarizedExperiment-class]{assay}},
+#'  this can be converted into
+#'  \code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{assay}},
+#'  to incorporate tree information.
 #'
 #' @return matrix if \code{return.all=FALSE}, if \code{return.all=TRUE} then
 #' a list is returned (see above).

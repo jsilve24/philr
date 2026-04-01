@@ -210,10 +210,16 @@ using the function `philr::phylo2sbp()`
 weights are either provided by the user or can be calculated by the function 
 `philr::calculate.blw()`. 
 
-Note: The preprocessed OTU table should be passed to the function
-`philr::philr()` before it is closed (normalized) to relative
-abundances, as some of the preset weightings of the taxa use the
-original count data to down weight low abundance taxa.
+Note: Pass the preprocessed OTU table as **raw counts** -- do not
+normalize to relative abundances before calling `philr::philr()`.
+Closure is applied internally. This is important because several
+preset part weightings (e.g., `enorm.x.gm.counts`, `gm.counts`) are
+computed from the count data prior to closure; pre-normalizing to
+relative abundances removes count-magnitude information and alters
+these weightings. If using the default `part.weights='uniform'`, the
+result is identical either way (the ILR is scale-invariant), but
+passing raw counts is still recommended for consistency.
+
 
 Here we will use the same weightings as we used in the main paper.
 
