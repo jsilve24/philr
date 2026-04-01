@@ -1,3 +1,11 @@
+CHANGES IN VERSION 1.37.1
+-------------------------
+
+USER-VISIBLE CHANGES
+
+  o Updating documentation (and vignette) to make input format for philr function clearer. 
+
+
 CHANGES IN VERSION 1.30.1
 --------------------------
 
