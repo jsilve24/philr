@@ -1,7 +1,3 @@
-^.*\.Rproj$
-^\.Rproj\.user$
-README.md
-TODO.txt
-^.*\.DS_Store
-docs
-inst/extras
+^CLAUDE\.md$
+.github/*
+philr.Rproj
