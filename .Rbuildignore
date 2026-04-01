@@ -1,3 +1,4 @@
 ^CLAUDE\.md$
 .github/*
 philr.Rproj
+docs/*
