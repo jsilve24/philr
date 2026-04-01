@@ -1,0 +1,105 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Package Overview
+
+**philr** is a Bioconductor R package implementing the Phylogenetic Isometric Log-Ratio (PhILR) transform for compositional microbiome data. It enables analysis of compositional data by embedding it in a real Euclidean space using a phylogenetic tree as the basis for an ILR transform.
+
+Reference: Silverman et al. 2017, eLife (doi: 10.7554/eLife.21887)
+
+## Common Commands
+
+All R commands should be run from the package root directory.
+
+```r
+# Install dependencies
+BiocManager::install(c("ape", "phangorn", "tidyr", "ggplot2", "ggtree",
+                        "phyloseq", "TreeSummarizedExperiment", "testthat"))
+
+# Load the package during development
+devtools::load_all(".")
+
+# Run all tests
+devtools::test()
+
+# Run a single test file
+testthat::test_file("tests/testthat/test-philr.R")
+
+# Check the package (full CRAN/Bioconductor check)
+devtools::check()
+
+# Build documentation from roxygen2 comments
+devtools::document()
+
+# Build the vignette
+devtools::build_vignettes()
+```
+
+## Architecture
+
+### Core Transform Pipeline
+
+The main entry point is `philr()` (S3 generic in `R/philr.R`), which orchestrates:
+
+1. **`phylo2sbp()`** (`R/phylo2sbp.R`) — Converts a binary phylogenetic tree (ape `phylo` object) into an *n × (n-1)* sequential binary partition (SBP) sign matrix. Each column represents one internal node (balance).
+
+2. **Part weighting** — Optional weighting of compositional parts before transformation. Schemes: `uniform`, `gm.counts`, `anorm`, `enorm`, `anorm.x.gm.counts`, `enorm.x.gm.counts`.
+
+3. **`shiftp()`** (`R/weighted_ILR.R`) — Shifts data by reference measure weights (compositional perturbation).
+
+4. **`buildilrBasep()`** (`R/weighted_ILR.R`) — Constructs the orthonormal ILR contrast matrix from the SBP and part weights.
+
+5. **`ilrp()`** (`R/weighted_ILR.R`) — Applies the weighted ILR transformation.
+
+6. **ILR coordinate weighting** — Optional post-transform scaling of coordinates. Schemes: `uniform`, `blw`, `blw.sqrt`, `mean.descendants`. Branch length weights computed in `R/branch_length_calculations.R`.
+
+The inverse operation `philrInv()` reverses this pipeline exactly.
+
+### Weighted Compositional Algebra (`R/weighted_ILR.R`)
+
+All core math lives here. Operations work on the weighted simplex (parameter `p` is the reference measure / weight vector):
+- `miniclo()` — Closure (normalize rows to sum to 1 or constant `k`)
+- `shiftp()` / `shiftpInv()` — Perturbation by reference measure
+- `clrp()` / `clrpInv()` — Weighted centered log-ratio transform
+- `ilrp()` / `ilrpInv()` — Weighted ILR transform (matrix multiplication in log-space)
+- `buildilrBasep()` — Builds the Helmert-style contrast matrix from SBP + weights
+- `g.rowMeans()` / `g.colMeans()` — Weighted and unweighted geometric means
+
+### S3 Dispatch Pattern
+
+`philr()` dispatches on class:
+- `philr.data.frame()` — Primary implementation; all other methods coerce to data.frame and call this
+- `philr.matrix()`, `philr.array()`, `philr.numeric()` — Type coercions
+- `philr.phyloseq()` — Extracts OTU table + tree from phyloseq object
+- `philr.TreeSummarizedExperiment()` — Extracts from TreeSE/SummarizedExperiment
+
+### Supporting Modules
+
+- **`R/branch_length_calculations.R`** — `calculate.blw()` computes ILR coordinate weights from branch lengths using two methods: `sum.children` (sum of direct children's lengths) and `mean.descendants` (incorporates mean distance to tips via `mean_dist_to_tips()`).
+
+- **`R/name_balances.R`** — `name.balance()` names a balance using taxonomic voting across levels. Returns strings like `"Genus_Bacteroides/Phylum_Firmicutes"`. Helper `vote.annotation()` uses a threshold to select the most conserved taxonomic label.
+
+- **`R/plot_utils.R`** — `annotate_balance()` adds balance annotations to ggtree phylogenetic plots.
+
+- **`R/general_utils.R`** — Node/label conversion (`nn.to.name`, `name.to.nn`), `convert_to_long()` for ggplot2-ready data, `named_rtree()` for generating example trees.
+
+## Testing
+
+Tests use `testthat` in `tests/testthat/`:
+- `test-philr.R` — Round-trip correctness of `philr`/`philrInv`, distance preservation
+- `test-wilr.R` — All weighted algebra primitives
+- `test-general_utils.R` — Node label utilities
+- `test-BLcalcs.R` — Branch length weighting calculations
+
+Key invariant tested throughout: forward transforms must be exactly invertible by their inverses.
+
+## Documentation
+
+All exported functions use roxygen2. Run `devtools::document()` to regenerate `.Rd` files in `man/`. The introductory vignette is at `vignettes/philr-intro.Rmd` and demonstrates the full workflow on the Global Patterns dataset.
+
+## Bioconductor Conventions
+
+- Package version follows Bioconductor's `x.y.z` scheme: odd `y` = devel, even `y` = release
+- Imports are declared in `DESCRIPTION`; `NAMESPACE` is generated by roxygen2
+- Do not edit `NAMESPACE` manually — use `@export`, `@importFrom` tags in roxygen2 comments
